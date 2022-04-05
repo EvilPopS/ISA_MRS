@@ -1,3 +1,6 @@
 # ISA_MRS
-aaaaaaaaaaaa
-1
+
+Developers:
+  Strahinja Popovic
+  Stefan Stankovic
+  Srdjan Djuric
