@@ -5,14 +5,12 @@ import javax.persistence.*;
 
 @Entity
 public class Photo {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "path", nullable = false)
-    private String path;
+    @Column(name = "photo_path", nullable = false)
+    private String photoPath;
 
     public Long getId() {
         return id;
@@ -22,11 +20,11 @@ public class Photo {
         this.id = id;
     }
 
-    public String getPath() {
-        return path;
+    public String getPhotoPath() {
+        return photoPath;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 }

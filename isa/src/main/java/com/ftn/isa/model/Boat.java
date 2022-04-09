@@ -10,8 +10,8 @@ public class Boat extends RentalService{
     @Column(name = "type", nullable = false)
     private String type;
 
-    @Column(name = "length", nullable = false)
-    private String length;
+    @Column(name = "boat_length", nullable = false)
+    private String boatLength;
 
     @Column(name = "engine_number", nullable = false)
     private String engineNumber;
@@ -34,9 +34,9 @@ public class Boat extends RentalService{
     public Boat() {
     }
 
-    public Boat(String type, String length, String engineNumber, String enginePower, String maxSpeed, String navigationEquipment, String fishingEquipment, Double cancellationConditions) {
+    public Boat(String type, String boatLength, String engineNumber, String enginePower, String maxSpeed, String navigationEquipment, String fishingEquipment, Double cancellationConditions) {
         this.type = type;
-        this.length = length;
+        this.boatLength = boatLength;
         this.engineNumber = engineNumber;
         this.enginePower = enginePower;
         this.maxSpeed = maxSpeed;
@@ -53,12 +53,12 @@ public class Boat extends RentalService{
         this.type = type;
     }
 
-    public String getLength() {
-        return length;
+    public String getBoatLength() {
+        return boatLength;
     }
 
-    public void setLength(String length) {
-        this.length = length;
+    public void setBoatLength(String boatLength) {
+        this.boatLength = boatLength;
     }
 
     public String getEngineNumber() {
