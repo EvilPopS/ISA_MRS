@@ -10,13 +10,13 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "start", nullable = false)
-    private LocalDateTime start;
+    @Column(name = "startTime", nullable = false)
+    private LocalDateTime startTime;
 
-    @Column(name = "end", nullable = false)
-    private LocalDateTime end;
+    @Column(name = "endTime", nullable = false)
+    private LocalDateTime endTime;
 
-    @Column(name = "isActino", nullable = false)
+    @Column(name = "isAction", nullable = false)
     private boolean isAction;
 
     @Column(name = "price", nullable = false)
@@ -30,20 +30,20 @@ public class Reservation {
     @JoinColumn(name = "service_id", referencedColumnName = "id")
     private RentalService service;
 
-    public LocalDateTime getStart() {
-        return start;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public void setStart(LocalDateTime start) {
-        this.start = start;
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
-    public LocalDateTime getEnd() {
-        return end;
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
-    public void setEnd(LocalDateTime end) {
-        this.end = end;
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     public boolean isAction() {
