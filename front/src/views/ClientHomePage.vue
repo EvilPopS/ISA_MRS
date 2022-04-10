@@ -6,7 +6,7 @@
     import EditUserDataComponent from '../components/EditUserDataComponent.vue'
 
     export default {
-        name: "CottageOwnerHomePage",
+        name: "ClientHomePage",
         components: {
             EditUserDataComponent
         }
