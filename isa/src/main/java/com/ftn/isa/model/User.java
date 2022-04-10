@@ -10,7 +10,7 @@ public abstract class User {
     @Id
     @SequenceGenerator(name = "mySeqGenUser", sequenceName = "mySeqUser", initialValue = 1, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenUser")
-    private Long id;
+    protected Long id;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;

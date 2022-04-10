@@ -5,12 +5,9 @@ import javax.persistence.*;
 
 @Entity
 public class Room {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @Column(name = "no_beds", nullable = false)
     private int noBeds;
