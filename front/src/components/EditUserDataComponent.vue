@@ -1,7 +1,7 @@
 <template>
-    <form @submit.prevent="handleSubmit">
+  <form @submit.prevent="handleSubmit">
       
-      <!-- <button id="profilePicture" src='./assets/logo.png'></button> -->
+      <img @click="changeProfilePhoto()"  :src="profilePicture" alt="">
 
       <label>Email: </label>
       <input type="email" required v-model="email">
@@ -27,14 +27,14 @@
       <input type="text" required v-model="phoneNumber">
 
       <div class="submit">
-          <button>Create an Account</button>
+          <button>Update</button>
       </div>
     </form>
 </template>
 
 <script>
 export default {
-    name: "CottageOwnerEditProfile",
+    name: "EditUserDataComponent",
     data() {
         return {
             email: '',   //cilj je sta unesu u input da se ovo azurira, to je v-model
@@ -44,7 +44,9 @@ export default {
             name: '',
             surname: '',
             address: '',
-            phoneNumber: ''
+            phoneNumber: '',
+            profilePicture: '../assets/logo.png'
+            
         }
     },
     methods: {
@@ -53,6 +55,9 @@ export default {
             console.log('form submited')
             //sa .prevent se sprecava da se submit odmah desi vec ovde recimo validacija
             this.passwordError = this.password.length > 5 ? '' : 'Password must be at least 6 chars long'
+        },
+        changeProfilePhoto() {
+            //logika za redirektuje na prozor za unos nove slike
         }
     }
 }
@@ -105,7 +110,7 @@ export default {
         color: #777;
         cursor: pointer;
     }
-    button {
+    .submit button {
         background: blue;
         border: 0;
         padding: 10px 20px;
@@ -123,10 +128,10 @@ export default {
         font-weight: bold;
     }
 
-    #profilePicture {
-        border-radius: 50%;
-        width: 100px;
-        height: 100px;
+    img {
+        width: 150px;
+        height: 150px;
+        display: block;
+        margin: 0 auto;
     }
-
 </style>

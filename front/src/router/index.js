@@ -1,29 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import CottageOwnerHomePage from '../views/CottageOwnerHomePage.vue'
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-import CottageOwnerEditProfile from '../components/CottageOwnerEditProfile.vue'
+import ClientHomePage from '../views/ClientHomePage.vue'
+import InstructorHomePage from '../views/InstructorHomePage.vue'
 
 const routes = [
   {
-    path: '/CottageOwnerHome',
-    name: 'CottageOwnerHome',
+    path: '/CottageOwnerHomePage',
+    name: 'CottageOwnerHomePage',
     component: CottageOwnerHomePage
   },
   {
-    path: '/CottageOwnerEditProfile',
-    name: 'CottageOwnerEditProfile',
-    component: CottageOwnerEditProfile
+    path: '/InstructorHomePage',
+    name: 'InstructorHomePage',
+    component: InstructorHomePage
   },
   {
-    path: '/',
-    name: 'HomeView',
-    component: HomeView
-  },
-  {
-    path: '/about',
-    name: 'AboutView',
-    component: AboutView
+    path: '/ClientHomePage',
+    name: 'ClientHomePage',
+    component: ClientHomePage
   }
 ]
 
