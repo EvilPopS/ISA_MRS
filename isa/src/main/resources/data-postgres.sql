@@ -8,40 +8,40 @@ insert into address (place_name, street, zip_code)
             ('Kula', 'Marsala Tita 200', '25230'),
             ('Zlatibor', 'Milenko Zablacanski', '31315');
 
-insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted)
+insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, user_type, loyalty_type)
     values (1, 'admin1@gmail.com', 'admin123', 'Miroslav', 'Ilic', 2, '0614264444', false,
-                true, null, 1, null),
+                true, null, 1, 0),
            (2, 'admin2@gmail.com', 'admin123', 'Saban', 'Saulic', 3, '0614283764', false,
-                true, null, 1, null);
+                true, null, 1, 0);
 
-insert into adventure (name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                             rental_type, price, biography, fishing_equipment, cancellation_conditions)
-    values ('Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
+    values (1, 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
                 false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5),
-            ('Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
+            (2, 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
                 false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0);
 
-insert into boat (name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                       rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
                       navigation_equipment, fishing_equipment, cancellation_conditions)
-    values ('The Black Pearl', 'Crni brodic, velik i lep.', 8, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 50
+    values (3, 'The Black Pearl', 'Crni brodic, velik i lep.', 8, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 50,
                 'Ribarski brodic', '20m', '46345754', '500ks', '30km/h', 'Neka navigaciona oprema ne razumem ti se ja u to.',
                 'Pecaroska oprema, ne znam sta sve ide tu.', 35.0);
 
-insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted)
+insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                             is_active, photo_id, user_type, loyalty_type)
     values (3, 'boatowner1@gmail.com', 'boat123', 'Bojan', 'Bojanic', 7, '06222332323', false, true, null,
                 3, 0);
 
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, user_type, loyalty_type, no_penalties)
-    values (0, 'strahinjapopovic@gmail.com', 'sifra123', 'Strahinja', 'Popovic', 1, '0601231231', false,
-                true, null, 0, 0, 0)
+    values (4, 'strahinjapopovic@gmail.com', 'sifra123', 'Strahinja', 'Popovic', 1, '0601231231', false,
+                true, null, 0, 0, 0);
 
-insert into cottage (name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, additional_services)
-    values ('Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
+    values (4, 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
                 false, 8, 0, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.');
 
 
