@@ -8,6 +8,9 @@ insert into address (place_name, street, zip_code)
             ('Kula', 'Marsala Tita 200', '25230'),
             ('Zlatibor', 'Milenko Zablacanski', '31315');
 
+insert into photo (photo_path)
+    values ('default.jpg');
+
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, user_type, loyalty_type)
     values (1, 'admin1@gmail.com', 'admin123', 'Miroslav', 'Ilic', 2, '0614264444', false,
@@ -30,14 +33,14 @@ insert into boat (id, name, description, capacity, rules, is_deleted, address_id
                 'Pecaroska oprema, ne znam sta sve ide tu.', 35.0);
 
 insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                            is_active, photo_id, user_type, loyalty_type)
+                            is_active, photo_id, user_type, loyalty_type, loyalty_points)
     values (3, 'boatowner1@gmail.com', 'boat123', 'Bojan', 'Bojanic', 7, '06222332323', false, true, null,
-                3, 0);
+                3, 0, 10);
 
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                        is_active, photo_id, user_type, loyalty_type, no_penalties)
+                        is_active, photo_id, user_type, loyalty_type, no_penalties, loyalty_points)
     values (4, 'strahinjapopovic@gmail.com', 'sifra123', 'Strahinja', 'Popovic', 1, '0601231231', false,
-                true, null, 0, 0, 0);
+                true, 1, 0, 0, 0, 124);
 
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, additional_services)
