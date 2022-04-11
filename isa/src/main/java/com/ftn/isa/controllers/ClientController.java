@@ -14,6 +14,7 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
+    @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping(value="/{email}")
     public ResponseEntity<ClientProfileDTO> getByEmail(@PathVariable String email) {
         Client client = clientService.findByEmail(email);

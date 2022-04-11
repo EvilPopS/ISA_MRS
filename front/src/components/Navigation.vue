@@ -27,8 +27,8 @@
         data(){
             return {
                 isAdmin: false,
-                isClient: false,
-                isCottageOwner: true,
+                isClient: true,
+                isCottageOwner: false,
             }
         },
         

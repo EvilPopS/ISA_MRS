@@ -14,6 +14,9 @@ public class ClientProfileDTO {
     private String phoneNumber;
     private String profilePicture;
     private String userType;
+    private String loyaltyStatus;
+    private int loyaltyPoints;
+
 
     public ClientProfileDTO(Client client) {
         this.email = client.getEmail();
@@ -150,9 +153,5 @@ public class ClientProfileDTO {
     public void setLoyaltyPoints(int loyaltyPoints) {
         this.loyaltyPoints = loyaltyPoints;
     }
-
-    private String loyaltyStatus;
-    private int loyaltyPoints;
-
 
 }

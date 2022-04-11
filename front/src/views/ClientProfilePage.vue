@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="handleSubmit">
-        <img id="profilePic" @click="changeProfilePhoto()"  :src="require('../assets/' + profilePicture)" alt="Client profile picture should be here...">
+        <img id="profilePic" @click="changeProfilePhoto()"  :src="require('../assets/' + 'logo.png')" alt="Client profile picture should be here...">
 
         <label>Account type: </label>
         <input disabled type="text" v-model="type">
@@ -20,8 +20,14 @@
         <label>Surname: </label>
         <input type="text" v-model="surname">
 
-        <label>Address: </label>
-        <input type="text" v-model="address">
+        <label>City: </label>
+        <input type="text" v-model="city">
+
+        <label>Zipcode: </label>
+        <input type="text" v-model="zipcode">
+
+        <label>Street: </label>
+        <input type="text" v-model="street">
 
         <label>Phone number: </label>
         <input type="text" v-model="phoneNumber">
@@ -40,11 +46,13 @@
     <PopUp v-show="popVisible" @close="closePopUp();">
         <input v-model="phoneNumber"/>
     </PopUp>
+    
 </template>
 
 <script>
     import PopUp from "../components/PopUp.vue";
-
+    import axios from 'axios';
+    
     export default {
         name: "ClientProfilePage",
         components: {
@@ -52,17 +60,19 @@
         },
         data() {
             return {
-                email: 'strahinjapopovic.evilpops@gmail.com',
-                password: 'jedan1',
-                confirmPassword: 'jedan1',
-                name: 'Strahinja',
-                surname: 'Popovic',
-                address: 'Marsala Tita 252/25',
-                phoneNumber: '0614256666',
-                profilePicture: 'photo.jpg',
-                type: 'CLIENT',
-                loyalty: 'GOLD',
-                points: 42,
+                email: '',
+                password: '',
+                confirmPassword: '',
+                name: '',
+                surname: '',
+                city: '',
+                zipcode: '',
+                street: '',
+                phoneNumber: '',
+                profilePicture: '',
+                type: '',
+                loyalty: '',
+                points: '',
                 popVisible: false
                 
             }
@@ -81,21 +91,40 @@
             closePopUp() {
                 this.popVisible = false;
             }
+        },
+        mounted() {
+                axios.get("http://localhost:8080/api/client/" + "strahinjapopovic@gmail.com")
+                    .then((response) => {
+                        let data = response.data;
+
+                        this.email = data.email;
+                        this.password = data.password;
+                        this.confirmPassword = data.password;
+                        this.name = data.name;
+                        this.surname = data.surname;
+                        this.city = data.city;
+                        this.zipcode = data.zipcode;
+                        this.street = data.street;
+                        this.phoneNumber = data.phoneNumber;
+                        this.profilePicture = data.profilePicture;
+                        this.type = data.userType;
+                        this.loyalty = data.loyaltyStatus;
+                        this.points = data.loyaltyPoints;
+                    })
         }
+
     }
 
     function validateForm(formData) {
+        // Dodati proveru za adresu 
         let nameReg = /^[a-zA-Z ]{2,30}$/;
         let passwordReg = /^[a-zA-Z0-9!@#$%^&*()_+-]{6,30}$/;
-        let addressReg = /^[a-zA-Z0-9\s,'-/]+$/;
         let phoneReg = /^[0-9]{5,20}$/;
 
         if (!validate(formData.name, nameReg) || !validate(formData.surname, nameReg))
             throw "Invalid name or surname.";
         if (!validate(formData.password, passwordReg) || formData.password != formData.confirmPassword)
             throw "Make sure your confirmation password is the same as the new password and they're at least 6 characters long";
-        if (!validate(formData.address, addressReg))
-            throw "Make sure you address meets format requirements."
         if (!validate(formData.phoneNumber, phoneReg))
             throw "Make sure your entered valid phone number."
     }
