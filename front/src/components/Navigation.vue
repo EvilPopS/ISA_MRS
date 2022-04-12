@@ -23,7 +23,6 @@
 <script>
     export default {
         name: "Navigation",
-
         data(){
             return {
                 isAdmin: false,
@@ -42,7 +41,7 @@
             }
         }
     }
-
+    
     function pushView(routerOwner, viewName) { 
         /* 
             Helper funckija ubacivanje View-eva na ruter pri kliku na link 
@@ -63,11 +62,9 @@
         overflow: hidden;
         width: 100%;
         position: fixed;
-
         top: 0;
         z-index: 999;
         height: 50px;
-
     }
 
     .topnav a {

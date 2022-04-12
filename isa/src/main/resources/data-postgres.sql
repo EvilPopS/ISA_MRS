@@ -59,3 +59,8 @@ insert into room (no_beds)
     values (5);
 
 
+
+insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
+                           is_active, photo_id, user_type, loyalty_type, loyalty_points)
+values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
+        2, 0, 10);

@@ -155,3 +155,4 @@ public abstract class User {
         this.loyaltyPoints = loyaltyPoints;
     }
 }
+
