@@ -48,8 +48,6 @@ public abstract class User {
     @Column(name = "loyalty_type", nullable = false)
     private LoyaltyType loyaltyType;
 
-    @Column(name = "loyalty_points")
-    private int loyaltyPoints;
 
     public String getEmail() {
         return email;
@@ -146,13 +144,4 @@ public abstract class User {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public int getLoyaltyPoints() {
-        return loyaltyPoints;
-    }
-
-    public void setLoyaltyPoints(int loyaltyPoints) {
-        this.loyaltyPoints = loyaltyPoints;
-    }
 }
-
