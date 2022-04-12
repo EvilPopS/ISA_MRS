@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value="api/client")
-@CrossOrigin(origins = "http://localhost:8081")
 public class ClientController {
     @Autowired
     private ClientService clientService;
 
     @GetMapping(value="/{email}")
+    @CrossOrigin(origins = "http://localhost:8081")
     public ResponseEntity<ClientProfileDTO> getByEmail(@PathVariable String email) {
         Client client = clientService.findByEmail(email);
         if (client == null)
@@ -24,6 +24,7 @@ public class ClientController {
     }
 
     @PutMapping(consumes="application/json", value="/data-update")
+    @CrossOrigin(origins = "http://localhost:8081")
     public ResponseEntity<ClientProfileDTO> updatePersonalData(@RequestBody ClientProfileDTO clientData) {
         Client client = clientService.findByEmail(clientData.getEmail());
 
