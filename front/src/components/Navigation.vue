@@ -15,6 +15,11 @@
             <a @click="homeRedirect()" class="homeNav">Cottages</a>
         </div>
 
+        <div v-if="isInstructor">
+            <a @click="instructorProfilePageRedirect()" class="homeNav">Profile</a>
+            <a @click="homeRedirect()" class="homeNav">Cottages</a>
+        </div>
+
 
     </div>
     
@@ -28,7 +33,8 @@ export default {
         return {
             isAdmin: false,
             isClient: false,
-            isCottageOwner: true,
+            isCottageOwner: false,
+            isInstructor : true,
         }
     },
 
@@ -41,6 +47,14 @@ export default {
         cottageOwnerHomeRedirect : function (){
             this.$router
                 .push({ name: "CottageOwnerHomePage" })
+                .catch((err) => {     
+                    console.error(err);
+                });
+        },
+
+        instructorProfilePageRedirect : function () {
+            this.$router
+                .push({ name: "InstructorProfilePage" })
                 .catch((err) => {     
                     console.error(err);
                 });

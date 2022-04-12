@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import CottageOwnerHomePage from '../views/CottageOwnerHomePage.vue'
 import ClientHomePage from '../views/ClientHomePage.vue'
-import InstructorHomePage from '../views/InstructorHomePage.vue'
+import InstructorProfilePage from '../views/InstructorProfilePage.vue'
 
 const routes = [
   {
@@ -10,9 +10,9 @@ const routes = [
     component: CottageOwnerHomePage
   },
   {
-    path: '/InstructorHomePage',
-    name: 'InstructorHomePage',
-    component: InstructorHomePage
+    path: '/InstructorProfilePage',
+    name: 'InstructorProfilePage',
+    component: InstructorProfilePage
   },
   {
     path: '/ClientHomePage',
