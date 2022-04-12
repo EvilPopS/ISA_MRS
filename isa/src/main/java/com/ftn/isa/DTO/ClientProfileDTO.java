@@ -1,6 +1,7 @@
 package com.ftn.isa.DTO;
 
 
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Client;
 
 public class ClientProfileDTO {
@@ -42,7 +43,9 @@ public class ClientProfileDTO {
         this.loyaltyPoints = client.getLoyaltyPoints();
     }
 
-    public ClientProfileDTO(String email, String password, String name, String surname, String city, String zipcode, String street, String phoneNumber, String profilePicture, String userType, String loyaltyStatus, int loyaltyPoints) {
+    public ClientProfileDTO(String email, String password, String name, String surname, String city, String zipcode,
+                            String street, String phoneNumber, String profilePicture, String userType,
+                            String loyaltyStatus, int loyaltyPoints) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -55,6 +58,16 @@ public class ClientProfileDTO {
         this.userType = userType;
         this.loyaltyStatus = loyaltyStatus;
         this.loyaltyPoints = loyaltyPoints;
+    }
+
+    public boolean arePropsValid() {
+        return Validate.validatePassword(this.password) &&
+                Validate.validateSurName(this.name) &&
+                Validate.validateSurName(this.surname) &&
+                Validate.validateWords(this.city) &&
+                Validate.validateNumber(this.zipcode) &&
+                Validate.validateStreet(this.street) &&
+                Validate.validateNumber(this.phoneNumber);
     }
 
 
