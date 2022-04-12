@@ -26,6 +26,7 @@
     height: 100%;
     margin: 0 10px;
   }
+
   .popup-overlay {
     position: fixed;
     top: 0;
@@ -36,6 +37,7 @@
     justify-content: center;
     background-color: #000000da;
   }
+
   .popup {
     background: linear-gradient(rgb(208, 236, 182), rgb(86, 240, 132));
     text-align: center;
@@ -49,21 +51,26 @@
     margin: 10% 0 0 16px;
     cursor: pointer;
   }
+
   .close-img {
     width: 25px;
   }
+
   .check {
     width: 150px;
   }
+
   h6 {
     font-weight: 500;
     font-size: 28px;
     margin: 20px 0;
   }
+
   p {
     font-size: 16px;
     margin: 20px 0;
   }
+
   button {
     background-color: #ac003e;
     width: 150px;
