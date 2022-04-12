@@ -64,3 +64,6 @@ insert into cottage_owner (id, email, password, name, surname, address_id, phone
                            is_active, photo_id, user_type, loyalty_type, loyalty_points)
 values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
         2, 0, 10);
+
+insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname, user_type, address_id, photo_id, loyalty_points) values
+    (1, 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126', 'Instric', 4, 5, 1, 0);
