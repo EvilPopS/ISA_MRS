@@ -9,7 +9,8 @@ values ('Sabac', 'Karadjordjeva 26', '15000'),
        ('Zlatibor', 'Milenko Zablacanski', '31315');
 
 insert into photo (photo_path)
-values ('default.jpg');
+values ('default.jpg'),
+       ('logo.png');
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted,
                    is_active, photo_id, user_type, loyalty_type)
@@ -43,7 +44,7 @@ values (4, 'strahinjapopovic@gmail.com', 'sifra123', 'Strahinja', 'Popovic', 1, 
         true, 1, 0, 0, 0, 124);
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                            is_active, photo_id, user_type, loyalty_type, loyalty_points)
-values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 1,
+values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
         2, 0, 10);
 
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,

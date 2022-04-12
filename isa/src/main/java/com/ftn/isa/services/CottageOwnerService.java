@@ -39,10 +39,11 @@ public class CottageOwnerService {
         co.setPassword(cottageOwnerData.getPassword());
         co.setName(cottageOwnerData.getName());
         co.setSurname(cottageOwnerData.getSurname());
-        //co.setPassword(cottageOwnerData.getCity());
-        //co.setPassword(cottageOwnerData.getZipcode());
-        //co.setPassword(cottageOwnerData.getStreet());
+        co.getAddress().setPlaceName(cottageOwnerData.getCity());
+        co.getAddress().setZipCode(cottageOwnerData.getZipcode());
+        co.getAddress().setStreet(cottageOwnerData.getStreet());
         co.setPhoneNumber(cottageOwnerData.getPhoneNumber());
+        co.getProfilePicture().setPhotoPath(cottageOwnerData.getProfilePicture());
 
         cottageOwnerRepository.save(co);
         return true;
