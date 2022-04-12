@@ -8,3 +8,4 @@ public interface CottageOwnerRepository extends JpaRepository<CottageOwner, Long
 
     CottageOwner findByEmail(String email);
 }
+
