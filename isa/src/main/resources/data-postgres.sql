@@ -9,7 +9,8 @@ insert into address (place_name, street, zip_code)
             ('Zlatibor', 'Milenko Zablacanski', '31315');
 
 insert into photo (photo_path)
-    values ('default.jpg');
+    values ('default.jpg'),
+            ('logo.png');
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, user_type, loyalty_type)

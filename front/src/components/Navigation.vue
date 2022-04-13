@@ -32,9 +32,9 @@
         data(){
             return {
                 isAdmin: false,
-                isClient: false,
+                isClient: true,
                 isCottageOwner: false,
-                isInstructor : true,
+                isInstructor : false,
             }
         },
 
