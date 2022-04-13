@@ -1,6 +1,8 @@
 package com.ftn.isa.model;
 
 
+import com.ftn.isa.DTO.FishingInstructorDTO;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -20,5 +22,16 @@ public class FishingInstructor extends User{
         this.adventures = adventures;
     }
 
+    public void updatePersonalInfo(FishingInstructorDTO data) {
+        this.setName(data.getName());
+        this.setSurname(data.getSurname());
+        this.setPassword(data.getPassword());
+        Address address = this.getAddress();
+        address.setPlaceName(data.getCity());
+        address.setZipCode(data.getZipcode());
+        address.setStreet(data.getStreet());
+        this.getProfilePicture().setPhotoPath(data.getProfilePicture());
+        this.setPhoneNumber(data.getPhoneNumber());
+    }
 
 }
