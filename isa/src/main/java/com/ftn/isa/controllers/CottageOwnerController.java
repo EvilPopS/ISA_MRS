@@ -1,9 +1,9 @@
-package com.ftn.isa.controller;
+package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.CottageOwnerDTO;
 import com.ftn.isa.model.CottageOwner;
 import com.ftn.isa.services.CottageOwnerService;
-import com.ftn.isa.utils.WrongInputException;
+import com.ftn.isa.helpers.WrongInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,13 +32,11 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        try {
-            cottageOwnerService.save(cottageOwnerData, cottageOwner);
-        } catch (WrongInputException e) {
+        if (cottageOwnerData.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        cottageOwnerService.save(cottageOwnerData, cottageOwner);
+        return new ResponseEntity<>(cottageOwnerData, HttpStatus.OK);
 
     }
 

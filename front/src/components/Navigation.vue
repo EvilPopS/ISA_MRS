@@ -32,8 +32,8 @@
         data(){
             return {
                 isAdmin: false,
-                isClient: true,
-                isCottageOwner: false,
+                isClient: false,
+                isCottageOwner: true,
                 isInstructor : false,
             }
         },

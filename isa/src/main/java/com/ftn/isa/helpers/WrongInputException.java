@@ -1,4 +1,4 @@
-package com.ftn.isa.utils;
+package com.ftn.isa.helpers;
 
 public class WrongInputException extends Exception {
 

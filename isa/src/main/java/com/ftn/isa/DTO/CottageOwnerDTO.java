@@ -1,5 +1,6 @@
 package com.ftn.isa.DTO;
 
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.CottageOwner;
 
 public class CottageOwnerDTO {
@@ -55,6 +56,15 @@ public class CottageOwnerDTO {
         this.loyaltyPoints = loyaltyPoints;
     }
 
+    public boolean arePropsValid() {
+        return Validate.validatePassword(this.password) &&
+                Validate.validateSurName(this.name) &&
+                Validate.validateSurName(this.surname) &&
+                Validate.validateWords(this.city) &&
+                Validate.validateNumber(this.zipcode) &&
+                Validate.validateStreet(this.street) &&
+                Validate.validateNumber(this.phoneNumber);
+    }
 
     public String getEmail() {
         return email;
