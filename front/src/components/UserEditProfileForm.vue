@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit">
+  <form @submit.prevent="emitSubmit()">
         <img id="profilePic" @click="changeProfilePhoto()"  :src="setProfPic()" alt="Client profile picture should be here...">
 
         <label>Account type: </label>
@@ -47,7 +47,7 @@
         <div id="popupCont">
             <label id="popupLabel">Choose new profile picture: </label>
             <input ref="picInp" class="form-control form-control-sm" type="file" accept="image/*" @change="previewPic();"/>
-            <img id="imgPreview" :src="require('../assets/' + profilePicture)"/>
+            <img id="imgPreview" :src="require('@/assets/' + profilePicture)"/>
             
             <div class="reset">
                 <button id="resPicBtn" @click="resetPicPreview();">Reset</button>
@@ -56,93 +56,65 @@
         </div>
     </PopUp>
 
-    <PopUp v-show="errorPopUpVisible" @close="closePopUp();"> 
-        <div id="errorCont">
-            <div id="errMess">{{errMessage}}</div>
-            <br>
-            <button id="closeErrPopUpBtn" @click="closePopUp();">X</button>
-        </div>
-    </PopUp>
+    <ErrorPopUp v-show="errorPopUpVisible" 
+        @close = closePopUp
+        :mess = errMessage
+    /> 
     
-    <PopUp v-show="succPopUpVisible" @close="closeSuccPopUp();"> 
-        <div id="successCont">
-            <div id="succMess">{{succMessage}}</div>
-            <br>
-            <button id="closeSuccPopUpBtn" @click="closeSuccPopUp();">X</button>
-        </div>
-    </PopUp>
+    <SuccessPopUp v-show="succPopUpVisible"
+        @close = closeSuccPopUp
+        :mess = succMessage
+    />
+
 </template>
 
 <script>
-    import PopUp from "../components/PopUp.vue";
-    import axios from 'axios';
-    
+    import PopUp from "../components/PopUp.vue"
+    import ErrorPopUp from "../components/ErrorPopUp.vue"
+    import SuccessPopUp from "../components/SuccessPopUp.vue"
+
     export default {
-        name: "ClientProfilePage",
+        name: "UserEditProfileForm",
         components: {
-            PopUp
+            PopUp,
+            ErrorPopUp,
+            SuccessPopUp
+        },
+        props :  {
+            succPopUpVisible: Boolean,
+
+            profilePicture : String,
+            email : String,
+            password : String,
+            confirmPassword : String,
+            name : String,
+            surname : String,
+            city : String,
+            zipcode : String,
+            street : String,
+            phoneNumber : String,
+            type : String,
+            points : String,
+            loyalty : String,
+
+            currentProfilePic: String,
+            currentPassword: String,
+            currentName: String,
+            currentSurname: String,
+            currentCity: String,
+            currentZipcode: String,
+            currentStreet: String,
+            currentPhoneNumber: String,
         },
         data() {
             return {
-                email: '',
-                password: '',
-                confirmPassword: '',
-                name: '',
-                surname: '',
-                city: '',
-                zipcode: '',
-                street: '',
-                phoneNumber: '',
-                profilePicture: 'logo.png',
-                type: '',
-                loyalty: '',
-                points: '',
-
                 picPopUpVisible: false,
+                errMessage : '',
                 errorPopUpVisible: false,
-                succPopUpVisible: false,
-                errMessage: '',
-                succMessage: '',
-
-                currentProfilePic: '',
-                currentPassword: '',
-                currentName: '',
-                currentSurname: '',
-                currentCity: '',
-                currentZipcode: '',
-                currentStreet: '',
-                currentPhoneNumber: '',
-                
+                succMessage: "Personal information has been changed successfully!"
             }
         },
         methods: {
-            handleSubmit(){
-                try { validateForm(this); } 
-                catch(error) {        
-                    console.log(error);        
-                    this.errMessage = error;
-                    this.errorPopUpVisible = true; 
-                    return;
-                }
-
-                let requestBody = {
-                    email: this.email,
-                    password: this.password,
-                    name: this.name,
-                    surname: this.surname,
-                    city: this.city,
-                    zipcode: this.zipcode,
-                    street: this.street,
-                    phoneNumber: this.phoneNumber,
-                    profilePicture: this.profilePicture
-                }
-                axios.put("http://localhost:8080/api/cottage-owner/data-update", requestBody)
-                    .then(() => {
-                        this.succMessage = "Data is succesfuly updated!";
-                        this.succPopUpVisible = true;
-                    });
-            },
-            
             changeProfilePhoto() {
                 this.picPopUpVisible = true;
             },
@@ -151,10 +123,11 @@
                 this.errorPopUpVisible = false;
             },
             previewPic() {
-                this.profilePicture = this.$refs.picInp.value.split("\\")[2]; 
+                this.$emit("set-new-profile-pic", this.$refs.picInp.value.split("\\")[2]);
             },
             resetPicPreview() {
-                this.profilePicture = this.currentProfilePic; 
+                this.$refs.picInp.value = "";
+                this.$emit("set-new-profile-pic", this.currentProfilePic);
             },
             setProfPic() {
                 try{
@@ -162,39 +135,31 @@
                 } catch(e) {}
             },
             closeSuccPopUp() {
-                this.succPopUpVisible = false;
+                this.$emit("succ-popup-close");
                 this.$router.go(); 
+                
+            },
+            emitSubmit() {
+                try { validateForm(this); } 
+                catch(error) {        
+                    this.errMessage = error;
+                    this.errorPopUpVisible = true; 
+                    return;
+                }
+
+                this.$emit('handle-submit', {
+                    profilePicture: this.profilePicture,
+                    email: this.email,
+                    password: this.password,
+                    confirmPassword: this.confirmPassword,
+                    name: this.name,
+                    surname: this.surname,
+                    city: this.city,
+                    zipcode: this.zipcode,
+                    street: this.street,
+                    phoneNumber: this.phoneNumber
+                });
             }
-
-        },
-        mounted() {
-            axios.get("http://localhost:8080/api/cottage-owner/" + "srdjan@gmail.com")
-                .then((response) => {
-                    let data = response.data;
-
-                    this.email = data.email;
-                    this.password = data.password;
-                    this.confirmPassword = data.password;
-                    this.name = data.name;
-                    this.surname = data.surname;
-                    this.city = data.city;
-                    this.zipcode = data.zipcode;
-                    this.street = data.street;
-                    this.phoneNumber = data.phoneNumber;
-                    this.profilePicture = data.profilePicture;
-                    this.type = data.userType;
-                    this.loyalty = data.loyaltyStatus;
-                    this.points = data.loyaltyPoints;
-                    
-                    this.currentPassword = data.password;
-                    this.currentName = data.name;
-                    this.currentSurname = data.surname;
-                    this.currentCity = data.city;
-                    this.currentZipcode = data.zipcode;
-                    this.currentStreet = data.street;
-                    this.currentPhoneNumber =data.phoneNumber;
-                    this.currentProfilePic =data.profilePicture;
-                })
         }
     }
 
@@ -223,13 +188,12 @@
         if (!validate(formData.password, passwordReg) || formData.password != formData.confirmPassword)
             throw "Make sure your confirmation password is the same as the new password and they're at least 6 characters long";
 
-
         if (formData.currentPassword === formData.password &&
                 formData.currentName === formData.name &&
                 formData.currentSurname === formData.surname &&
                 formData.currentCity === formData.city &&
                 formData.currentZipcode === formData.zipcode &&
-                formData.currentStreet ===formData.street &&
+                formData.currentStreet === formData.street &&
                 formData.currentPhoneNumber === formData.phoneNumber &&
                 formData.currentProfilePic === formData.profilePicture)
             throw "No changes made to form, please make sure you changed at least one editable field!";
@@ -238,10 +202,7 @@
     function validate(toTest, regex) {
         return regex.test(toTest)
     }
-
-
 </script>
-
 
 <style>
     #imgPreview:hover {
@@ -325,18 +286,7 @@
         position: relative;
         top: 2px
     }
-    .pill {
-        display: inline-block;
-        margin: 20px 10px 0 0;
-        padding: 6px 12px;
-        background: #eee;
-        border-radius: 20px;
-        font-size: 12px;
-        letter-spacing: 1px;
-        font-weight: bold;
-        color: #777;
-        cursor: pointer;
-    }
+
     .submit button {
         background: blue;
         border: 0;
@@ -372,45 +322,5 @@
     .reset button:hover {
         background: rgba(218, 214, 214, 70%);
         color: black;
-    }
-
-    .error{
-        color: red;
-        margin-top: 10px;
-        font-size: 0.8rem;
-        font-weight: bold;
-    }
-
-    #errorCont, #successCont {
-        align-content: center;
-        padding:20px;
-    }
-
-    #errMess {
-        color: red;
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 20%;
-    }
-
-    #closeErrPopUpBtn, #closeSuccPopUpBtn {
-        border: 0;
-        padding: 10px 20px;
-        margin-top: 20px;
-        color: rgb(190, 22, 22);
-        border-radius: 20px;
-        margin: 15px 10px;
-    }
-
-    #closeErrPopUpBtn:hover, #closeSuccPopUpBtn:hover{
-        background: rgba(218, 214, 214, 70%);
-        color: black;
-    }
-
-    #succMess {
-        color: rgb(4, 87, 22);
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 20%;
     }
 </style>
