@@ -1,42 +1,40 @@
 <template>
     <UserEditProfileForm
-        :type              = this.type
-        :profilePicture    = this.profilePicture
-        :points            = this.points
-        :loyalty           = this.loyalty
-        :email             = this.email
-        :password          = this.password
-        :confirmPassword   = this.confirmPassword
-        :name              = this.name
-        :surname           = this.surname
-        :phoneNumber       = this.phoneNumber
-        :zipcode           = this.zipcode
-        :city              = this.city
-        :street            = this.street
-        :currentProfilePic  = this.currentProfilePic
-        :currentPassword    = this.currentPassword
-        :currentName        = this.currentName
-        :currentSurname     = this.currentSurname
-        :currentCity        = this.currentCity
-        :currentZipcode     = this.currentZipcode
-        :currentStreet      = this.currentStreet
-        :currentPhoneNumber = this.currentPhoneNumber
-        :succPopUpVisible   = this.succPopUpVisible
-        @handle-submit     = "handleSubmit"
+        :type                = this.type
+        :profilePicture      = this.profilePicture
+        :points              = this.points
+        :loyalty             = this.loyalty
+        :email               = this.email
+        :password            = this.password
+        :confirmPassword     = this.confirmPassword
+        :name                = this.name
+        :surname             = this.surname
+        :phoneNumber         = this.phoneNumber
+        :zipcode             = this.zipcode
+        :city                = this.city
+        :street              = this.street
+        :currentProfilePic   = this.currentProfilePic
+        :currentPassword     = this.currentPassword
+        :currentName         = this.currentName
+        :currentSurname      = this.currentSurname
+        :currentCity         = this.currentCity
+        :currentZipcode      = this.currentZipcode
+        :currentStreet       = this.currentStreet
+        :currentPhoneNumber  = this.currentPhoneNumber
+        :succPopUpVisible    = this.succPopUpVisible
+        @handle-submit       = "handleSubmit"
         @set-new-profile-pic = "setNewProfilePic"
-        @succ-popup-close = "succPopUpClose"
+        @succ-popup-close    = "succPopUpClose"
         />
 </template>
 
 <script>
-    import PopUp from "../components/PopUp.vue";
     import UserEditProfileForm from "../components/UserEditProfileForm.vue";
     import axios from 'axios';
     
     export default {
         name: "ClientProfilePage",
         components: {
-            PopUp,
             UserEditProfileForm
         },
         data() {
@@ -71,7 +69,7 @@
                     phoneNumber: data.phoneNumber,
                     profilePicture: data.profilePicture
                 }
-                axios.put("http://localhost:8080/api/client/data-update", requestBody)
+                axios.put("api/client/data-update", requestBody)
                     .then(() => {
                         this.succPopUpVisible = true;
                     });
@@ -84,7 +82,7 @@
             }
         },
         created() {
-            axios.get("http://localhost:8080/api/client/" + "strahinjapopovic@gmail.com")
+            axios.get("api/client/" + "strahinjapopovic@gmail.com")
                 .then((response) => {
                     let data = response.data;
 
