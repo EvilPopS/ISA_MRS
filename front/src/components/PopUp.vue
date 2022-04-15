@@ -10,12 +10,7 @@
 
 <script>
     export default {
-        name: 'PopUp',
-        methods: {
-            close() {
-                this.$emit('close');
-            },
-        },
+        name: 'PopUp'
     };
 </script>
 
