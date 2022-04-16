@@ -11,9 +11,8 @@ insert into address (place_name, street, zip_code)
 insert into photo (photo_path, rental_id)
     values ('default.jpg', null),
             ('logo.png', null),
-           ('logo.png', 4),
-           ('logo.png', 4),
-           ('logo.png', 5);
+           ('cottage2.jpg', 4),
+           ('cottage1.jpg', 5);
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, user_type, loyalty_type)
@@ -56,7 +55,7 @@ insert into cottage (id, name, description, capacity, rules, is_deleted, address
     values (4, 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
                 false, 8, 0, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.', 5),
            (5, 'Vikendica Drvence2', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
-            false, 8, 0, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.', 5);
+            false, 8, 2, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.', 5);
 
 insert into room (no_beds, cottage_id)
     values (2, 4), (1,4), (2, 5), (2,5);
