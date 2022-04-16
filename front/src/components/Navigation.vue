@@ -2,6 +2,13 @@
 
     <div class="topnav">
         
+        <div v-if="isUnauth">
+            <a @click="mainHomePageRedirect()" class="homeNav">Home</a>
+            <a @click="registrationPageRedirect()" class="homeNav">Register</a>
+            <a @click="loginPageRedirect()" class="homeNav">Login</a>
+            <a @click="searchPageRedirect()" class="homeNav">Search</a>
+        </div>
+
         <div v-if="isAdmin">
             <a @click="homeRedirect()" class="homeNav">Profile</a>
         </div>
@@ -33,8 +40,9 @@
             return {
                 isAdmin: false,
                 isClient: false,
-                isCottageOwner: true,
+                isCottageOwner: false,
                 isInstructor : false,
+                isUnauth: true
             }
         },
 
@@ -49,8 +57,23 @@
 
             instructorProfilePageRedirect : function () {
                 pushView(this, "InstructorProfilePage");
-            }
+            },
 
+            mainHomePageRedirect : function () {
+                pushView(this, "MainHomePage");
+            },
+
+            registrationPageRedirect : function() {
+                pushView(this, "RegistrationPage");
+            },
+
+            loginPageRedirect : function() {
+                pushView(this, "LoginPage");
+            },
+
+            searchPageRedirect: function() {
+                pushView(this, "SearchPage");
+            }
         }
     }
   

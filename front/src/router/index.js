@@ -1,7 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import CottageOwnerHomePage from '../views/CottageOwnerHomePage.vue'
-import ClientProfilePage from '../views/ClientProfilePage.vue'
-import InstructorProfilePage from '../views/InstructorProfilePage.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import CottageOwnerHomePage from '../views/CottageOwnerHomePage.vue';
+import ClientProfilePage from '../views/ClientProfilePage.vue';
+import InstructorProfilePage from '../views/InstructorProfilePage.vue';
+import MainHomePage from '../views/MainHomePage.vue';
+import RegistrationPage from '../views/RegistrationPage.vue'
+import LoginPage from '../views/LoginPage.vue'
+import SearchPage from '../views/SearchPage.vue'
 
 const routes = [
   {
@@ -18,6 +22,26 @@ const routes = [
     path: '/ClientProfilePage',
     name: 'ClientProfilePage',
     component: ClientProfilePage
+  },
+  {
+    path: '/',
+    name: 'MainHomePage',
+    component: MainHomePage
+  },
+  {
+    path: '/Registration',
+    name: 'RegistrationPage',
+    component: RegistrationPage
+  },
+  {
+    path: '/Login',
+    name: 'LoginPage',
+    component: LoginPage
+  },
+  {
+    path: '/Search',
+    name: 'SearchPage',
+    component: SearchPage
   }
 ]
 
