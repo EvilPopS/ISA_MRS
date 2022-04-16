@@ -19,8 +19,8 @@ public abstract class RentalService {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "photo_id", referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private Set<Photo> photos;
 
 
@@ -51,6 +51,14 @@ public abstract class RentalService {
 
     @Column(name = "price", nullable = false)
     private Double price;
+
+    public Set<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Set<Photo> photos) {
+        this.photos = photos;
+    }
 
     public String getName() {
         return name;

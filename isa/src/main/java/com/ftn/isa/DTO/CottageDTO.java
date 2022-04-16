@@ -1,0 +1,149 @@
+package com.ftn.isa.DTO;
+
+import com.ftn.isa.model.Cottage;
+import com.ftn.isa.model.Photo;
+import com.ftn.isa.model.Room;
+
+import java.util.Set;
+
+public class CottageDTO {
+
+    private String name;
+    private String description;
+    private Set<Photo> photos;
+    private int capacity;
+    private String rules;
+    private String city;
+    private String zipCode;
+    private String street;
+    private Double averageRating;
+    private double price;
+    private String additionalServices;
+    private Set<Room> rooms;
+
+    public CottageDTO(Cottage cottage) {
+        this.name = cottage.getName();
+        this.description = cottage.getDescription();
+        this.capacity = cottage.getCapacity();
+        this.rules = cottage.getRules();
+        this.city = cottage.getAddress().getPlaceName();
+        this.zipCode = cottage.getAddress().getZipCode();
+        this.street = cottage.getAddress().getStreet();
+        this.averageRating = cottage.getAverageRate();
+        this.price = cottage.getPrice();
+        this.additionalServices = cottage.getAdditionalServices();
+        this.photos = cottage.getPhotos();
+        this.rooms = cottage.getRooms();
+    }
+
+    public CottageDTO(String name, String description, int capacity, String rules,
+                      String city, String zipCode, String street, Double averageRating,
+                      double price, String additionalServices) {
+        this.name = name;
+        this.description = description;
+        this.capacity = capacity;
+        this.rules = rules;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.street = street;
+        this.averageRating = averageRating;
+        this.price = price;
+        this.additionalServices = additionalServices;
+    }
+
+    public Set<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Set<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    public String getAdditionalServices() {
+        return additionalServices;
+    }
+
+    public void setAdditionalServices(String additionalServices) {
+        this.additionalServices = additionalServices;
+    }
+
+    public Set<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Set<Photo> photos) {
+        this.photos = photos;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getRules() {
+        return rules;
+    }
+
+    public void setRules(String rules) {
+        this.rules = rules;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+}

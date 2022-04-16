@@ -8,9 +8,12 @@ insert into address (place_name, street, zip_code)
             ('Kula', 'Marsala Tita 200', '25230'),
             ('Zlatibor', 'Milenko Zablacanski', '31315');
 
-insert into photo (photo_path)
-    values ('default.jpg'),
-            ('logo.png');
+insert into photo (photo_path, rental_id)
+    values ('default.jpg', null),
+            ('logo.png', null),
+           ('logo.png', 4),
+           ('logo.png', 4),
+           ('logo.png', 5);
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, user_type, loyalty_type)
@@ -43,11 +46,20 @@ insert into client (id, email, password, name, surname, address_id, phone_number
     values (4, 'strahinjapopovic@gmail.com', 'sifra123', 'Strahinja', 'Popovic', 1, '0601231231', false,
                 true, 1, 0, 0, 0, 124);
 
-insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
-                       rental_type, price, additional_services)
-    values (4, 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
-                false, 8, 0, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.');
+insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
+                           is_active, photo_id, user_type, loyalty_type, loyalty_points)
+values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
+        2, 0, 10);
 
+insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+                       rental_type, price, additional_services, cottage_owner_id)
+    values (4, 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
+                false, 8, 0, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.', 5),
+           (5, 'Vikendica Drvence2', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
+            false, 8, 0, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.', 5);
+
+insert into room (no_beds, cottage_id)
+    values (2, 4), (1,4), (2, 5), (2,5);
 
 
 insert into loyalty_program (discount, increase, loyalty_type)
@@ -58,13 +70,6 @@ insert into loyalty_program (discount, increase, loyalty_type)
 
 insert into room (no_beds)
     values (5);
-
-
-
-insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                           is_active, photo_id, user_type, loyalty_type, loyalty_points)
-values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
-        2, 0, 10);
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname, user_type, address_id, photo_id, loyalty_points) values
     (1, 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126', 'Instric', 4, 5, 1, 0);

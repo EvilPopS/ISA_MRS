@@ -10,8 +10,8 @@ public class Cottage extends RentalService{
     @Column(name = "additional_services", nullable = false)
     private String additionalServices;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "room_id", referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "cottage_id", referencedColumnName = "id")
     private Set<Room> rooms = new HashSet<>();
 
     public String getAdditionalServices() {

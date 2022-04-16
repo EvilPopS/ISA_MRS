@@ -12,7 +12,7 @@
 
         <div v-if="isCottageOwner">
             <a @click="cottageOwnerHomeRedirect()" class="homeNav">Profile</a>
-            <a @click="homeRedirect()" class="homeNav">Cottages</a>
+            <a @click="allCottagesRedirect()" class="homeNav">Cottages</a>
         </div>
 
         <div v-if="isInstructor">
@@ -41,6 +41,10 @@
         methods: {
             cottageOwnerHomeRedirect : function () {
                 pushView(this, "CottageOwnerHomePage");
+            },
+
+            allCottagesRedirect: function() {
+                pushView(this, "AllCottagesView")
             },
 
             clientProfileRedirect : function () {
