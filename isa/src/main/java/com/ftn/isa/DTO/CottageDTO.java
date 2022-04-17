@@ -2,7 +2,6 @@ package com.ftn.isa.DTO;
 
 import com.ftn.isa.model.Cottage;
 import com.ftn.isa.model.Photo;
-import com.ftn.isa.model.Room;
 
 import java.util.Set;
 
@@ -19,7 +18,8 @@ public class CottageDTO {
     private Double averageRating;
     private double price;
     private String additionalServices;
-    private Set<Room> rooms;
+    private int noRatings;
+    private int noRooms;
 
     public CottageDTO(Cottage cottage) {
         this.name = cottage.getName();
@@ -33,12 +33,13 @@ public class CottageDTO {
         this.price = cottage.getPrice();
         this.additionalServices = cottage.getAdditionalServices();
         this.photos = cottage.getPhotos();
-        this.rooms = cottage.getRooms();
+        this.noRatings = cottage.getNoRatings();
+        this.noRooms = cottage.getNoRooms();
     }
 
     public CottageDTO(String name, String description, int capacity, String rules,
                       String city, String zipCode, String street, Double averageRating,
-                      double price, String additionalServices) {
+                      double price, String additionalServices, int noRatings, int noRooms) {
         this.name = name;
         this.description = description;
         this.capacity = capacity;
@@ -49,14 +50,24 @@ public class CottageDTO {
         this.averageRating = averageRating;
         this.price = price;
         this.additionalServices = additionalServices;
+        this.noRatings = noRatings;
+        this.noRooms = noRooms;
     }
 
-    public Set<Room> getRooms() {
-        return rooms;
+    public int getNoRooms() {
+        return noRooms;
     }
 
-    public void setRooms(Set<Room> rooms) {
-        this.rooms = rooms;
+    public void setNoRooms(int noRooms) {
+        this.noRooms = noRooms;
+    }
+
+    public int getNoRatings() {
+        return noRatings;
+    }
+
+    public void setNoRatings(int noRatings) {
+        this.noRatings = noRatings;
     }
 
     public String getAdditionalServices() {

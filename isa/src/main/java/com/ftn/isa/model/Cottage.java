@@ -10,9 +10,8 @@ public class Cottage extends RentalService{
     @Column(name = "additional_services", nullable = false)
     private String additionalServices;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "cottage_id", referencedColumnName = "id")
-    private Set<Room> rooms = new HashSet<>();
+    @Column(name = "no_rooms", nullable = false)
+    private int noRooms;
 
     public String getAdditionalServices() {
         return additionalServices;
@@ -22,11 +21,11 @@ public class Cottage extends RentalService{
         this.additionalServices = additionalServices;
     }
 
-    public Set<Room> getRooms() {
-        return rooms;
+    public int getNoRooms() {
+        return noRooms;
     }
 
-    public void setRooms(Set<Room> rooms) {
-        this.rooms = rooms;
+    public void setNoRooms(int noRooms) {
+        this.noRooms = noRooms;
     }
 }

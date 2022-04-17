@@ -2,16 +2,16 @@
     <div class="container" style="margin-top: 5%">
         <div class="row">
             <div class="col-12 col-md-5 col-lg-4" v-for="cottage in cottages" :key="cottage.name">
-                <div class="card" style="width: 18rem;" id="card-body-id">
+                <div class="card" style="width: 18rem; margin-top: 5%" id="card-body-id">
                     <img :src="setPicture(cottage)" id="cottage-img" class="card-img-top" alt="This is cottage picture">
                     <div class="card-body">
                         <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
-                        <p class="card-text">Location: {{cottage.city}}, {{cottage.street}}</p>
-                        <p class="card-text">{{cottage.description}}</p>
-                        <p class="card-text">Rate: {{cottage.averageRating}}</p>
+                        <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
+                        <p class="card-text"><b>Description:</b>{{cottage.description}}</p>
+                        <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}</p>
                         <span>
-                            <a href="#" class="btn btn-success">Details</a>
-                            <a href="#" class="btn btn-danger">Delete</a>
+                            <button class="btn btn-success" @click="showDetailCottageModal(cottage)">Details</button>
+                            <button class="btn btn-danger">Delete</button>
                         </span>    
                     </div>
                 </div>
@@ -21,20 +21,30 @@
             <button class="btn btn-success" id="btn-add" >Add cottage</button>
         </div>
     </div>
+    <div v-if="showDetails">
+        <DetailCottageModal
+        :cottage = this.sendCottage
+        :showDetails = this.showDetails
+        @modal-closed = "showDetails = false"
+    />
+    </div>
+    
 </template>
 
 <script>
  import axios from 'axios';
  import StarRating from 'vue3-star-ratings'
+ import DetailCottageModal from '../components/DetailCottageModal.vue'
 
 export default {
    name: "AllCottagesView",
    components: {
-       StarRating
+       StarRating, DetailCottageModal
    },
    data (){
        return {
            cottages: [],
+           sendCottage: {},
 
            showDetails: false,
            showAddNewCottage: false,
@@ -47,6 +57,10 @@ export default {
                     return require('../assets/' + cottage.photos[0].photoPath);
                     alert(cottage.photos[0])
                 } catch(e) {}
+        },
+        showDetailCottageModal(cottage) {
+            this.showDetails = true
+            this.sendCottage = cottage
         }
    },
    created(){
@@ -79,7 +93,11 @@ export default {
         background: linear-gradient(rgb(255, 253, 253), rgb(241, 239, 239));
     }
 
-    span a {
+    b{
+        color: rgba(51, 92, 80, 0.8);
+    }
+
+    span button {
         margin: 10px 10px;
     }
 
@@ -102,6 +120,8 @@ export default {
         height: auto;
         border-radius: 10px;
     }
+
+    
    
 
 </style>

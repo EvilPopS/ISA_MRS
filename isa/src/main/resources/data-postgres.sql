@@ -4,7 +4,7 @@ insert into address (place_name, street, zip_code)
             ('Novi Sad', 'Sonje Marinkovic 5', '21000'),
             ('Novi Sad', 'Bulevar Oslobodjenja 55', '21000'),
             ('Novi Sad', 'Vase Pelagic 1', '21000'),
-            ('Novi Sad', 'Kej Zrtava Racije 19', '21000'),
+            ('Sremska Kamenica', 'Ulica Heroja 2', '21000'),
             ('Kula', 'Marsala Tita 200', '25230'),
             ('Zlatibor', 'Milenko Zablacanski', '31315');
 
@@ -12,6 +12,7 @@ insert into photo (photo_path, rental_id)
     values ('default.jpg', null),
             ('logo.png', null),
            ('cottage2.jpg', 4),
+           ('cottage-inside.jpg', 4),
            ('cottage1.jpg', 5);
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted,
@@ -51,24 +52,17 @@ values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323'
         2, 0, 10);
 
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
-                       rental_type, price, additional_services, cottage_owner_id)
+                       rental_type, price, additional_services, no_rooms,cottage_owner_id)
     values (4, 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
-                false, 8, 0, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.', 5),
-           (5, 'Vikendica Drvence2', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
-            false, 8, 2, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.', 5);
-
-insert into room (no_beds, cottage_id)
-    values (2, 4), (1,4), (2, 5), (2,5);
-
+                false, 8, 0, 0, 1, 90, 'wifi,parking,internet,bazen', 3, 5),
+           (5, 'Fruskogorska zora', 'Najlepsa vikendica u okolini NS.', 5, 'Zabranjeno pusenje!',
+            false, 6, 0, 0, 1, 100, 'wifi,klima,parking,rostilj', 4, 5);
 
 insert into loyalty_program (discount, increase, loyalty_type)
     values (0, 0, 0),
             (10, 10, 1),
             (20, 20, 2),
             (30, 30, 3);
-
-insert into room (no_beds)
-    values (5);
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname, user_type, address_id, photo_id, loyalty_points) values
     (1, 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126', 'Instric', 4, 5, 1, 0);
