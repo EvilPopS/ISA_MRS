@@ -18,16 +18,25 @@
             </div>
         </div>
         <div>
-            <button class="btn btn-success" id="btn-add" >Add cottage</button>
+            <button class="btn btn-success" id="btn-add" @click="showAddCottageModal()">Add cottage</button>
         </div>
     </div>
     <div v-if="showDetails">
         <DetailCottageModal
-        :cottage = this.sendCottage
-        :showDetails = this.showDetails
+        :cottage = "sendCottage"
+        :showDetails = "showDetails"
         @modal-closed = "showDetails = false"
-    />
+        />
     </div>
+    <div v-else-if="showAddNewCottage">
+        <AddCottageModal
+        :showAddNewCottage = "showAddNewCottage"
+        :succPopUpVisible = "succPopUpVisible"
+        @modal-closed = "showAddNewCottage = false"
+        @succ-popup-close = "succPopUpClose"
+        />
+    </div>
+
     
 </template>
 
@@ -35,11 +44,12 @@
  import axios from 'axios';
  import StarRating from 'vue3-star-ratings'
  import DetailCottageModal from '../components/DetailCottageModal.vue'
+ import AddCottageModal from '../components/AddCottageModal.vue'
 
 export default {
    name: "AllCottagesView",
    components: {
-       StarRating, DetailCottageModal
+       StarRating, DetailCottageModal, AddCottageModal
    },
    data (){
        return {
@@ -48,19 +58,25 @@ export default {
 
            showDetails: false,
            showAddNewCottage: false,
-           showDeleteCottage: false
+           showDeleteCottage: false,
+           succPopUpVisible: false
        }
    }, 
    methods: {
-       setPicture(cottage) {
+        setPicture(cottage) {
                 try{
-                    return require('../assets/' + cottage.photos[0].photoPath);
-                    alert(cottage.photos[0])
+                    return require('../assets/' + cottage.photos[0]);
                 } catch(e) {}
         },
         showDetailCottageModal(cottage) {
             this.showDetails = true
             this.sendCottage = cottage
+        },
+        showAddCottageModal() {
+            this.showAddNewCottage = true
+        },
+        succPopUpClose() {
+            this.succPopUpVisible = false;
         }
    },
    created(){

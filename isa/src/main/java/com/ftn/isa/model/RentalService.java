@@ -9,7 +9,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class RentalService {
     @Id
-    @SequenceGenerator(name = "mySeqGenRental", sequenceName = "mySeqRental", initialValue = 1, allocationSize = 1)
+    @SequenceGenerator(name = "mySeqGenRental", sequenceName = "mySeqGenRental", initialValue = 1, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenRental")
     private Long id;
 
@@ -51,6 +51,26 @@ public abstract class RentalService {
 
     @Column(name = "price", nullable = false)
     private Double price;
+
+    public RentalService(String name, String description, int capacity, String rules,
+                         boolean isDeleted, Address address, Double averageRate,
+                         int noRatings, RentalType rentalType, Double price) {
+        this.name = name;
+        this.description = description;
+        this.capacity = capacity;
+        this.rules = rules;
+        this.isDeleted = isDeleted;
+        this.address = address;
+        this.averageRate = averageRate;
+        this.noRatings = noRatings;
+        this.rentalType = rentalType;
+        this.price = price;
+        this.photos = new HashSet<Photo>();
+    }
+
+    public RentalService() {
+
+    }
 
     public Set<Photo> getPhotos() {
         return photos;

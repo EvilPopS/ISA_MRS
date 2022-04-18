@@ -27,6 +27,7 @@ public class CottageOwnerService {
         return true;
     }
 
+
     //public List<Cottage> findAllCottages(Long id) {
         //return cottageOwnerRepository.findAllCottages(id);
     //}

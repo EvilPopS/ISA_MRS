@@ -31,5 +31,4 @@ public class Validate {
     public static boolean validateStreet(String street) {
         return street != null && street.matches(REG_STREET);
     }
-
 }

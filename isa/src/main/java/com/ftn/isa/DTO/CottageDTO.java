@@ -1,15 +1,17 @@
 package com.ftn.isa.DTO;
 
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Cottage;
 import com.ftn.isa.model.Photo;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class CottageDTO {
 
     private String name;
     private String description;
-    private Set<Photo> photos;
+    private Set<String> photos = new HashSet<String>();
     private int capacity;
     private String rules;
     private String city;
@@ -32,7 +34,7 @@ public class CottageDTO {
         this.averageRating = cottage.getAverageRate();
         this.price = cottage.getPrice();
         this.additionalServices = cottage.getAdditionalServices();
-        this.photos = cottage.getPhotos();
+        for (Photo p : cottage.getPhotos()){this.photos.add(p.getPhotoPath());}
         this.noRatings = cottage.getNoRatings();
         this.noRooms = cottage.getNoRooms();
     }
@@ -78,11 +80,11 @@ public class CottageDTO {
         this.additionalServices = additionalServices;
     }
 
-    public Set<Photo> getPhotos() {
+    public Set<String> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(Set<Photo> photos) {
+    public void setPhotos(Set<String> photos) {
         this.photos = photos;
     }
 
@@ -156,5 +158,16 @@ public class CottageDTO {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public boolean arePropsValidAdding() {
+        return  Validate.validateSurName(this.name) &&
+                Validate.validateWords(this.city) &&
+                Validate.validateNumber(this.zipCode) &&
+                Validate.validateStreet(this.street) &&
+                this.price > 0 && this.noRooms > 0 && this.capacity > 0 &&
+                this.photos.size() > 0 && this.noRatings == 0 && this.averageRating == 0
+                ;
+
     }
 }
