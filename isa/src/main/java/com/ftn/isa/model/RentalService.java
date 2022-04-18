@@ -9,8 +9,8 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class RentalService {
     @Id
-    @SequenceGenerator(name = "mySeqGenRental", sequenceName = "mySeqGenRental", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenRental")
+    @SequenceGenerator(name = "my_seq_gen_rental", sequenceName = "my_seq_gen_rental", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq_gen_rental")
     private Long id;
 
     @Column(name = "name", nullable = false)

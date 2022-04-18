@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 public abstract class Notification {
 
     @Id
-    @SequenceGenerator(name = "mySeqGenNotification", sequenceName = "mySeqNotification", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenNotification")
+    @SequenceGenerator(name = "my_seq_gen_notification", sequenceName = "my_seq_gen_notification", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq_gen_notification")
     private Long id;
 
     @Column(name = "message", nullable = false)

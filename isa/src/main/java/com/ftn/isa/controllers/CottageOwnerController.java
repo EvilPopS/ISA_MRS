@@ -81,18 +81,21 @@ public class CottageOwnerController  {
         if (cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Address address = addressService.save(cottageDTO.getCity(), cottageDTO.getZipCode(), cottageDTO.getStreet());
+        Address address = new Address(cottageDTO.getCity(), cottageDTO.getZipCode(), cottageDTO.getStreet());
+        Set<Photo> photos = new HashSet<Photo>();
+        for (String p : cottageDTO.getPhotos()){
+            photos.add(new Photo(p));
+        }
+
         Cottage cottage = new Cottage(cottageDTO.getName(), cottageDTO.getDescription(),
                 cottageDTO.getCapacity(), cottageDTO.getRules(),
                 false, address, cottageDTO.getAverageRating(), cottageDTO.getNoRatings(),
                 RentalType.COTTAGE, cottageDTO.getPrice(), cottageDTO.getAdditionalServices(), cottageDTO.getNoRooms());
 
-        Set<Photo> newPhotos = photoService.save(cottageDTO.getPhotos());
-        cottage.setPhotos(newPhotos);
-        cottage.setId(10l);
-        Cottage newCottage = cottageService.save(cottage);
-        cottageOwner.getCottages().add(newCottage);
-        //cottageOwnerService.save(cottageOwner);
+        cottage.setPhotos(photos);
+        cottage.setAddress(address);
+        cottageOwner.getCottages().add(cottage);
+        cottageOwnerService.save(cottageOwner);
 
         return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }

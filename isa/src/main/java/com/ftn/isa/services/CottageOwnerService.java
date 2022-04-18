@@ -27,6 +27,10 @@ public class CottageOwnerService {
         return true;
     }
 
+    public void save(CottageOwner cottageOwner) {
+        cottageOwnerRepository.save(cottageOwner);
+    }
+
 
     //public List<Cottage> findAllCottages(Long id) {
         //return cottageOwnerRepository.findAllCottages(id);
