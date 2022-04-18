@@ -92,7 +92,7 @@ public class CottageOwnerController  {
         cottage.setId(10l);
         Cottage newCottage = cottageService.save(cottage);
         cottageOwner.getCottages().add(newCottage);
-        cottageOwnerService.save(cottageOwner);
+        //cottageOwnerService.save(cottageOwner);
 
         return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }
