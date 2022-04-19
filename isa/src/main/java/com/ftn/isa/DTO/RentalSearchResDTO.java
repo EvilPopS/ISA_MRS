@@ -27,7 +27,7 @@ public class RentalSearchResDTO {
         this.rate = rental.getAverageRate();
         this.price = rental.getPrice();
         this.city = rental.getAddress().getPlaceName();
-        this.city = rental.getAddress().getStreet();
+        this.street = rental.getAddress().getStreet();
     }
 
     public String getName() {

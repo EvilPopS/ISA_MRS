@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.SimpleFormatter;
 
 @RestController
 @RequestMapping(value="api/rental")
@@ -23,20 +25,27 @@ public class RentalServController {
     @CrossOrigin(origins = "http://localhost:8081")
     public ResponseEntity<List<RentalSearchResDTO>> search(@RequestParam String startDate, @RequestParam String endDate,
                                                            @RequestParam String minPrice, @RequestParam String maxPrice,
-                                                           @RequestParam String location, @RequestParam String  rate,
-                                                           @RequestParam String entities) {
+                                                           @RequestParam String location, @RequestParam String minRate,
+                                                           @RequestParam String maxRate, @RequestParam String entities) {
+        if (!Validate.validateDatePeriod(startDate, endDate) || !Validate.validatePrice(minPrice)
+                || !Validate.validatePrice(maxPrice) || !Validate.validateRating(minRate) || !Validate.validateRating(maxRate)
+                || (!location.equals("") && !Validate.validateWords(location)) || !Validate.validateSearchEntities(entities))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-/*        if (Validate.validateDatePeriod(startDate, endDate) || Validate.validatePrice(minPrice)
-                || Validate.validatePrice(maxPrice) || Validate.validateRating(rate)
-                || Validate.validateWords(location))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);*/
+        SimpleDateFormat sf = new SimpleDateFormat("dd/MM/yyyy");
+        List<RentalSearchResDTO> rentals = new ArrayList<>();
+        try {
+            for (RentalService adv : rentalServService.searchForRentals(sf.parse(startDate), sf.parse(endDate),
+                                                                    minPrice.equals("") ? -1 : Double.parseDouble(minPrice),
+                                                                    maxPrice.equals("") ? -1 : Double.parseDouble(maxPrice),
+                                                                    location,
+                                                                    minRate.equals("") ? -1 : Double.parseDouble(minRate),
+                                                                    maxRate.equals("") ? -1 : Double.parseDouble(maxRate),
+                                                                    entities))
+                rentals.add(new RentalSearchResDTO(adv));
+        } catch (Exception ignored) {}
 
-        List<RentalSearchResDTO> l = new ArrayList<>();
-        for (RentalService a : rentalServService.searchForRentals(startDate, endDate, minPrice,
-                                                                maxPrice, location, rate, entities))
-            l.add(new RentalSearchResDTO(a));
-
-        return new ResponseEntity<>(l, HttpStatus.OK );
+        return new ResponseEntity<>(rentals, HttpStatus.OK );
     }
 
 }

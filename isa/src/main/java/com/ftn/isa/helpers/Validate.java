@@ -40,9 +40,10 @@ public class Validate {
         if (startDate.equals("") || endDate.equals(""))
             return false;
 
+        SimpleDateFormat sf = new SimpleDateFormat("dd/MM/yyyy");
         try {
-            Date stDate = new SimpleDateFormat("dd/MM/yyyy").parse(startDate);
-            Date enDate = new SimpleDateFormat("dd/MM/yyyy").parse(endDate);
+            Date stDate = sf.parse(startDate);
+            Date enDate = sf.parse(endDate);
 
             return stDate.before(new Date()) || enDate.before(new Date()) || enDate.before(stDate);
         } catch (Exception e) { return false; }
@@ -59,5 +60,9 @@ public class Validate {
 
     public static boolean validateRating(String rating) {
         return Arrays.asList("", "1", "2", "3", "4", "5").contains(rating);
+    }
+
+    public static boolean validateSearchEntities(String entities) {
+        return entities.contains("adventures") || entities.contains("cottages") || entities.contains("boats");
     }
 }

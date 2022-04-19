@@ -20,9 +20,11 @@ public interface AdventureRepository extends JpaRepository<Adventure, Long> {
                             "AND (:minPrice = -1 OR adv.price >= :minPrice) " +
                             "AND (:maxPrice = -1 OR adv.price <= :maxPrice) " +
                             "AND (:location = '' OR addr.place_name = :location) " +
-                            "AND (:rate = -1 OR adv.average_rate = :rate) " +
+                            "AND (:minRate = -1 OR adv.average_rate >= :minRate) " +
+                            "AND (:maxRate = -1 OR adv.average_rate <= :maxRate) " +
                                 "GROUP BY adv.id")
     List<Adventure> searchAdventures(@Param("startDate") Date startDate, @Param("endDate") Date endDate,
                                      @Param("minPrice") double minPrice, @Param("maxPrice") double maxPrice,
-                                     @Param("location") String location, @Param("rate") double rate);
+                                     @Param("location") String location, @Param("minRate") double minRate,
+                                     @Param("maxRate") double maxRate);
 }
