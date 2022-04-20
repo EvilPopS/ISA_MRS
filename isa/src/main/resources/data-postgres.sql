@@ -46,8 +46,7 @@ insert into client (id, email, password, name, surname, address_id, phone_number
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, additional_services)
     values (4, 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
-                false, 8, 0, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.');
-
+                false, 8, 0, 0, 0, 90, 'Ima klima i rostilj i dosta vam je.');
 
 
 insert into loyalty_program (discount, increase, loyalty_type)
@@ -56,15 +55,24 @@ insert into loyalty_program (discount, increase, loyalty_type)
             (20, 20, 2),
             (30, 30, 3);
 
-insert into room (no_beds)
-    values (5);
-
-
 
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                            is_active, photo_id, user_type, loyalty_type, loyalty_points)
-values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
+    values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
         2, 0, 10);
 
-insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname, user_type, address_id, photo_id, loyalty_points) values
-    (1, 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126', 'Instric', 4, 5, 1, 0);
+insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number,
+                                surname, user_type, address_id, photo_id, loyalty_points)
+    values (1, 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126', 'Instric', 4, 5, 1, 0);
+
+
+insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id)
+    values ('11/4/2022', '29/4/2022', false, true, 30, 1),
+            ('1/5/2022', '11/5/2022', false, true, 30, 1),
+            ('17/4/2022', '3/5/2022', false, true, 25, 2),
+            ('21/4/2022', '2/5/2022', false, true, 25, 2),
+            ('3/4/2022', '23/4/2022', false, true, 50, 3),
+            ('1/6/2022', '12/6/2022', false, true, 50, 3),
+            ('21/4/2022', '2/5/2022', false, true, 50, 3),
+            ('12/4/2022', '29/4/2022', false, true, 50, 4),
+            ('10/5/2022', '29/5/2022', false, true, 50, 4)

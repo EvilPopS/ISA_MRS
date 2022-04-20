@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="emitSubmit()">
+  <form id="form-style" @submit.prevent="emitSubmit()">
         <img id="profilePic" @click="changeProfilePhoto()"  :src="setProfPic()" alt="Client profile picture should be here...">
 
         <label>Account type: </label>
@@ -69,9 +69,9 @@
 </template>
 
 <script>
-    import PopUp from "../components/PopUp.vue"
-    import ErrorPopUp from "../components/ErrorPopUp.vue"
-    import SuccessPopUp from "../components/SuccessPopUp.vue"
+    import PopUp from "@/components/PopUp.vue"
+    import ErrorPopUp from "@/components/ErrorPopUp.vue"
+    import SuccessPopUp from "@/components/SuccessPopUp.vue"
 
     export default {
         name: "UserEditProfileForm",
@@ -131,7 +131,7 @@
             },
             setProfPic() {
                 try{
-                    return require('../assets/' + this.profilePicture);
+                    return require('@/assets/' + this.profilePicture);
                 } catch(e) {}
             },
             closeSuccPopUp() {
@@ -252,7 +252,7 @@
         font-weight: bold;
     }
 
-    form{
+    #form-style {
         max-width: 420px;
         margin: 30px auto;
         background: white;
@@ -288,7 +288,7 @@
     }
 
     .submit button {
-        background: blue;
+        background: rgb(3, 94, 30);
         border: 0;
         padding: 10px 20px;
         margin-top: 20px;

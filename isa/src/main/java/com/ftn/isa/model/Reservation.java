@@ -25,11 +25,6 @@ public class Reservation {
     @Column(name = "is_reserved", nullable = false)
     private boolean isReserved;
 
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "service_id", referencedColumnName = "id")
-    private RentalService service;
-
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -68,14 +63,6 @@ public class Reservation {
 
     public void setReserved(boolean reserved) {
         isReserved = reserved;
-    }
-
-    public RentalService getService() {
-        return service;
-    }
-
-    public void setService(RentalService service) {
-        this.service = service;
     }
 
     public Long getId() {
