@@ -45,7 +45,7 @@ public class Validate {
             Date stDate = sf.parse(startDate);
             Date enDate = sf.parse(endDate);
 
-            return stDate.before(new Date()) || enDate.before(new Date()) || enDate.before(stDate);
+            return !(stDate.before(new Date()) || enDate.before(new Date()) || enDate.before(stDate));
         } catch (Exception e) { return false; }
     }
 

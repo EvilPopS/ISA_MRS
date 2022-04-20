@@ -1,6 +1,24 @@
 <template>
     <div class="split left">
-
+        <p id="search-res-init-mess" v-show="showInitSearchResMess">
+            Nothing to show here... Try that fancy search form on your right side :D
+        </p>
+        <p id="no-search-result-mess" v-show="toShowNoResultsMess">
+            Search resulted in... no result, don't be so strict with that criterion!
+        </p>
+        <div v-for="res in this.searchResult" :key="res.id"> 
+            <div class="card"> 
+                <p class="entity-name">{{res.name}}</p>
+                <img v-if="res.type == 'Adventure'" class="card-icon" src="@/assets/adventure_icon.png">
+                <img v-else-if="res.type == 'Cottage'" class="card-icon" src="@/assets/cottage_icon.png">
+                <img v-else class="card-icon" src="@/assets/boat_icon.png">
+                <div class="entity-info-holder">
+                    <span class="information-style"><span class="attr-name-style">Location: </span>{{res.city}}</span>
+                    <span class="information-style"><span class="attr-name-style">Price: </span>{{res.price}} &euro;/day</span>
+                    <span class="information-style"><span class="attr-name-style">Rating: </span>{{res.rate}} &#9733;</span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="split right">
         <form id="search-form" class="form-group" @submit.prevent="submitSearchForm()">
@@ -27,18 +45,15 @@
             </div>
 
             <div class="row">
-                <div class="col-md-2">
-                    <label >Rating: </label>
-                    <select class="input-style" value="None" v-model="rate">
-                        <option value="">ALL</option>
-                        <option value="1">1 &#9733;</option>
-                        <option value="2">2 &#9733;</option>
-                        <option value="3">3 &#9733;</option>
-                        <option value="4">4 &#9733;</option>
-                        <option value="5">5 &#9733;</option>
-                    </select>
+                <div class="col-md-3">
+                    <label >Min Rating: </label>
+                    <input class="input-style" type="number" min="1" max="5" v-model="minRate" title="Minimum rating for a rental to be. (stars)">
                 </div> 
-                <div class="col-md-10">
+                <div class="col-md-3">
+                    <label >Max Rating: </label>
+                    <input class="input-style" type="number" min="1" max="5" v-model="maxRate" title="Maximum rating for a rental to be. (stars)">
+                </div> 
+                <div class="col-md-6">
                     <label >Location: </label>
                     <input class="input-style" type="text" v-model="location">
                 </div>
@@ -74,6 +89,7 @@
 
 <script>
     import ErrorPopUp from "@/components/ErrorPopUp.vue"
+    import axios from 'axios';
 
     export default {
         name: "SearchPage",
@@ -87,11 +103,14 @@
                 minPrice: '',
                 maxPrice: '',
                 location: '',
-                rate: '',
+                minRate: '',
+                maxRate: '',
                 entities: ["adventures", "cottages", "boats"],
 
                 errMessage : '',
                 errorPopUpVisible: false,
+                toShowNoResultsMess: false,
+                showInitSearchResMess: true,
 
                 searchResult: []
             };
@@ -107,7 +126,8 @@
                     minPrice: this.minPrice,
                     maxPrice: this.maxPrice,
                     location: this.location,
-                    rate: this.rate,
+                    minRate: this.minRate,
+                    maxRate: this.maxRate,
                     entities: this.entities
                 }
 
@@ -116,16 +136,19 @@
                     this.errMessage = errMess;
                     this.errorPopUpVisible = true;
                 }
-
-                axios.get("api/rental/search?" + "startDate=" + this.startDate 
-                                                + "&endDate=" + this.endDate 
+                axios.get("api/rental/search?" + "startDate=" + formatDateStr(this.startDate) 
+                                                + "&endDate=" + formatDateStr(this.endDate) 
                                                 + "&minPrice=" + this.minPrice
                                                 + "&maxPrice=" + this.maxPrice
                                                 + "&location=" + this.location 
-                                                + "&rate=" + this.rate 
+                                                + "&minRate=" + this.minRate 
+                                                + "&maxRate=" + this.maxRate 
                                                 + "&entities=" + this.entities.join(","))
                    .then((response) => {
-                       console.log(response.data);
+                        this.showInitSearchResMess = false;
+                        response.data.length === 0 ? this.toShowNoResultsMess = true : this.toShowNoResultsMess = false    
+
+                        this.searchResult = response.data;
                    });
             }
         }
@@ -144,11 +167,19 @@
         if (formData.maxPrice !== '' && formData.minPrice !== '' && formData.maxPrice < formData.minPrice)
             throw "You mixed up minimal and maximal price values. Fix it up!"
         
+        if (formData.maxRate !== '' && formData.minRate !== '' && formData.maxRate < formData.minRate)
+            throw "You mixed up minimal and maximal rating values. Fix it up!"
+
         if (formData.location !== '' && !/^[a-zA-Z -]{2,50}$/.test(formData.location))
             throw "Make sure you entered valid location name."
 
         if (formData.entities.length === 0)
             throw "You need to check at least one rental type out of 3."
+    }
+
+    function formatDateStr(dateStr) {
+        let dateComps = dateStr.split("-");
+        return dateComps[2] + "/" + dateComps[1] + "/" + dateComps[0]; 
     }
 </script>
 
@@ -169,6 +200,9 @@
     .left {
         width: 60%;
         margin-top: 32px;
+        padding-top: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
         left: 0;
     }
 
@@ -197,4 +231,75 @@
         margin-top: 10px;
     }
 
+    .card {
+        border: 1px solid rgb(70, 68, 68);
+        border-radius: 30px;
+        padding: 10px;
+        margin: 20px 40px;
+    }
+    .card:hover {
+        background: rgba(170, 167, 167, 20%);
+        margin: 20px 0px;
+        border: 1px solid rgb(34, 33, 33);
+    }
+
+    .entity-name {
+        color: rgb(9, 104, 9);
+        align-content: center;
+        font-weight: bold;
+        font-size: 20px;
+        font-variant: small-caps;
+    }
+
+    .entity-info-holder {
+        display: inline;
+    }
+
+
+    .card-icon {
+        width: 30px;
+        height: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 10px;
+    }
+
+    .attr-name-style {
+        color: rgb(9, 104, 9);
+        font-weight: 500;
+        font-size: 20px;
+        font-variant: small-caps;
+    }
+
+    .information-style {
+        margin: 0 20px;
+    }
+
+    #search-res-init-mess {
+        color: rgb(11, 77, 11);
+        align-content: center;
+        font-weight: bold;
+        font-variant: small-caps;
+        font-family: "Arial Black", Gadget, sans-serif;
+        font-size: 20px;
+        letter-spacing: -0.6px;
+        word-spacing: 1px;
+        width: 70%;
+        align-content: center;
+        margin: 0 auto;
+    }
+
+    #no-search-result-mess {
+        color: rgb(202, 99, 14);
+        align-content: center;
+        font-weight: bold;
+        font-variant: small-caps;
+        font-family: "Arial Black", Gadget, sans-serif;
+        font-size: 20px;
+        letter-spacing: -0.6px;
+        word-spacing: 1px;
+        width: 70%;
+        align-content: center;
+        margin: 0 auto;
+    }
 </style>

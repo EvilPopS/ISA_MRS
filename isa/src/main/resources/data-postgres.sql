@@ -46,7 +46,7 @@ insert into client (id, email, password, name, surname, address_id, phone_number
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, additional_services)
     values (4, 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
-                false, 8, 0, 0, 1, 90, 'Ima klima i rostilj i dosta vam je.');
+                false, 8, 0, 0, 0, 90, 'Ima klima i rostilj i dosta vam je.');
 
 
 insert into loyalty_program (discount, increase, loyalty_type)
