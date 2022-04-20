@@ -10,8 +10,8 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class RentalService {
     @Id
-    @SequenceGenerator(name = "mySeqGenRental", sequenceName = "mySeqRental", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenRental")
+    @SequenceGenerator(name = "my_seq_gen_rental", sequenceName = "my_seq_gen_rental", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq_gen_rental")
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -20,8 +20,8 @@ public abstract class RentalService {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "photo_id", referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private Set<Photo> photos;
 
     @Column(name = "capacity", nullable = false)
@@ -48,10 +48,30 @@ public abstract class RentalService {
 
     @Column(name = "price", nullable = false)
     private Double price;
-
+  
     @OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private List<Reservation> reservations;
+  
+    public RentalService() {
+
+    }
+
+    public RentalService(String name, String description, int capacity, String rules,
+                         boolean isDeleted, Address address, Double averageRate,
+                         int noRatings, RentalType rentalType, Double price) {
+        this.name = name;
+        this.description = description;
+        this.capacity = capacity;
+        this.rules = rules;
+        this.isDeleted = isDeleted;
+        this.address = address;
+        this.averageRate = averageRate;
+        this.noRatings = noRatings;
+        this.rentalType = rentalType;
+        this.price = price;
+        this.photos = new HashSet<Photo>();
+    }
 
     public String getName() {
         return name;
@@ -156,4 +176,13 @@ public abstract class RentalService {
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
+    
+    public Set<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Set<Photo> photos) {
+        this.photos = photos;
+    }
+    
 }

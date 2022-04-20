@@ -1,3 +1,4 @@
+import AllCottagesView from '../views/AllCottagesView.vue'
 import { createRouter, createWebHistory } from 'vue-router';
 import CottageOwnerHomePage from '../views/CottageOwnerHomePage.vue';
 import ClientProfilePage from '../views/ClientProfilePage.vue';
@@ -22,6 +23,11 @@ const routes = [
     path: '/ClientProfilePage',
     name: 'ClientProfilePage',
     component: ClientProfilePage
+  },
+  {
+    path: '/AllCottagesView',
+    name: 'AllCottagesView',
+    component: AllCottagesView
   },
   {
     path: '/',
