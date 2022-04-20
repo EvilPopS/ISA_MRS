@@ -176,13 +176,6 @@ public abstract class RentalService {
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
-    
-    public Set<Photo> getPhotos() {
-        return photos;
-    }
 
-    public void setPhotos(Set<Photo> photos) {
-        this.photos = photos;
-    }
     
 }
