@@ -12,12 +12,12 @@
 
         <div v-if="isCottageOwner">
             <a @click="cottageOwnerHomeRedirect()" class="homeNav">Profile</a>
-            <a @click="homeRedirect()" class="homeNav">Cottages</a>
+            <a @click="cottagesRedirect()" class="homeNav">Cottages</a>
         </div>
 
         <div v-if="isInstructor">
             <a @click="instructorProfilePageRedirect()" class="homeNav">Profile</a>
-            <a @click="homeRedirect()" class="homeNav">Cottages</a>
+            <a @click="adventuresRedirect()" class="homeNav">Adventures</a>
         </div>
 
 
@@ -33,8 +33,8 @@
             return {
                 isAdmin: false,
                 isClient: false,
-                isCottageOwner: true,
-                isInstructor : false,
+                isCottageOwner: false,
+                isInstructor : true,
             }
         },
 
@@ -49,6 +49,13 @@
 
             instructorProfilePageRedirect : function () {
                 pushView(this, "InstructorProfilePage");
+            },
+            cottagesRedirect : function () {
+                pushView(this, "CottageManagmentPage");
+            },
+
+            adventuresRedirect : function () {
+                pushView(this, "AdventuresView");
             }
 
         }

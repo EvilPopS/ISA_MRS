@@ -4,6 +4,6 @@ public enum RentalType {
 
     COTTAGE,
     BOAT,
-    INSTRUCTOR
+    ADVENTURE
 
 }

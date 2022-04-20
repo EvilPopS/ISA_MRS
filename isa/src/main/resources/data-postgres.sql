@@ -8,23 +8,18 @@ insert into address (place_name, street, zip_code)
             ('Kula', 'Marsala Tita 200', '25230'),
             ('Zlatibor', 'Milenko Zablacanski', '31315');
 
-insert into photo (photo_path)
-    values ('default.jpg'),
-            ('logo.png');
+insert into photo (photo_path, rental_id)
+values ('default.jpg', 1),
+       ('logo.png', 2);
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                        is_active, photo_id, user_type, loyalty_type)
-    values (1, 'admin1@gmail.com', 'admin123', 'Miroslav', 'Ilic', 2, '0614264444', false,
-                true, null, 1, 0),
-           (2, 'admin2@gmail.com', 'admin123', 'Saban', 'Saulic', 3, '0614283764', false,
-                true, null, 1, 0);
+                   is_active, photo_id, user_type, loyalty_type)
+values (nextval('my_seq_gen_user'), 'admin1@gmail.com', 'admin123', 'Miroslav', 'Ilic', 2, '0614264444', false,
+        true, null, 1, 0),
+       (nextval('my_seq_gen_user'), 'admin2@gmail.com', 'admin123', 'Saban', 'Saulic', 3, '0614283764', false,
+        true, null, 1, 0);
 
-insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
-                            rental_type, price, biography, fishing_equipment, cancellation_conditions)
-    values (1, 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
-                false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5),
-            (2, 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
-                false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0);
+
 
 insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                       rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
@@ -61,6 +56,8 @@ insert into room (no_beds)
 
 
 
+
+
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                            is_active, photo_id, user_type, loyalty_type, loyalty_points)
 values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
@@ -68,3 +65,10 @@ values (5, 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323'
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname, user_type, address_id, photo_id, loyalty_points) values
     (1, 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126', 'Instric', 4, 5, 1, 0);
+
+insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+                       rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
+values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
+        false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5, 1),
+       (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
+        false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 1);
