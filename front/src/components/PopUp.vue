@@ -31,6 +31,7 @@
     display: flex;
     justify-content: center;
     background-color: #000000da;
+    z-index: 999;
   }
 
   .popup {

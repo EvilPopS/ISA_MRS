@@ -66,3 +66,15 @@ insert into loyalty_program (discount, increase, loyalty_type)
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname, user_type, address_id, photo_id, loyalty_points) values
     (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126', 'Instric', 4, 5, 1, 0);
+
+
+insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id)
+    values ('11/4/2022', '29/4/2022', false, true, 30, 1),
+            ('1/5/2022', '11/5/2022', false, true, 30, 1),
+            ('17/4/2022', '3/5/2022', false, true, 25, 2),
+            ('21/4/2022', '2/5/2022', false, true, 25, 2),
+            ('3/4/2022', '23/4/2022', false, true, 50, 3),
+            ('1/6/2022', '12/6/2022', false, true, 50, 3),
+            ('21/4/2022', '2/5/2022', false, true, 50, 3),
+            ('12/4/2022', '29/4/2022', false, true, 50, 4),
+            ('10/5/2022', '29/5/2022', false, true, 50, 4)
