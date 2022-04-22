@@ -8,8 +8,8 @@ import javax.persistence.*;
 public abstract class User {
 
     @Id
-    @SequenceGenerator(name = "mySeqGenUser", sequenceName = "mySeqUser", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenUser")
+    @SequenceGenerator(name = "my_seq_gen_user", sequenceName = "my_seq_gen_user", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq_gen_user")
     protected Long id;
 
     @Column(name = "email", nullable = false, unique = true)

@@ -2,6 +2,7 @@ package com.ftn.isa.model;
 
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Adventure extends RentalService {
@@ -20,6 +21,13 @@ public class Adventure extends RentalService {
     }
 
     public Adventure(String biography, String fishingEquipment, Double cancellationConditions) {
+        this.biography = biography;
+        this.fishingEquipment = fishingEquipment;
+        this.cancellationConditions = cancellationConditions;
+    }
+
+    public Adventure(String name, String description, Set<Photo> photos, int capacity, String rules, boolean isDeleted, Address address, Double averageRate, int noRatings, RentalType rentalType, Double price, String biography, String fishingEquipment, Double cancellationConditions) {
+        super(name, description, photos, capacity, rules, isDeleted, address, averageRate, noRatings, rentalType, price);
         this.biography = biography;
         this.fishingEquipment = fishingEquipment;
         this.cancellationConditions = cancellationConditions;

@@ -10,12 +10,7 @@
 
 <script>
     export default {
-        name: 'PopUp',
-        methods: {
-            close() {
-                this.$emit('close');
-            },
-        },
+        name: 'PopUp'
     };
 </script>
 
@@ -36,6 +31,7 @@
     display: flex;
     justify-content: center;
     background-color: #000000da;
+    z-index: 999;
   }
 
   .popup {

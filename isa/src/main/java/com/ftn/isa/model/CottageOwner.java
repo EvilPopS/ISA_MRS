@@ -11,8 +11,8 @@ import java.util.Set;
 public class CottageOwner extends User{
 
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cottage_id", referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "cottage_owner_id", referencedColumnName = "id")
     private Set<Cottage> cottages = new HashSet<>();
 
     public void updatePersonalInfo(CottageOwnerDTO data) {
