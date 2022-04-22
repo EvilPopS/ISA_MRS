@@ -12,9 +12,10 @@ public class Photo {
     @Column(name = "photo_path", nullable = false)
     private String photoPath;
 
-    public Photo(){}
+    public Photo(){
+    }
 
-    public Photo(String photoPath) {
+    public Photo(String photoPath){
         this.photoPath = photoPath;
     }
 

@@ -2,7 +2,9 @@ package com.ftn.isa.model;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,13 +25,11 @@ public abstract class RentalService {
     @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private Set<Photo> photos;
 
-
     @Column(name = "capacity", nullable = false)
     private int capacity;
 
     @Column(name = "rules", nullable = false)
     private String rules;
-
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
@@ -38,13 +38,11 @@ public abstract class RentalService {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-
     @Column(name = "average_rate", nullable = false)
     private Double averageRate;
 
     @Column(name = "no_ratings", nullable = false)
     private int noRatings;
-
 
     @Column(name = "rental_type", nullable = false)
     private RentalType rentalType;
@@ -52,10 +50,14 @@ public abstract class RentalService {
     @Column(name = "price", nullable = false)
     private Double price;
 
-    public RentalService(String name, String description, Set<Photo> photos, int capacity, String rules, boolean isDeleted, Address address, Double averageRate, int noRatings, RentalType rentalType, Double price) {
+    @OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name = "rental_id", referencedColumnName = "id")
+    private List<Reservation> reservations;
+
+    public RentalService(String name, String description, int capacity, String rules, boolean isDeleted,
+                         Address address, Double averageRate, int noRatings, RentalType rentalType, Double price) {
         this.name = name;
         this.description = description;
-        this.photos = photos;
         this.capacity = capacity;
         this.rules = rules;
         this.isDeleted = isDeleted;
@@ -64,10 +66,11 @@ public abstract class RentalService {
         this.noRatings = noRatings;
         this.rentalType = rentalType;
         this.price = price;
+        this.photos = new HashSet<>();
+        this.reservations = new ArrayList<>();
     }
 
     public RentalService() {
-
     }
 
     public String getName() {
@@ -164,5 +167,13 @@ public abstract class RentalService {
 
     public void setPhotos(Set<Photo> photos) {
         this.photos = photos;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
 }
