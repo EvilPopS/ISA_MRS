@@ -139,8 +139,7 @@ export default {
     }
 
     #btn-add:hover{
-        width: 100px;
-        height: auto;
         border-radius: 10px;
+        background: rgb(25, 117, 7);
     }
 </style>

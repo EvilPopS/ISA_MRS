@@ -54,7 +54,7 @@ public abstract class RentalService {
     @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private List<Reservation> reservations;
 
-    public RentalService(String name, String description, int capacity, String rules, boolean isDeleted,
+    public RentalService(String name, String description, Set<Photo> photos, int capacity, String rules, boolean isDeleted,
                          Address address, Double averageRate, int noRatings, RentalType rentalType, Double price) {
         this.name = name;
         this.description = description;
@@ -66,7 +66,7 @@ public abstract class RentalService {
         this.noRatings = noRatings;
         this.rentalType = rentalType;
         this.price = price;
-        this.photos = new HashSet<>();
+        this.photos = photos;
         this.reservations = new ArrayList<>();
     }
 

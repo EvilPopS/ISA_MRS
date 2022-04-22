@@ -42,14 +42,13 @@
 
 <script>
  import axios from 'axios';
- import StarRating from 'vue3-star-ratings'
  import DetailCottageModal from '../components/DetailCottageModal.vue'
  import AddCottageModal from '../components/AddCottageModal.vue'
 
 export default {
    name: "AllCottagesView",
    components: {
-       StarRating, DetailCottageModal, AddCottageModal
+       DetailCottageModal, AddCottageModal
    },
    data (){
        return {

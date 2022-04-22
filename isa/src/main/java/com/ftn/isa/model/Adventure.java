@@ -33,8 +33,6 @@ public class Adventure extends RentalService {
         this.cancellationConditions = cancellationConditions;
     }
 
-
-
     public String getBiography() {
         return biography;
     }

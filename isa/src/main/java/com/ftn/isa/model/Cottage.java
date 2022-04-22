@@ -13,25 +13,14 @@ public class Cottage extends RentalService{
     @Column(name = "no_rooms", nullable = false)
     private int noRooms;
 
-    public Cottage(String name, String description, int capacity, String rules,
-                         boolean isDeleted, Address address, Double averageRate,
+    public Cottage(String name, String description, int capacity, String rules, boolean isDeleted, Address address, Double averageRate,
                          int noRatings, RentalType rentalType, Double price, String additionalServices, int noRooms) {
-        super(name, description, capacity, rules, isDeleted, address, averageRate, noRatings,rentalType,price);
+        super(name, description, new HashSet<>(), capacity, rules, isDeleted, address, averageRate, noRatings, rentalType,price);
         this.noRooms = noRooms;
         this.additionalServices = additionalServices;
-
     }
 
     public Cottage(){
-
-    }
-
-    public Cottage(String name, String description, Set<Photo> photos, int capacity, String rules, boolean isDeleted, Address address, Double averageRate, int noRatings, RentalType rentalType, Double price) {
-        super(name, description, photos, capacity, rules, isDeleted, address, averageRate, noRatings, rentalType, price);
-    }
-
-    public Cottage() {
-        super();
     }
 
     public String getAdditionalServices() {

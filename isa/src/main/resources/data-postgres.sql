@@ -54,9 +54,9 @@ values (nextval('my_seq_gen_user'), 'srdjan@gmail.com', 'srdja123@', 'Srdjan', '
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, additional_services, no_rooms,cottage_owner_id)
     values (nextval('my_seq_gen_rental'), 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
-                false, 8, 0, 0, 1, 90, 'wifi,parking,internet,bazen', 3, 5),
+                false, 8, 0, 0, 0, 90, 'wifi,parking,internet,bazen', 3, 5),
            (nextval('my_seq_gen_rental'), 'Fruskogorska zora', 'Najlepsa vikendica u okolini NS.', 5, 'Zabranjeno pusenje!',
-            false, 6, 0, 0, 1, 100, 'wifi,klima,parking,rostilj', 4, 5);
+            false, 6, 0, 0, 0, 100, 'wifi,klima,parking,rostilj', 4, 5);
 
 insert into loyalty_program (discount, increase, loyalty_type)
     values (0, 0, 0),
@@ -72,9 +72,9 @@ insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, n
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
 values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
-            false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5, 1),
+            false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5, 6),
        (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
-            false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 1);
+            false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 6);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id)
     values ('11/4/2022', '29/4/2022', false, true, 30, 1),
