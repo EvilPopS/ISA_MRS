@@ -64,9 +64,17 @@ insert into loyalty_program (discount, increase, loyalty_type)
             (20, 20, 2),
             (30, 30, 3);
 
-insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname, user_type, address_id, photo_id, loyalty_points) values
-    (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126', 'Instric', 4, 5, 1, 0);
+insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
+                                user_type, address_id, photo_id, loyalty_points)
+    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126',
+                'Instric', 4, 5, 1, 0);
 
+insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+                       rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
+values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
+            false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5, 1),
+       (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
+            false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 1);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id)
     values ('11/4/2022', '29/4/2022', false, true, 30, 1),

@@ -13,7 +13,6 @@ public class Photo {
     private String photoPath;
 
     public Photo(){
-
     }
 
     public Photo(String photoPath){

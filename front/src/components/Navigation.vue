@@ -1,7 +1,5 @@
 <template>
-
     <div class="topnav">
-        
         <div v-if="isUnauth">
             <a @click="mainHomePageRedirect()" class="homeNav">Home</a>
             <a @click="registrationPageRedirect()" class="homeNav">Register</a>
@@ -24,57 +22,53 @@
 
         <div v-if="isInstructor">
             <a @click="instructorProfilePageRedirect()" class="homeNav">Profile</a>
-            <a @click="homeRedirect()" class="homeNav">Cottages</a>
+            <a @click="adventuresRedirect()" class="homeNav">Adventures</a>
         </div>
-
-
     </div>
     
 </template>
 
+
 <script>
     export default {
         name: "Navigation",
-
         data(){
             return {
                 isAdmin: false,
                 isClient: false,
                 isCottageOwner: false,
                 isInstructor : false,
-                isUnauth: true
+                isUnauth: false
             }
         },
-
         methods: {
             cottageOwnerHomeRedirect : function () {
                 pushView(this, "CottageOwnerHomePage");
             },
-
             allCottagesRedirect: function() {
                 pushView(this, "AllCottagesView")
             },
-
             clientProfileRedirect : function () {
                 pushView(this, "ClientProfilePage");
             },
-
             instructorProfilePageRedirect : function () {
                 pushView(this, "InstructorProfilePage");
             },
-
+            cottagesRedirect : function () {
+                pushView(this, "CottageManagmentPage");
+            },
+            adventuresRedirect : function () {
+                pushView(this, "AdventuresView");
+            },
             mainHomePageRedirect : function () {
                 pushView(this, "MainHomePage");
             },
-
             registrationPageRedirect : function() {
                 pushView(this, "RegistrationPage");
             },
-
             loginPageRedirect : function() {
                 pushView(this, "LoginPage");
             },
-
             searchPageRedirect: function() {
                 pushView(this, "SearchPage");
             }

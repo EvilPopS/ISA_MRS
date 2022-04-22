@@ -2,6 +2,7 @@ package com.ftn.isa.model;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,29 +49,28 @@ public abstract class RentalService {
 
     @Column(name = "price", nullable = false)
     private Double price;
-  
+
     @OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private List<Reservation> reservations;
-  
-    public RentalService() {
 
-    }
-
-    public RentalService(String name, String description, int capacity, String rules,
-                         boolean isDeleted, Address address, Double averageRate,
-                         int noRatings, RentalType rentalType, Double price) {
+    public RentalService(String name, String description, int capacity, String rules, boolean isDeleted,
+                         Address address, Double averageRate, int noRatings, RentalType rentalType, Double price) {
         this.name = name;
         this.description = description;
         this.capacity = capacity;
         this.rules = rules;
         this.isDeleted = isDeleted;
         this.address = address;
-        this.averageRate = averageRate;
+        this.averageRate = averageRate == null ? 0 : averageRate;
         this.noRatings = noRatings;
         this.rentalType = rentalType;
         this.price = price;
-        this.photos = new HashSet<Photo>();
+        this.photos = new HashSet<>();
+        this.reservations = new ArrayList<>();
+    }
+
+    public RentalService() {
     }
 
     public String getName() {
@@ -176,6 +176,4 @@ public abstract class RentalService {
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
-
-    
 }
