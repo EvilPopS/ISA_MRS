@@ -36,7 +36,7 @@
             return {
                 isAdmin: false,
                 isClient: false,
-                isCottageOwner: false,
+                isCottageOwner: true,
                 isInstructor : false,
                 isUnauth: false
             }

@@ -9,6 +9,7 @@ import java.util.Set;
 
 public class CottageDTO {
 
+    private Long id;
     private String name;
     private String description;
     private Set<String> photos = new HashSet<String>();
@@ -37,11 +38,12 @@ public class CottageDTO {
         for (Photo p : cottage.getPhotos()){this.photos.add(p.getPhotoPath());}
         this.noRatings = cottage.getNoRatings();
         this.noRooms = cottage.getNoRooms();
+        this.id = cottage.getId();
     }
 
     public CottageDTO(String name, String description, int capacity, String rules,
                       String city, String zipCode, String street, Double averageRating,
-                      double price, String additionalServices, int noRatings, int noRooms) {
+                      double price, String additionalServices, int noRatings, int noRooms, Long id) {
         this.name = name;
         this.description = description;
         this.capacity = capacity;
@@ -54,6 +56,15 @@ public class CottageDTO {
         this.additionalServices = additionalServices;
         this.noRatings = noRatings;
         this.noRooms = noRooms;
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getNoRooms() {

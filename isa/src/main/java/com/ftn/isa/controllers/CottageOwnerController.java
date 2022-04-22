@@ -24,15 +24,6 @@ public class CottageOwnerController  {
     @Autowired
     private CottageOwnerService cottageOwnerService;
 
-    @Autowired
-    private CottageService cottageService;
-
-    @Autowired
-    private PhotoService photoService;
-
-    @Autowired
-    private AddressService addressService;
-
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping(value="/{email}")
     public ResponseEntity<CottageOwnerDTO> getByEmail(@PathVariable String email) {

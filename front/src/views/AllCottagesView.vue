@@ -11,7 +11,7 @@
                         <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}</p>
                         <span>
                             <button class="btn btn-success" @click="showDetailCottageModal(cottage)">Details</button>
-                            <button class="btn btn-danger">Delete</button>
+                            <button class="btn btn-danger" @click="showConfirmDeletionDialog(cottage)">Delete</button>
                         </span>    
                     </div>
                 </div>
@@ -36,6 +36,16 @@
         @succ-popup-close = "succPopUpClose"
         />
     </div>
+    <div v-else-if="confirmationPopUpVisible">
+        <ConfirmationPopUp
+        :succPopUpVisible = "succPopUpVisible"
+        :title="deletionTitle"
+        :message="deletionMessage"
+        @modal-closed = "confirmationPopUpVisible = false"
+        @succ-popup-close = "succPopUpVisible = false"
+        @confirmed-event = "confirmDeletion"
+        />
+    </div>
 
     
 </template>
@@ -44,21 +54,27 @@
  import axios from 'axios';
  import DetailCottageModal from '../components/DetailCottageModal.vue'
  import AddCottageModal from '../components/AddCottageModal.vue'
+ import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
 
 export default {
    name: "AllCottagesView",
    components: {
-       DetailCottageModal, AddCottageModal
+       DetailCottageModal, AddCottageModal, ConfirmationPopUp
    },
    data (){
        return {
            cottages: [],
            sendCottage: {},
+           cottageToDelete: {},
 
            showDetails: false,
            showAddNewCottage: false,
            showDeleteCottage: false,
-           succPopUpVisible: false
+           succPopUpVisible: false,
+           confirmationPopUpVisible: false,
+
+           deletionMessage: "Are you sure about deleting this cottage?",
+           deletionTitle: "Cottage deleting"
        }
    }, 
    methods: {
@@ -76,6 +92,19 @@ export default {
         },
         succPopUpClose() {
             this.succPopUpVisible = false;
+        },
+        showConfirmDeletionDialog(cottage) {
+            this.confirmationPopUpVisible = true;
+            this.cottageToDelete = cottage;
+        },
+        confirmDeletion(){
+            axios.delete('api/cottage-owner/' + 'srdjan@gmail.com' + '/delete-cottage/' + this.cottageToDelete.id).then((response) => {
+                
+            }).catch(function (error) {
+                console.log(error);
+                alert(error)
+            });
+            this.cottages = this.cottages.filter(item => item != this.cottageToDelete);
         }
    },
    created(){
