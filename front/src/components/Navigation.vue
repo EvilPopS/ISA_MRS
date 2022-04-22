@@ -45,19 +45,19 @@
             cottageOwnerHomeRedirect : function () {
                 pushView(this, "CottageOwnerHomePage");
             },
-
+            
             allCottagesRedirect: function() {
                 pushView(this, "AllCottagesView")
             },
-
+            
             clientProfileRedirect : function () {
                 pushView(this, "ClientProfilePage");
             },
-
+            
             instructorProfilePageRedirect : function () {
                 pushView(this, "InstructorProfilePage");
             },
-
+            
             cottagesRedirect : function () {
                 pushView(this, "CottageManagmentPage");
             },
@@ -77,7 +77,7 @@
             loginPageRedirect : function() {
                 pushView(this, "LoginPage");
             },
-
+            
             searchPageRedirect: function() {
                 pushView(this, "SearchPage");
             }
