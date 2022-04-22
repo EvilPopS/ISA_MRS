@@ -135,7 +135,9 @@
                 catch(errMess) {
                     this.errMessage = errMess;
                     this.errorPopUpVisible = true;
+                    return;
                 }
+                
                 axios.get("api/rental/search?" + "startDate=" + formatDateStr(this.startDate) 
                                                 + "&endDate=" + formatDateStr(this.endDate) 
                                                 + "&minPrice=" + this.minPrice
