@@ -91,4 +91,15 @@ public class CottageOwnerController  {
         return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }
 
+    @DeleteMapping(value="/{email}/delete-cottage/{id}")
+    public ResponseEntity<HttpStatus> deleteCottage(@PathVariable String email, @PathVariable String id) throws Exception {
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
 }

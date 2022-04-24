@@ -104,7 +104,11 @@ export default {
                 console.log(error);
                 alert(error)
             });
-            this.cottages = this.cottages.filter(item => item != this.cottageToDelete);
+            this.cottages = this.cottages.filter((item) => {
+                return this.cottageToDelete !== item       //ako vratimo true isti su
+                //kad se uslov ispuni filtrira sta je stisnuto iz liste
+            })
+            this.cottageToDelete = {}   //reset vreednosti
         }
    },
    created(){

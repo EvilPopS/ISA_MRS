@@ -4,6 +4,7 @@ import com.ftn.isa.DTO.CottageOwnerDTO;
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Cottage;
 import com.ftn.isa.model.CottageOwner;
+import com.ftn.isa.model.FishingInstructor;
 import com.ftn.isa.repository.CottageOwnerRepository;
 import com.ftn.isa.helpers.WrongInputException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,15 @@ public class CottageOwnerService {
     }
 
 
-    //public List<Cottage> findAllCottages(Long id) {
-        //return cottageOwnerRepository.findAllCottages(id);
-    //}
+    public void deleteCottage(CottageOwner cottageOwner, Long id) throws Exception {
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId() == id){
+                if (c.isDeleted()) throw new Exception("Cottage with this id is already deleted");
+                c.setDeleted(true);
+                break;
+            }
+        }
+        cottageOwnerRepository.save(cottageOwner);
+    }
 
 }
