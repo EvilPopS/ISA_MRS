@@ -1,16 +1,17 @@
 package com.ftn.isa.services;
 
+import com.ftn.isa.DTO.CottageDTO;
 import com.ftn.isa.DTO.CottageOwnerDTO;
 import com.ftn.isa.helpers.Validate;
-import com.ftn.isa.model.Cottage;
-import com.ftn.isa.model.CottageOwner;
-import com.ftn.isa.model.FishingInstructor;
+import com.ftn.isa.model.*;
 import com.ftn.isa.repository.CottageOwnerRepository;
 import com.ftn.isa.helpers.WrongInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CottageOwnerService {
@@ -29,6 +30,25 @@ public class CottageOwnerService {
     }
 
     public void save(CottageOwner cottageOwner) {
+        cottageOwnerRepository.save(cottageOwner);
+    }
+
+    public void save(CottageOwner cottageOwner, CottageDTO cottageDTO, Set<Photo> photos){
+        for (Cottage cottage : cottageOwner.getCottages()){
+            if (cottage.getId() == cottageDTO.getId()) {
+                cottage.setPhotos(photos);
+                cottage.getAddress().setPlaceName(cottageDTO.getCity());
+                cottage.getAddress().setZipCode(cottageDTO.getZipCode());
+                cottage.getAddress().setStreet(cottageDTO.getStreet());
+                cottage.setAdditionalServices(cottageDTO.getAdditionalServices());
+                cottage.setNoRooms(cottageDTO.getNoRooms());
+                cottage.setCapacity(cottageDTO.getCapacity());
+                cottage.setName(cottageDTO.getName());
+                cottage.setPrice(cottageDTO.getPrice());
+                cottage.setRules(cottageDTO.getRules());
+            }
+        }
+
         cottageOwnerRepository.save(cottageOwner);
     }
 

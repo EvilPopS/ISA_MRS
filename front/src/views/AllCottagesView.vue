@@ -26,6 +26,7 @@
         :cottage = "sendCottage"
         :showDetails = "showDetails"
         @modal-closed = "showDetails = false"
+        @succ-popup-close = "succPopUpClose"
         />
     </div>
     <div v-else-if="showAddNewCottage">
@@ -84,8 +85,8 @@ export default {
                 } catch(e) {}
         },
         showDetailCottageModal(cottage) {
-            this.showDetails = true
             this.sendCottage = cottage
+            this.showDetails = true
         },
         showAddCottageModal() {
             this.showAddNewCottage = true
@@ -94,8 +95,8 @@ export default {
             this.succPopUpVisible = false;
         },
         showConfirmDeletionDialog(cottage) {
-            this.confirmationPopUpVisible = true;
             this.cottageToDelete = cottage;
+            this.confirmationPopUpVisible = true;
         },
         confirmDeletion(){
             axios.delete('api/cottage-owner/' + 'srdjan@gmail.com' + '/delete-cottage/' + this.cottageToDelete.id).then((response) => {
@@ -164,7 +165,7 @@ export default {
     }
 
     #btn-add:hover{
-        width: 100px;
+        width: 140px;
         height: auto;
         border-radius: 10px;
     }

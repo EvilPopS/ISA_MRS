@@ -24,6 +24,9 @@ public class CottageOwnerController  {
     @Autowired
     private CottageOwnerService cottageOwnerService;
 
+    @Autowired
+    private PhotoService photoService;
+
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping(value="/{email}")
     public ResponseEntity<CottageOwnerDTO> getByEmail(@PathVariable String email) {
@@ -100,6 +103,27 @@ public class CottageOwnerController  {
         cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
         return new ResponseEntity<>(HttpStatus.OK);
 
+    }
+
+    @CrossOrigin(origins = "http://localhost:8081")
+    @PutMapping(consumes="application/json", value="/change-cottage-data/{email}")
+    public ResponseEntity<HttpStatus> updatePersonalData(@PathVariable String email, @RequestBody CottageDTO cottageDTO) {
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (cottageDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Set<Photo> photos = new HashSet<Photo>();
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId() == cottageDTO.getId()){
+                photos = photoService.addOrDeletePhoto(c, cottageDTO);
+                break;
+            }
+        }
+        cottageOwnerService.save(cottageOwner, cottageDTO, photos);
+        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }
 
 }

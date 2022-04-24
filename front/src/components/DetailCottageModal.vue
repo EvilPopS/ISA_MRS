@@ -8,19 +8,19 @@
                         <span>Cottage</span>
                         <hr class="solid">
                         <label class="label" for="name">Cottage name:</label>
-                        <input type="text" id="name" class="form-control" :value="cottage.name">
+                        <input type="text" id="name" class="form-control" v-model="data.name">
                         <label class="label" for="description">description:</label>
-                        <input type="text" id="description" class="form-control" :value="cottage.description">
+                        <input type="text" id="description" class="form-control" v-model="data.description">
                         <label class="label" for="rules">Rules:</label>
-                        <input type="text" id="rules" class="form-control" :value="cottage.rules">
+                        <input type="text" id="rules" class="form-control" v-model="data.rules">
                         <span>
                             <div class="inline-inputs">
                                 <label class="label" for="price">Price/day:</label>
-                                <input type="text" id="price" class="form-control rating" :value="cottage.price">
+                                <input type="text" id="price" class="form-control rating" v-model="data.price">
                             </div>
                             <div class="inline-inputs">
                                 <label class="label" for="no-rooms">No. rooms:</label>
-                                <input type="text" id="no-rooms" class="form-control rating" :value="cottage.noRooms">
+                                <input type="text" id="no-rooms" class="form-control rating" v-model="data.noRooms">
                             </div>
                         </span>
                         <label class="label" for="additionalServices">Additional services(press alt + , to add):</label>
@@ -33,21 +33,21 @@
                         <span>Address</span>
                         <hr class="solid">
                         <label class="label" for="city">City:</label>
-                        <input type="text" id="city" class="form-control" :value="cottage.city">
+                        <input type="text" id="city" class="form-control" v-model="data.city">
                         <label class="label" for="street">Street:</label>
-                        <input type="text" id="street" class="form-control" :value="cottage.street">
+                        <input type="text" id="street" class="form-control" v-model="data.street">
                         <label class="label" for="zip-code">Zip code:</label>
-                        <input type="text" id="zip-code" class="form-control" :value="cottage.zipCode">
+                        <input type="text" id="zip-code" class="form-control" v-model="data.zipCode">
                         <span>Rating</span>
                         <hr class="solid">
                         <span>
                             <div class="inline-inputs">
                                 <label class="label" for="rating">Rating:</label>
-                                <input type="text" id="rating" class="form-control rating" :value="cottage.averageRating" disabled>
+                                <input type="text" id="rating" class="form-control rating" v-model="data.averageRating" disabled>
                             </div>
                             <div class="inline-inputs">
                                 <label class="label" for="num-ratings">No. ratings:</label>
-                                <input type="text" id="num-ratings" class="form-control rating" :value="cottage.noRatings" disabled>
+                                <input type="text" id="num-ratings" class="form-control rating" v-model="data.noRatings" disabled>
                             </div>
                         </span>
                     </div>
@@ -62,23 +62,36 @@
                         <div v-for="pic in this.localPhotos" :key="pic" class="pillPic">
                             <span  @click="deletePic(pic)"><img id="picGallery" :src="require('@/assets/' + pic)"/></span>
                         </div>
-                        <button type="button" class="btn btn-success">Add photo</button>
+                        <button type="button" class="btn btn-success" @click="AddNewPhoto">Add photo</button>
                     </div>
                 </div>
             </div>
             <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
-                <button type="button" class="btn btn-secondary">Save changes</button>
+                <button type="button" class="btn btn-secondary" @click="changeCottage">Save changes</button>
                 <button type="button" class="btn btn-outline-secondary" @click="closeWindow">Cancel</button>
             </div>
         </div>
+        <ErrorPopUp v-show="errorPopUpVisible" 
+            @close = closePopUp
+            :mess = errMessage
+        /> 
+    
+        <SuccessPopUp v-show="localSuccPopUpVisible"
+            @close = closeSuccPopUp
+            :mess = succMessage
+        />
     </div>
 </template>
 
 <script>
+import ErrorPopUp from "./ErrorPopUp.vue"
+import SuccessPopUp from "./SuccessPopUp.vue"
+import axios from 'axios';
+
 export default {
     name: "DetailCottageModal",
     components: {
-
+        ErrorPopUp, SuccessPopUp
     },
     props: {
         cottage: Object,
@@ -90,12 +103,26 @@ export default {
             newPicture: 'addPhoto.png',
 
             localPhotos: [],
-            localServices: []
+            localServices: [],
+
+            errMessage: '',
+            succMessage: 'Cottage data is changed successfully!',
+            errorPopUpVisible: false,
+            localSuccPopUpVisible: false,
+
+            data: this.cottage
         }
     },
     methods: {
         closeWindow : function(){
             this.$emit('modal-closed');
+        },
+        closePopUp() {
+            this.errorPopUpVisible = false;
+        },
+        closeSuccPopUp() {
+                this.$emit("succ-popup-close");
+                this.$router.go(); 
         },
         addService(e) {
             //uvek je ocpiono prvi parametar event
@@ -124,7 +151,82 @@ export default {
                 return pic !== item       //ako vratimo true isti su
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
             })
+        },
+        AddNewPhoto(){
+            this.localPhotos.push(this.newPicture)
+        },
+        changeCottage(){
+            try { this.checkInputs(); } 
+                catch(error) {        
+                    this.errMessage = error;
+                    this.errorPopUpVisible = true; 
+                    return;
+                }
+
+            this.data.photos = this.localPhotos
+            this.data.additionalServices = []
+            let counter = 0
+            for (let s in this.localServices){
+                counter++
+                this.data.additionalServices += this.localServices[s]
+                if (counter < this.localServices.length) this.data.additionalServices += ','
+            } 
+            axios.put("api/cottage-owner/change-cottage-data/" + "srdjan@gmail.com", this.data)
+                    .then((response) => {
+                        this.localSuccPopUpVisible = true;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        alert(error)
+                    });
+
+        },
+        validate : function(toTest, regex) {
+        return regex.test(toTest)
+        },
+        checkInputs : function(){
+            let nameReg = /^[a-zA-Z ]{2,30}$/;
+            let numReg = /^[0-9]+$/;
+            let streetReg = /^[a-zA-Z0-9 -.,]+$/;
+            let cityReg = /^[a-zA-Z -]{2,50}$/;
+
+            if (!this.validate(this.data.name, nameReg))
+                throw "Make sure you entered a valid name. Name cannot contain digit.";
+
+            if(!this.validate(this.data.city, cityReg))
+                throw "Make sure you entered a valid city name!";
+            
+            if (!this.validate(this.data.zipCode, numReg))
+                throw "Make sure you entered a valid zip code.";
+            
+            if (!this.validate(this.data.street, streetReg))
+                throw "Make sure you entered a valid street name.";
+            
+            if (!this.validate(this.data.noRooms, numReg) || this.data.noRooms <= 0)
+                throw "Make sure your entered valid number of rooms.";
+            
+            if (!this.validate(this.data.capacity, numReg) || this.data.capacity <= 0)
+                throw "Capacity must be greater than 0.";
+
+            if (!this.validate(this.data.price, numReg) || this.data.price <= 0)
+                throw "Please enter a valid price.";
+
+            if (this.data.description.length < 7)
+                throw "Description must have at least 8 characters";
+            
+            if (this.data.rules.length < 7)
+                throw "Rules must have at least 8 characters";
+
+            if (this.localPhotos.length < 1)
+                throw "You must upload at least 1 photo.";
+
+            if (this.localPhotos.length > 4)
+                throw "You cannot upload more than 4 photos.";
+
+            if (this.localServices.length < 1)
+                throw "You need to add at least one local service.";
         }
+        
     },
     created(){
             try {

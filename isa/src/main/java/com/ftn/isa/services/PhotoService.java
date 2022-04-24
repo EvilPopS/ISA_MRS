@@ -1,5 +1,7 @@
 package com.ftn.isa.services;
 
+import com.ftn.isa.DTO.CottageDTO;
+import com.ftn.isa.model.Cottage;
 import com.ftn.isa.model.Photo;
 import com.ftn.isa.repository.PhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,4 +26,30 @@ public class PhotoService {
         }
         return newPhotos;
     }
+
+    public Set<Photo> addOrDeletePhoto(Cottage cottage, CottageDTO cottageDTO){
+        Set<Photo> photos = new HashSet<Photo>();
+
+        for (String path : cottageDTO.getPhotos()) {
+            boolean newPhoto = true;
+            for (Photo p : cottage.getPhotos()) {
+                if (p.getPhotoPath().equals(path)) {
+                    photos.add(p);
+                    newPhoto = false;
+                }
+            }
+            if (newPhoto) {photos.add(new Photo(path));}
+        }
+
+        for (Photo p : cottage.getPhotos()){
+            boolean deleted = true;
+            for (String path : cottageDTO.getPhotos()){
+                if (path.equals(p.getPhotoPath())){deleted = false; break;}
+            }
+            if (deleted){photoRepository.deleteById(p.getId());}
+        }
+
+        return photos;
+    }
+
 }
