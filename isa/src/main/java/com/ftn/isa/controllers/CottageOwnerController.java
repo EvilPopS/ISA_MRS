@@ -2,12 +2,10 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.CottageDTO;
 import com.ftn.isa.DTO.CottageOwnerDTO;
+import com.ftn.isa.DTO.ReservationDTO;
 import com.ftn.isa.model.*;
-import com.ftn.isa.services.AddressService;
-import com.ftn.isa.services.CottageOwnerService;
+import com.ftn.isa.services.*;
 import com.ftn.isa.helpers.WrongInputException;
-import com.ftn.isa.services.CottageService;
-import com.ftn.isa.services.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +24,9 @@ public class CottageOwnerController  {
 
     @Autowired
     private PhotoService photoService;
+
+    @Autowired
+    private ClientService clientService;
 
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping(value="/{email}")
@@ -124,6 +125,37 @@ public class CottageOwnerController  {
         }
         cottageOwnerService.save(cottageOwner, cottageDTO, photos);
         return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "http://localhost:8081")
+    @GetMapping(value="/all-reservations/{email}")
+    public ResponseEntity<Set<ReservationDTO>> getAllReservations(@PathVariable String email) {
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Set<ReservationDTO> reservations = new HashSet<ReservationDTO>();
+        for (Cottage c : cottageOwner.getCottages()){
+            for (Reservation reservation : c.getReservations()){
+                ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), c.getId(),
+                        c.getName(), reservation.getStartTime(), reservation.getEndTime(),
+                        reservation.getPrice(), reservation.isAction(), reservation.isReserved());
+                reservations.add(reservationDTO);
+            }
+        }
+
+        //nije moglo drugacije jer nismo uradili ovo za rezervaciju kao u dijagramu klasa
+        for (ReservationDTO resDTO : reservations) {
+            for (Client client : clientService.getAllClients()) {
+                for (Reservation r : client.getReservations()) {
+                    if (resDTO.getReservationId() == r.getId()) {
+                        resDTO.setClientEmail(client.getEmail());
+                    }
+                }
+            }
+        }
+
+        return new ResponseEntity<Set<ReservationDTO>>(reservations, HttpStatus.OK);
     }
 
 }
