@@ -9,6 +9,7 @@ import java.util.List;
 
 public class BasicEntityInfoDTO {
     private String name;
+    private String description;
     private Address address;
     private double price;
     private double rate;
@@ -17,6 +18,7 @@ public class BasicEntityInfoDTO {
 
     public BasicEntityInfoDTO(RentalService rental) {
         this.name = rental.getName();
+        this.description = rental.getDescription();
         this.address = rental.getAddress();
         this.price = rental.getPrice();
         this.rate = rental.getAverageRate();
@@ -31,6 +33,14 @@ public class BasicEntityInfoDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Address getAddress() {

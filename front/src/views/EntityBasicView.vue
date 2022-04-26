@@ -59,15 +59,22 @@
                 address: "",
                 images: [],
 
-                showCottageIcon: false,
+                showCottageIcon: true,
                 showBoatIcon: false,
                 showAdventureIcon: false
             }
         },
         created() {
-            // axios.get("api/").then((response) => {
-
-            // });
+            axios.get("api/rental/basic/5?type=cottage").then((response) => {
+                let rental = response.data;
+                
+                this.name = rental.name;
+                this.description = rental.description;
+                this.price = rental.price + "€/day";
+                this.rate = rental.rate + " ★";
+                this.address = rental.address.placeName + " " + rental.address.street;
+                this.images = rental.photos;
+            });
         },
         methods: {
             setProfPic(imagePath) {
