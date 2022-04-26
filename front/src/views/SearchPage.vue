@@ -25,37 +25,37 @@
             <div class="row">
                 <div class="col-md-6">
                     <label >Start Date:</label>
-                    <input class="input-style" type="date" v-model="startDate" title="The starting date you wish for your rental period to be.">
+                    <input  type="date" v-model="startDate" title="The starting date you wish for your rental period to be.">
                 </div>
                 <div class="col-md-6">
                     <label >End Date:</label>
-                    <input class="input-style" type="date" v-model="endDate" title="The ending date you wish for your rental period to be.">
+                    <input  type="date" v-model="endDate" title="The ending date you wish for your rental period to be.">
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
                     <label >Min Price:</label>
-                    <input class="input-style" type="number" min="0" v-model="minPrice" title="Minimum price/day for a rental to be. (euros)">
+                    <input  type="number" min="0" v-model="minPrice" title="Minimum price/day for a rental to be. (euros)">
                 </div>
                 <div class="col-md-6">
                     <label >Max Price:</label>
-                    <input class="input-style" type="number" min="0" v-model="maxPrice" title="Maximum price/day for a rental to be. (euros)">
+                    <input  type="number" min="0" v-model="maxPrice" title="Maximum price/day for a rental to be. (euros)">
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-3">
                     <label >Min Rating: </label>
-                    <input class="input-style" type="number" min="1" max="5" v-model="minRate" title="Minimum rating for a rental to be. (stars)">
+                    <input  type="number" min="1" max="5" v-model="minRate" title="Minimum rating for a rental to be. (stars)">
                 </div> 
                 <div class="col-md-3">
                     <label >Max Rating: </label>
-                    <input class="input-style" type="number" min="1" max="5" v-model="maxRate" title="Maximum rating for a rental to be. (stars)">
+                    <input  type="number" min="1" max="5" v-model="maxRate" title="Maximum rating for a rental to be. (stars)">
                 </div> 
                 <div class="col-md-6">
                     <label >Location: </label>
-                    <input class="input-style" type="text" v-model="location">
+                    <input  type="text" v-model="location">
                 </div>
             </div>
             
