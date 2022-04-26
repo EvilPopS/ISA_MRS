@@ -7,6 +7,8 @@ public class ReservationDTO {
     private Long reservationId;
     private Long rentalId;
     private String clientEmail;
+    private String clientFullName;
+    private String clientProfilePhoto;
     private String rentalName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -20,7 +22,7 @@ public class ReservationDTO {
 
     public ReservationDTO(Long reservationId, Long rentalId, String clientEmail,
                           String rentalName, LocalDateTime startTime,
-                          LocalDateTime endTime, double price, boolean isAction, boolean isReserved) {
+                          LocalDateTime endTime, double price, boolean isAction, boolean isReserved, String clientProfilePhoto, String clientFullName) {
         this.reservationId = reservationId;
         this.rentalId = rentalId;
         this.clientEmail = clientEmail;
@@ -30,6 +32,8 @@ public class ReservationDTO {
         this.price = price;
         this.isAction = isAction;
         this.isReserved = isReserved;
+        this.clientProfilePhoto = clientProfilePhoto;
+        this.clientFullName = clientFullName;
     }
 
     public ReservationDTO(Long reservationId, Long rentalId,
@@ -44,6 +48,14 @@ public class ReservationDTO {
         this.price = price;
         this.isAction = isAction;
         this.isReserved = isReserved;
+    }
+
+    public String getClientFullName() {
+        return clientFullName;
+    }
+
+    public void setClientFullName(String clientFullName) {
+        this.clientFullName = clientFullName;
     }
 
     public Long getReservationId() {
@@ -116,5 +128,17 @@ public class ReservationDTO {
 
     public void setReserved(boolean reserved) {
         isReserved = reserved;
+    }
+
+    public void setRentalId(Long rentalId) {
+        this.rentalId = rentalId;
+    }
+
+    public String getClientProfilePhoto() {
+        return clientProfilePhoto;
+    }
+
+    public void setClientProfilePhoto(String clientProfilePhoto) {
+        this.clientProfilePhoto = clientProfilePhoto;
     }
 }

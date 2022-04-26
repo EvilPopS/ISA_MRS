@@ -150,6 +150,8 @@ public class CottageOwnerController  {
                 for (Reservation r : client.getReservations()) {
                     if (resDTO.getReservationId() == r.getId()) {
                         resDTO.setClientEmail(client.getEmail());
+                        resDTO.setClientProfilePhoto(client.getProfilePicture().getPhotoPath());
+                        resDTO.setClientFullName(client.getName() + " " + client.getSurname());
                     }
                 }
             }
