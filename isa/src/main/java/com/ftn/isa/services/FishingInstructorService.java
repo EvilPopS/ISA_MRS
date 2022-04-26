@@ -28,6 +28,7 @@ public class FishingInstructorService {
 
     public void updateAdventure(FishingInstructor fishingInstructor, AdventureDTO adventureData) {
         fishingInstructor.updateAdventure(adventureData);
+        fishingInstructorRepo.save(fishingInstructor);
     }
 
     public void deleteAdventure(FishingInstructor fishingInstructor, Long id) {
