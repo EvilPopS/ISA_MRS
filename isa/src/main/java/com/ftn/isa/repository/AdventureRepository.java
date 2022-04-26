@@ -27,4 +27,9 @@ public interface AdventureRepository extends JpaRepository<Adventure, Long> {
                                      @Param("minPrice") double minPrice, @Param("maxPrice") double maxPrice,
                                      @Param("location") String location, @Param("minRate") double minRate,
                                      @Param("maxRate") double maxRate);
+
+    @Query(nativeQuery = true,
+    value = "SELECT * FROM adventure WHERE instructor_id = :instructorId AND name LIKE '%' || :name || '%' "
+    )
+    List<Adventure> searchAdventureByName(@Param("name") String name, @Param("instructorId") Long instructorId);
 }

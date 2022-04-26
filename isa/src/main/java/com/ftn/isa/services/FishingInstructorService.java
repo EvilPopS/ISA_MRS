@@ -35,4 +35,5 @@ public class FishingInstructorService {
         fishingInstructorRepo.save(fishingInstructor);
 
     }
+
 }
