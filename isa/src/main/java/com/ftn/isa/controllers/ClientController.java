@@ -1,5 +1,6 @@
 package com.ftn.isa.controllers;
 
+import com.ftn.isa.DTO.BasicClientDTO;
 import com.ftn.isa.DTO.ClientProfileDTO;
 import com.ftn.isa.model.Client;
 import com.ftn.isa.services.ClientService;
@@ -21,6 +22,15 @@ public class ClientController {
         if (client == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(new ClientProfileDTO(client), HttpStatus.OK);
+    }
+
+    @GetMapping(value="/basic-profile/{email}")
+    @CrossOrigin(origins = "http://localhost:8081")
+    public ResponseEntity<BasicClientDTO> getBasicProfileByEmail(@PathVariable String email) {
+        Client client = clientService.findByEmail(email);
+        if (client == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new BasicClientDTO(client), HttpStatus.OK);
     }
 
     @PutMapping(consumes="application/json", value="/data-update")
