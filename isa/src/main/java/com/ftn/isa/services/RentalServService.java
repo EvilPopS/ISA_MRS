@@ -43,4 +43,16 @@ public class RentalServService {
         Stream.of(adventures, cottages, boats).filter(Objects::nonNull).forEach(rentals::addAll);
         return rentals;
     }
+
+    public RentalService getEntityByTypeAndId(String type, Long id) throws Exception {
+        switch (type) {
+            case "cottage":
+                return cottageRepository.getCottageById(id);
+            case "boat":
+                return boatRepository.getBoatById(id);
+            case "adventure":
+                return adventureRepository.getAdventureById(id);
+        }
+        throw new Exception("Type is invalid!");
+    }
 }

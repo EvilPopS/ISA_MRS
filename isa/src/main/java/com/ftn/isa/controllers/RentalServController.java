@@ -1,5 +1,6 @@
 package com.ftn.isa.controllers;
 
+import com.ftn.isa.DTO.BasicEntityInfoDTO;
 import com.ftn.isa.DTO.RentalSearchResDTO;
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Adventure;
@@ -46,6 +47,19 @@ public class RentalServController {
         } catch (Exception ignored) {}
 
         return new ResponseEntity<>(rentals, HttpStatus.OK );
+    }
+
+    @GetMapping(value="/basic/{id}")
+    @CrossOrigin(origins = "http://localhost:8081")
+    public ResponseEntity<BasicEntityInfoDTO> getEntityBasicInfo(@RequestParam String type, @PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(
+                                        new BasicEntityInfoDTO(rentalServService.getEntityByTypeAndId(type, id)),
+                                        HttpStatus.OK
+                                    );
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
