@@ -36,11 +36,11 @@
                         <span class="span-text">Address</span>
                         <hr class="solid">
                         <label class="label" for="city">City:</label>
-                        <input type="text" id="city" class="form-control" :value="adventure.city">
+                        <input type="text" id="city" class="form-control" v-model="adventure.city">
                         <label class="label" for="street">Street:</label>
-                        <input type="text" id="street" class="form-control" :value="adventure.street">
+                        <input type="text" id="street" class="form-control" v-model="adventure.street">
                         <label class="label" for="zip-code">Zip code:</label>
-                        <input type="text" id="zip-code" class="form-control" :value="adventure.zipcode">
+                        <input type="text" id="zip-code" class="form-control" v-model="adventure.zipcode">
                         <p>&nbsp;</p>
                         <p>&nbsp;</p>
                         <p>&nbsp;</p>
@@ -49,11 +49,11 @@
                         <span>
                             <div class="inline-inputs">
                                 <label class="label" for="rating">Rating:</label>
-                                <input type="text" id="rating" class="form-control rating" :value="adventure.rating" disabled>
+                                <input type="text" id="rating" class="form-control rating" v-model="adventure.rating" disabled>
                             </div>
                             <div class="inline-inputs">
                                 <label class="label" for="num-ratings">No. ratings:</label>
-                                <input type="text" id="num-ratings" class="form-control rating" :value="adventure.noRatings" disabled>
+                                <input type="text" id="num-ratings" class="form-control rating" v-model="adventure.noRatings" disabled>
                             </div>
                         </span>
                     </div>
@@ -77,14 +77,28 @@
                 <button type="button" class="btn btn-outline-secondary" @click="closeWindow">Cancel</button>
             </div>
         </div>
+        <ErrorPopUp v-show="errorPopUpVisible" 
+            @close = closePopUp
+            :mess = errMessage
+        /> 
+    
+        <SuccessPopUp v-show="localSuccPopUpVisible"
+            @close = closeSuccPopUp
+            :mess = succMessage
+        />
+
     </div>
 </template>
 
 <script>
 import axios from 'axios';
+import ErrorPopUp from '../components/ErrorPopUp.vue'
+import SuccessPopUp from '../components/SuccessPopUp.vue'
 export default {
     name: "AdventureDetail",
     components: {
+        ErrorPopUp,
+        SuccessPopUp
 
     },
     props: {
@@ -94,7 +108,10 @@ export default {
     data(){
         return {
 
-            
+            errMessage : '',
+            succMessage : 'Adventure details updated successfully!',
+            errorPopUpVisible : false,
+            localSuccPopUpVisible : false,
             updatedData : {
                 id : '',
                 description : '',
@@ -127,26 +144,47 @@ export default {
             this.$emit('modal-closed');
         },
 
+        closePopUp() {
+            this.errorPopUpVisible = false;
+        },
+        closeSuccPopUp(){
+            this.$emit('succ-popup-close');
+            this.$router.go();
+        },
+
+        addFishingEqu(e){
+            //uvek je ocpiono prvi parametar event
+            //key up je recimo kada se svaki put klikne nesto pojedinacno na tastaturi
+            if (e.key === ',' && this.tempService){
+                if (!this.localFishingEquipment.includes(this.tempFihingEqu)){
+                    this.localFishingEquipment.push(this.tempFihingEqu)    //zbog duplikata
+                }
+                
+                this.tempFihingEqu = ''     //resetuje se trenutni
+            }
+
+        },
+        deleteFishingEqu(fe){
+        //parametar je skill koji se brise
+        //uzimamo trenutni item kad filter iterira i ako je to taj brisemo
+        this.localFishingEquipment = this.localFishingEquipment.filter((item) => {
+            return fe !== item       //ako vratimo true isti su
+            //kad se uslov ispuni filtrira sta je stisnuto iz liste
+        })
+    },
+
         updateAdventure(adventure){
             
-                // this.updatedData.id                         = document.getElementById('id').value;
-                this.updatedData.description                   = document.getElementById('description').value
-                // this.updatedData.name                       = document.getElementById('name').value;
-                // this.updatedData.rules                      = document.getElementById('rules').value;
-                // this.updatedData.price                      = document.getElementById('price').value;
-                // this.updatedData.cancellationConditions     = document.getElementById('canc-cond').value;
-                // this.updatedData.biography                  = document.getElementById('biography').value;
-                this.updatedData.fishingEquipment           = document.getElementById('fish-eq').value;
-                // this.updatedData.city                       = document.getElementById('city').value;
-                // this.updatedData.street                     = document.getElementById('street').value;
-                // this.updatedData.zipcode                    = document.getElementById('zip-code').value;
-                // this.updatedData.capacity                   = document.getElementById('capacity').value;
-                // this.updatedData.rating                     = document.getElementById('rating').value;
-                // this.updatedData.noRatings                  = document.getElementById('num-ratings').value ;
-                // this.updatedData.photos                     = document.getElementById('photos').value;
 
-            console.log(document.getElementById('description').value);
-            console.log(this.updatedData)
+            this.adventure.photos = this.localPhotos;
+            this.adventure.fishingEquipment = [];
+            let counter = 0
+            for (let fe in this.localFishingEquipment){
+                counter++
+                this.data.fishingEquipment += this.localFishingEquipment[fe]
+                if (counter < this.localFishingEquipment.length) this.adventure.fishingEquipment += ','
+            }
+
 
             axios.put('api/fishingInstructor/' + 'instructor@gmail.com' 
             + '/adventureUpdate/' + adventure.id, adventure).then((response) => {
@@ -190,6 +228,9 @@ export default {
                 return pic !== item       //ako vratimo true isti su
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
             })
+        },
+        addNewPhoto(){
+            this.localPhotos.push(this.newPicture);
         }
     },
     created(){
