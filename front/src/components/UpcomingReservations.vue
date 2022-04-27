@@ -7,7 +7,7 @@
                 <i class="fa fa-search" id="search-icon-color" aria-hidden="true"></i>
             </span>
             <span>
-                <button class="btn btn-success" @click="">New Reservation</button>
+                <button class="btn btn-success" @click="addNewReservation">New Reservation</button>
             </span> 
             <div class="row">
                 <div class="col-12 col-md-5 col-lg-4" v-for="reservation in filteredReservations" :key="reservation.reservationId">
@@ -136,7 +136,7 @@ export default {
 
     button.btn-success{
         margin-left: auto; 
-        margin-right: 88%;
+        margin-right: 85%;
     }
 
 </style>

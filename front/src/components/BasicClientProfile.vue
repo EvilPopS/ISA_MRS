@@ -3,41 +3,23 @@
         <div class="modal-content">
             <button id="close_btn" @click="closeWindow" class="close">X</button>
             <div class="container">
-                <div class="row">
-                    <div class="col-6">
-                        <h3>User</h3>
-                        <label class="label" for="name">Cottage name:</label>
-                        <input type="text" id="name" class="form-control" v-model="data.name">
-                        <label class="label" for="description">description:</label>
-                        <input type="text" id="description" class="form-control" v-model="data.description">
-                        <label class="label" for="rules">Rules:</label>
-                        <input type="text" id="rules" class="form-control" v-model="data.rules">
-                        <span>
-                            <div class="inline-inputs">
-                                <label class="label" for="price">Price/day:</label>
-                                <input type="text" id="price" class="form-control rating" v-model="data.price">
-                            </div>
-                            <div class="inline-inputs">
-                                <label class="label" for="noRooms">No. rooms:</label>
-                                <input type="text" id="noRooms" class="form-control rating" v-model="data.noRooms">
-                            </div>
-                        </span>
-                        <label class="label" for="additionalServices">Additional services(press alt + , to add):</label>
-                        <input type="text" class="form-control" v-model="tempService" @keyup.alt="addService">
-                        <div v-for="service in localServices" :key="service" class="pill">
-                            <span  @click="deleteService(service)">{{service}}</span>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <label class="label" for="city">City:</label>
-                        <input type="text" id="city" class="form-control" v-model="data.city">
-                        <label class="label" for="street">Street:</label>
-                        <input type="text" id="street" class="form-control" v-model="data.street">
-                        <label class="label" for="zip-code">Zip code:</label>
-                        <input type="text" id="zip-code" class="form-control" v-model="data.zipCode">
-                        <label class="label" for="capacity">Capacity:</label>
-                        <input type="text" id="capacity" class="form-control" v-model="data.capacity">
-                    </div>
+                <h2>User: {{data.name}} {{data.surname}}</h2>
+                <div id="pictureDiv">
+                    <img :src="setPicture(data.profilePicture)" />
+                </div>
+                <div class="badge bg-success text-wrap rounded-pill status" style="width: 6rem;">
+                    {{data.loyaltyStatus}}
+                </div>
+                <div id="userInfoDiv">
+                    <p><b>Email: </b>{{ data.email }}</p>
+                    <p><b>Name: </b>{{ data.name }}</p>
+                    <p><b>Surname: </b>{{ data.surname }}</p>
+                    <p>
+                        <b>Address: </b>{{ data.city }}, {{data.zipcode}}
+                    </p>
+                </div>
+                <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
+                    <button type="button" class="btn btn-success" @click="closeWindow">Close</button>
                 </div>
             </div>
         </div>
@@ -45,6 +27,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
     name: "BasicClientProfile",
     components: {
@@ -61,9 +45,19 @@ export default {
     methods: {
         closeWindow : function(){
             this.$emit('modal-closed');
+        },
+        setPicture(picture) {
+                try{
+                    return require('../assets/' + picture);
+                } catch(e) {console.log(e)}
         }
     },
     mounted() {
+        axios.get('api/client/basic-profile/' + this.clientEmail).then((response) => {
+                this.data = response.data
+            }).catch((error) => {
+                console.log('Error happened: ' + error.name)
+            });
     }
 }
 </script>
@@ -99,7 +93,7 @@ export default {
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 40%;
     }
 
     /* The Close Button */
@@ -115,6 +109,32 @@ export default {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+    }
+
+    h2 {
+        color: rgba(51, 92, 80, 0.8);
+    }
+
+    b {
+        color: rgba(51, 92, 80, 0.8);
+    }
+
+    img {
+        max-width: 300px;
+        height: auto;
+        border-radius: 25%;
+        align-content: center;
+        margin: 3% 3%;
+    }
+
+    #userInfoDiv {
+        text-align: left;
+    }
+
+    div.status{
+        align-content: center;
+        text-align: center;
+        margin-bottom: 3%;
     }
 
 </style>

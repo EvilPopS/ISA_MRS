@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12 col-md-5 col-lg-4" v-for="reservation in filteredReservations" :key="reservation.reservationId">
                     <div class="card" style="width: 18rem; margin-top: 5%" id="card-body-id">
-                        <img :src="setPicture(reservation.clientProfilePhoto)" id="cottage-img" class="card-img-top" alt="This is a reservation picture.">
+                        <img :src="setPicture(reservation.clientProfilePhoto)" id="cottage-img" class="card-img-top" alt="This is a reservation picture." @click="showClient(reservation.clientEmail)">
                         <div class="card-body">
                             <h5 class="card-title" id="heading-cottage">Reservation #{{reservation.reservationId}}</h5>
                             <p class="card-text"><b>Rental:</b> {{reservation.rentalName}}</p>
@@ -18,7 +18,7 @@
                             <p class="card-text"><b>End date:</b> {{reservation.endTime.split('T')[0]}}</p>
                             <p class="card-text"><b>Action:</b> {{reservation.Action ? 'Yes' : 'No'}}</p>
                             <span>
-                                <button class="btn btn-success" @click="">Make report</button>
+                                <button class="btn btn-success" @click="makeReport">Make report</button>
                             </span>    
                         </div>
                     </div>
@@ -29,20 +29,30 @@
             <h3>There is nothing to show here..</h3>
         </div>
     </div>
+    <div v-if="basicClientProfileShow">
+        <BasicClientProfile
+            :clientEmail = "selectedClient"
+            @modal-closed = "basicClientProfileShow = false"
+        />
+    </div>
 </template>
 
 <script>
+import BasicClientProfile from '../components/BasicClientProfile'
+
 export default {
     name: "ReservationsHistory",
     components: {
-
+        BasicClientProfile
     },
     props: {
         data: Array
     },
     data(){
         return {
-            searchedReservation: ''
+            basicClientProfileShow: false,
+            searchedReservation: '',
+            selectedClient: ''
         }
     },
     methods: {
@@ -50,6 +60,10 @@ export default {
                 try{
                     return require('../assets/' + picture);
                 } catch(e) {console.log(e)}
+        },
+        showClient(email) {
+            this.basicClientProfileShow = true
+            this.selectedClient = email
         }
     },
     computed: {
@@ -110,6 +124,13 @@ export default {
 
     i#search-icon-color{
         color: rgba(51, 92, 80, 0.8);
+    }
+
+    #cottage-img:hover{
+        width: 230px;
+        height: 170px;
+        border-radius: 20px;
+        background: linear-gradient(rgb(255, 253, 253), rgb(241, 239, 239));
     }
 
 </style>
