@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div v-if="this.searchMode === false">
             <button class="btn btn-success" id="btn-add" @click="showAddAdventure()">Add adventure</button>
         </div>
     </div>
@@ -61,6 +61,12 @@ export default {
            succPopUpVisible: false
        }
    }, 
+   
+   props : {
+       searchMode : Boolean,
+       searchedAdventures : Array 
+   },
+   
    methods: {
         setPicture(adventure) {
                 try{
@@ -86,11 +92,16 @@ export default {
         }
    },
    created(){
-       axios.get('api/fishingInstructor/' + 'instructor@gmail.com' + '/adventures' ).then((response) => {
-           this.adventures = response.data
+       if (!this.searchMode) {
+            axios.get('api/fishingInstructor/' + 'instructor@gmail.com' + '/adventures' ).then((response) => {
+            this.adventures = response.data
         }).catch((error) => {
             console.log('Error happened: ' + error.name);
     })
+       } else {
+           this.adventures = this.searchedAdventures
+       }
+
 
    }
 }

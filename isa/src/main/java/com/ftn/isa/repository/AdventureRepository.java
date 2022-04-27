@@ -22,11 +22,18 @@ public interface AdventureRepository extends JpaRepository<Adventure, Long> {
                             "AND (:location = '' OR addr.place_name = :location) " +
                             "AND (:minRate = -1 OR adv.average_rate >= :minRate) " +
                             "AND (:maxRate = -1 OR adv.average_rate <= :maxRate) " +
-                                "GROUP BY adv.id")
+                                "GROUP BY adv.id"
+          )
     List<Adventure> searchAdventures(@Param("startDate") Date startDate, @Param("endDate") Date endDate,
                                      @Param("minPrice") double minPrice, @Param("maxPrice") double maxPrice,
                                      @Param("location") String location, @Param("minRate") double minRate,
                                      @Param("maxRate") double maxRate);
 
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM adventure WHERE instructor_id = :instructorId AND name LIKE '%' || :name || '%' "
+          )
+    List<Adventure> searchAdventureByName(@Param("name") String name, @Param("instructorId") Long instructorId);
+
     Adventure getAdventureById(Long id);
+  
 }

@@ -75,14 +75,3 @@ values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva 
             false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5, 6),
        (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
             false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 6);
-
-insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id)
-    values ('11/4/2022', '29/4/2022', false, true, 30, 1),
-            ('1/5/2022', '11/5/2022', false, true, 30, 1),
-            ('17/4/2022', '3/5/2022', false, true, 25, 2),
-            ('21/4/2022', '2/5/2022', false, true, 25, 2),
-            ('3/4/2022', '23/4/2022', false, true, 50, 3),
-            ('1/6/2022', '12/6/2022', false, true, 50, 3),
-            ('21/4/2022', '2/5/2022', false, true, 50, 3),
-            ('12/4/2022', '29/4/2022', false, true, 50, 4),
-            ('10/5/2022', '29/5/2022', false, true, 50, 4)

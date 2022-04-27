@@ -3,16 +3,14 @@ package com.ftn.isa.controllers;
 import com.ftn.isa.DTO.AdventureDTO;
 import com.ftn.isa.DTO.FishingInstructorDTO;
 import com.ftn.isa.model.*;
-import com.ftn.isa.repository.AdventureRepository;
 import com.ftn.isa.services.AdventureService;
 import com.ftn.isa.services.FishingInstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +26,17 @@ public class FishingInstructorController {
     @Autowired
     private AdventureService adventureService;
 
+    @GetMapping(value = "/{email}/searchAdventure")
+    public ResponseEntity<List<AdventureDTO>> searchAdventureByName(@RequestParam String adventureName, @PathVariable String email){
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        List<Adventure> adventures = adventureService.searchAdventureByName(adventureName, fishingInstructor.getId());
+        List<AdventureDTO> adventureDTOs = new ArrayList<>();
+        for (Adventure a : adventures){adventureDTOs.add(new AdventureDTO(a));}
 
+        return  new ResponseEntity<List<AdventureDTO>>(adventureDTOs, HttpStatus.OK);
+
+
+    }
 
 
     @GetMapping(value="/{email}")
