@@ -27,4 +27,6 @@ public interface AdventureRepository extends JpaRepository<Adventure, Long> {
                                      @Param("minPrice") double minPrice, @Param("maxPrice") double maxPrice,
                                      @Param("location") String location, @Param("minRate") double minRate,
                                      @Param("maxRate") double maxRate);
+
+    Adventure getAdventureById(Long id);
 }
