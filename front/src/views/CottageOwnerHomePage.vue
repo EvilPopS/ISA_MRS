@@ -72,6 +72,9 @@
                 axios.put("api/cottage-owner/data-update", requestBody)
                     .then(() => {
                         this.succPopUpVisible = true;
+                    }).catch(function (error) {
+                        console.log(error);
+                        alert(error)
                     });
             },
             setNewProfilePic(newPic) {

@@ -7,6 +7,9 @@ import com.ftn.isa.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class ClientService {
     @Autowired
@@ -19,6 +22,10 @@ public class ClientService {
     public void updatePersonalInfo(ClientProfileDTO clientData, Client client) {
         client.updatePersonalInfo(clientData);
         clientRepo.save(client);
+    }
+
+    public List<Client> getAllClients(){
+        return clientRepo.findAll();
     }
 
 

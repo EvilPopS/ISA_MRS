@@ -8,6 +8,7 @@ import RegistrationPage from '../views/RegistrationPage.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SearchPage from '../views/SearchPage.vue'
 import AdventuresView from '../views/AdventuresView'
+import AllReservations from '../views/AllReservations'
 import AdventureSearchView from  '../views/AdventureSearchView'
 import EntityBasicView from '../views/EntityBasicView.vue'
 
@@ -56,6 +57,11 @@ const routes = [
     path: '/Search',
     name: 'SearchPage',
     component: SearchPage
+  },
+  {
+    path: '/AllReservations',
+    name: 'AllReservations',
+    component: AllReservations
   },
   {
     path: '/AdventureSearch',

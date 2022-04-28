@@ -2,12 +2,10 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.CottageDTO;
 import com.ftn.isa.DTO.CottageOwnerDTO;
+import com.ftn.isa.DTO.ReservationDTO;
 import com.ftn.isa.model.*;
-import com.ftn.isa.services.AddressService;
-import com.ftn.isa.services.CottageOwnerService;
+import com.ftn.isa.services.*;
 import com.ftn.isa.helpers.WrongInputException;
-import com.ftn.isa.services.CottageService;
-import com.ftn.isa.services.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +23,10 @@ public class CottageOwnerController  {
     private CottageOwnerService cottageOwnerService;
 
     @Autowired
-    private CottageService cottageService;
-
-    @Autowired
     private PhotoService photoService;
 
     @Autowired
-    private AddressService addressService;
+    private ClientService clientService;
 
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping(value="/{email}")
@@ -98,6 +93,71 @@ public class CottageOwnerController  {
         cottageOwnerService.save(cottageOwner);
 
         return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(value="/{email}/delete-cottage/{id}")
+    public ResponseEntity<HttpStatus> deleteCottage(@PathVariable String email, @PathVariable String id) throws Exception {
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @CrossOrigin(origins = "http://localhost:8081")
+    @PutMapping(consumes="application/json", value="/change-cottage-data/{email}")
+    public ResponseEntity<HttpStatus> updatePersonalData(@PathVariable String email, @RequestBody CottageDTO cottageDTO) {
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (cottageDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Set<Photo> photos = new HashSet<Photo>();
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId() == cottageDTO.getId()){
+                photos = photoService.addOrDeletePhoto(c, cottageDTO);
+                break;
+            }
+        }
+        cottageOwnerService.save(cottageOwner, cottageDTO, photos);
+        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "http://localhost:8081")
+    @GetMapping(value="/all-reservations/{email}")
+    public ResponseEntity<Set<ReservationDTO>> getAllReservations(@PathVariable String email) {
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Set<ReservationDTO> reservations = new HashSet<ReservationDTO>();
+        for (Cottage c : cottageOwner.getCottages()){
+            for (Reservation reservation : c.getReservations()){
+                ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), c.getId(),
+                        c.getName(), reservation.getStartTime(), reservation.getEndTime(),
+                        reservation.getPrice(), reservation.isAction(), reservation.isReserved());
+                reservations.add(reservationDTO);
+            }
+        }
+
+        //nije moglo drugacije jer nismo uradili ovo za rezervaciju kao u dijagramu klasa
+        for (ReservationDTO resDTO : reservations) {
+            for (Client client : clientService.getAllClients()) {
+                for (Reservation r : client.getReservations()) {
+                    if (resDTO.getReservationId() == r.getId()) {
+                        resDTO.setClientEmail(client.getEmail());
+                        resDTO.setClientProfilePhoto(client.getProfilePicture().getPhotoPath());
+                        resDTO.setClientFullName(client.getName() + " " + client.getSurname());
+                    }
+                }
+            }
+        }
+
+        return new ResponseEntity<Set<ReservationDTO>>(reservations, HttpStatus.OK);
     }
 
 }
