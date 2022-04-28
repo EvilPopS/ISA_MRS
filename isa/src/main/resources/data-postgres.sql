@@ -86,3 +86,4 @@ insert into reservation (start_time, end_time, is_action, is_reserved, price, re
             ('21/4/2022', '2/5/2022', false, true, 50, 3, 4),
             ('12/4/2022', '29/4/2022', false, true, 50, 4, 4),
             ('10/5/2022', '29/5/2022', false, true, 50, 5, 4)
+
