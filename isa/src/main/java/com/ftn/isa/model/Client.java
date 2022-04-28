@@ -11,8 +11,8 @@ public class Client extends User {
     @Column(name = "no_penalties", nullable = false)
     private int noPenalties;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "reservation_id", referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Set<Reservation> reservations;
 
     public Client() {

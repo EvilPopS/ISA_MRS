@@ -18,6 +18,7 @@
         <div v-if="isCottageOwner">
             <a @click="cottageOwnerHomeRedirect()" class="homeNav">Profile</a>
             <a @click="allCottagesRedirect()" class="homeNav">Cottages</a>
+            <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
         </div>
 
         <div v-if="isInstructor">
@@ -36,7 +37,7 @@
             return {
                 isAdmin: false,
                 isClient: false,
-                isCottageOwner: false,
+                isCottageOwner: true,
                 isInstructor : false,
                 isUnauth: false
             }
@@ -60,6 +61,10 @@
             
             cottagesRedirect : function () {
                 pushView(this, "CottageManagmentPage");
+            },
+
+            allReservationsRedirect : function () {
+                pushView(this, "AllReservations");
             },
 
             adventuresRedirect : function () {
