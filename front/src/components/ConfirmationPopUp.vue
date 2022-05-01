@@ -14,38 +14,26 @@
             </div>
         </div>
     </div>
-    <SuccessPopUp v-show="localSuccPopUpVisible"
-                @close = closeSuccPopUp
-                :mess = succMessage
-    />
 </template>
 
 <script>
-import SuccessPopUp from "./SuccessPopUp.vue"
 
 export default {
     name: "ConfirmationPopUp",
     components: {
-        SuccessPopUp
     },
     props: {
         title: String,
         message: String,
-        succPopUpVisible: Boolean
     },
     data(){
         return {
             localSuccPopUpVisible: this.succPopUpVisible,
-            succMessage: "Cottage is successfully deleted!"
         }
     },
     methods: {
         closeWindow : function(){
             this.$emit('modal-closed');
-        },
-        closeSuccPopUp() {
-                this.$emit("succ-popup-close");
-                this.$router.go(); 
         },
         confirmedEvent(){
             this.localSuccPopUpVisible = true;
