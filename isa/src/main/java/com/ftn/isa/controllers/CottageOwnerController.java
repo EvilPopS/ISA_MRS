@@ -61,8 +61,10 @@ public class CottageOwnerController  {
 
         Set<Cottage> cottages = cottageOwner.getCottages();
         Set<CottageDTO> cottagesSet = new HashSet<>();
-        for (Cottage c : cottages){ cottagesSet.add(new CottageDTO(c));}
-
+        for (Cottage c : cottages) {
+            if (!c.isDeleted()) cottagesSet.add(new CottageDTO(c));
+        }
+        
         return new ResponseEntity<Set<CottageDTO>>(cottagesSet, HttpStatus.OK);
     }
 

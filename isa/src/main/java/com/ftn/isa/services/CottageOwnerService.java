@@ -59,6 +59,7 @@ public class CottageOwnerService {
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId() == id){
                 if (c.isDeleted()) throw new Exception("Cottage with this id is already deleted");
+                else if (c.hasUpcomingReservations()) throw new Exception("Cottage cannot be deleted due to upcoming reservations");
                 c.setDeleted(true);
                 break;
             }
