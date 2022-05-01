@@ -40,6 +40,8 @@ public class CottageOwnerService {
                 cottage.getAddress().setPlaceName(cottageDTO.getCity());
                 cottage.getAddress().setZipCode(cottageDTO.getZipCode());
                 cottage.getAddress().setStreet(cottageDTO.getStreet());
+                cottage.getAddress().setLon(cottageDTO.getLon());
+                cottage.getAddress().setLat(cottageDTO.getLat());
                 cottage.setAdditionalServices(cottageDTO.getAdditionalServices());
                 cottage.setNoRooms(cottageDTO.getNoRooms());
                 cottage.setCapacity(cottageDTO.getCapacity());
