@@ -64,7 +64,7 @@ public class CottageOwnerController  {
         for (Cottage c : cottages) {
             if (!c.isDeleted()) cottagesSet.add(new CottageDTO(c));
         }
-        
+
         return new ResponseEntity<Set<CottageDTO>>(cottagesSet, HttpStatus.OK);
     }
 
