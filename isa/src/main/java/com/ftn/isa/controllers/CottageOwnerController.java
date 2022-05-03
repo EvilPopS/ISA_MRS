@@ -61,7 +61,9 @@ public class CottageOwnerController  {
 
         Set<Cottage> cottages = cottageOwner.getCottages();
         Set<CottageDTO> cottagesSet = new HashSet<>();
-        for (Cottage c : cottages){ cottagesSet.add(new CottageDTO(c));}
+        for (Cottage c : cottages) {
+            if (!c.isDeleted()) cottagesSet.add(new CottageDTO(c));
+        }
 
         return new ResponseEntity<Set<CottageDTO>>(cottagesSet, HttpStatus.OK);
     }
@@ -76,7 +78,7 @@ public class CottageOwnerController  {
         if (cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Address address = new Address(cottageDTO.getCity(), cottageDTO.getZipCode(), cottageDTO.getStreet());
+        Address address = new Address(cottageDTO.getCity(), cottageDTO.getZipCode(), cottageDTO.getStreet(), cottageDTO.getLon(), cottageDTO.getLat());
         Set<Photo> photos = new HashSet<Photo>();
         for (String p : cottageDTO.getPhotos()){
             photos.add(new Photo(p));
@@ -108,7 +110,7 @@ public class CottageOwnerController  {
 
     @CrossOrigin(origins = "http://localhost:8081")
     @PutMapping(consumes="application/json", value="/change-cottage-data/{email}")
-    public ResponseEntity<HttpStatus> updatePersonalData(@PathVariable String email, @RequestBody CottageDTO cottageDTO) {
+    public ResponseEntity<HttpStatus> updateCottageData(@PathVariable String email, @RequestBody CottageDTO cottageDTO) {
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

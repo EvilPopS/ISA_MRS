@@ -1,7 +1,10 @@
 package com.ftn.isa.model;
 
 
+import com.ftn.isa.helpers.Validate;
+
 import javax.persistence.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -71,6 +74,13 @@ public abstract class RentalService {
     }
 
     public RentalService() {
+    }
+
+    public boolean hasUpcomingReservations() {
+        for (Reservation r : reservations){
+            if (Validate.getTodaysDate().isBefore(r.getEndTime())) return true;
+        }
+        return false;
     }
 
     public String getName() {
