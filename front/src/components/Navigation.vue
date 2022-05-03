@@ -8,7 +8,7 @@
         </div>
 
         <div v-if="isAdmin">
-            <a @click="homeRedirect()" class="homeNav">Profile</a>
+            <a @click="adminProfileRedirect()" class="homeNav">Profile</a>
         </div>
 
         <div v-if="isClient">
@@ -35,14 +35,20 @@
         name: "Navigation",
         data(){
             return {
-                isAdmin: false,
+                isAdmin: true,
                 isClient: false,
-                isCottageOwner: true,
+                isCottageOwner: false,
                 isInstructor : false,
                 isUnauth: false
             }
         },
         methods: {
+
+            adminProfileRedirect : function () {
+                pushView(this, "AdminProfilePage");
+            },
+
+
             cottageOwnerHomeRedirect : function () {
                 pushView(this, "CottageOwnerHomePage");
             },

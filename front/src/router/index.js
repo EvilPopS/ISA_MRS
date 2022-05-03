@@ -11,6 +11,8 @@ import AdventuresView from '../views/AdventuresView'
 import AllReservations from '../views/AllReservations'
 import AdventureSearchView from  '../views/AdventureSearchView'
 import EntityBasicView from '../views/EntityBasicView.vue'
+import AdminProfilePage from '../views/AdminProfileView.vue'
+
 
 const routes = [
   {
@@ -23,6 +25,13 @@ const routes = [
     name: 'InstructorProfilePage',
     component: InstructorProfilePage
   },
+
+  {
+    path : '/adminProfilePage',
+    name : 'AdminProfilePage',
+    component : AdminProfilePage
+  },
+
   {
     path: '/ClientProfilePage',
     name: 'ClientProfilePage',
