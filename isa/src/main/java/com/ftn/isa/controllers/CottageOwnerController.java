@@ -76,7 +76,7 @@ public class CottageOwnerController  {
         if (cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Address address = new Address(cottageDTO.getCity(), cottageDTO.getZipCode(), cottageDTO.getStreet());
+        Address address = new Address("Neka drzava", cottageDTO.getCity(), cottageDTO.getZipCode(), cottageDTO.getStreet());
         Set<Photo> photos = new HashSet<Photo>();
         for (String p : cottageDTO.getPhotos()){
             photos.add(new Photo(p));

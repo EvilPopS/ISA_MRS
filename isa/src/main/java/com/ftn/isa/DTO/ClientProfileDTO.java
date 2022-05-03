@@ -70,7 +70,6 @@ public class ClientProfileDTO {
                 Validate.validateNumber(this.phoneNumber);
     }
 
-
     public String getEmail() {
         return email;
     }

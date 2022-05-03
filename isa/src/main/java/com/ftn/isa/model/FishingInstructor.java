@@ -61,7 +61,7 @@ public class FishingInstructor extends User{
             adventureToUpdate.setCancellationConditions(adventureData.getCancellationConditions());
             adventureToUpdate.setPrice(adventureData.getPrice());
             adventureToUpdate.setFishingEquipment(adventureData.getFishingEquipment());
-            adventureToUpdate.setAddress(new Address(adventureData.getCity(), adventureData.getZipcode(), adventureData.getStreet()));
+            adventureToUpdate.setAddress(new Address("Neka drzava", adventureData.getCity(), adventureData.getZipcode(), adventureData.getStreet()));
             adventureToUpdate.setRules(adventureData.getRules());
         }
     }

@@ -68,7 +68,7 @@ public class FishingInstructorController {
         if (fishingInstructor == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Address adventureAddress = new Address(adventureDTO.getCity(), adventureDTO.getZipcode(), adventureDTO.getStreet());
+        Address adventureAddress = new Address("Neka drzava",adventureDTO.getCity(), adventureDTO.getZipcode(), adventureDTO.getStreet());
         Set<Photo> photos = new HashSet<>();
         for (String p : adventureDTO.getPhotos()){photos.add(new Photo(p));}
         Adventure adventure = new Adventure(adventureDTO.getName(), adventureDTO.getDescription(), photos,

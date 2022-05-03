@@ -28,7 +28,6 @@ public abstract class User {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
@@ -154,5 +153,7 @@ public abstract class User {
     public void setLoyaltyPoints(int loyaltyPoints) {
         this.loyaltyPoints = loyaltyPoints;
     }
+
+
 }
 

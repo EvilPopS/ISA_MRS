@@ -2,6 +2,7 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.BasicClientDTO;
 import com.ftn.isa.DTO.ClientProfileDTO;
+import com.ftn.isa.DTO.UserRegDTO;
 import com.ftn.isa.model.Client;
 import com.ftn.isa.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,18 @@ public class ClientController {
 
         clientService.updatePersonalInfo(clientData, client);
         return new ResponseEntity<>(clientData, HttpStatus.OK);
+    }
+
+    @PostMapping(consumes="application/json", value="/register")
+    @CrossOrigin(origins = "http://localhost:8081")
+    public ResponseEntity<HttpStatus> registerUser(@RequestBody UserRegDTO clientData) {
+        if (!clientData.arePropsValid())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (clientService.findByEmail(clientData.getEmail()) != null)
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+
+        clientService.registerClient(new Client(clientData));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

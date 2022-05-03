@@ -1,12 +1,12 @@
-insert into address (place_name, street, zip_code)
-    values ('Sabac', 'Karadjordjeva 26', '15000'),
-            ('Novi Sad', 'Zeleznicka 36', '21000'),
-            ('Novi Sad', 'Sonje Marinkovic 5', '21000'),
-            ('Novi Sad', 'Bulevar Oslobodjenja 55', '21000'),
-            ('Novi Sad', 'Vase Pelagic 1', '21000'),
-            ('Sremska Kamenica', 'Ulica Heroja 2', '21000'),
-            ('Kula', 'Marsala Tita 200', '25230'),
-            ('Zlatibor', 'Milenko Zablacanski', '31315');
+insert into address (country, place_name, street, zip_code)
+    values ('Srbija', 'Sabac', 'Karadjordjeva 26', '15000'),
+            ('Srbija', 'Novi Sad', 'Zeleznicka 36', '21000'),
+            ('Srbija', 'Novi Sad', 'Sonje Marinkovic 5', '21000'),
+            ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '21000'),
+            ('Srbija', 'Novi Sad', 'Vase Pelagic 1', '21000'),
+            ('Srbija', 'Sremska Kamenica', 'Ulica Heroja 2', '21000'),
+            ('Srbija', 'Kula', 'Marsala Tita 200', '25230'),
+            ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '31315');
 
 insert into photo (photo_path, rental_id)
     values ('default.jpg', null),

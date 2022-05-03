@@ -1,6 +1,7 @@
 package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.ClientProfileDTO;
+import com.ftn.isa.DTO.UserRegDTO;
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Client;
 import com.ftn.isa.repository.ClientRepository;
@@ -28,5 +29,8 @@ public class ClientService {
         return clientRepo.findAll();
     }
 
+    public void registerClient(Client client ) {
+        clientRepo.save(client);
+    }
 
 }
