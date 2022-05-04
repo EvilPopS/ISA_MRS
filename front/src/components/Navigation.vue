@@ -37,9 +37,9 @@
             return {
                 isAdmin: false,
                 isClient: false,
-                isCottageOwner: true,
+                isCottageOwner: false,
                 isInstructor : false,
-                isUnauth: false
+                isUnauth: true
             }
         },
         methods: {

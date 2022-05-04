@@ -12,7 +12,7 @@ public class AddressService {
     public AddressRepository addressRepository;
 
     public Address save(String city, String zipCode, String street) {
-        Address address = new Address(city, zipCode, street);
+        Address address = new Address("Neka drzava", city, zipCode, street);
         return addressRepository.save(address);
     }
 }
