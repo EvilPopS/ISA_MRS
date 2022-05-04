@@ -9,6 +9,7 @@
 
         <div v-if="isAdmin">
             <a @click="adminProfileRedirect()" class="homeNav">Profile</a>
+            <a @click="AdminNotificationsRedirect()" class="homeNav">Notifications</a>
         </div>
 
         <div v-if="isClient">
@@ -46,6 +47,10 @@
 
             adminProfileRedirect : function () {
                 pushView(this, "AdminProfilePage");
+            },
+
+            AdminNotificationsRedirect : function (){
+                pushView(this, "AdminNotifications");
             },
 
 
