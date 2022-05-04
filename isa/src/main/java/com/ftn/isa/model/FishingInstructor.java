@@ -3,15 +3,12 @@ package com.ftn.isa.model;
 
 import com.ftn.isa.DTO.AdventureDTO;
 import com.ftn.isa.DTO.FishingInstructorDTO;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 public class FishingInstructor extends User{
-
-
     @OneToMany(cascade = CascadeType.ALL, fetch= FetchType.EAGER)
     @JoinColumn(name="instructor_id", referencedColumnName = "id")
     private Set<Adventure> adventures = new HashSet<>();
@@ -30,19 +27,16 @@ public class FishingInstructor extends User{
         this.setPassword(data.getPassword());
         Address address = this.getAddress();
         address.setPlaceName(data.getCity());
-        address.setZipCode(data.getZipcode());
+        address.setCountry(data.getCountry());
         address.setStreet(data.getStreet());
         this.getProfilePicture().setPhotoPath(data.getProfilePicture());
         this.setPhoneNumber(data.getPhoneNumber());
     }
 
     public Adventure findAdventureById(Long id) {
-        for (Adventure a : this.adventures) {
-            if (a.getId().equals(id)) {
+        for (Adventure a : this.adventures)
+            if (a.getId().equals(id))
                 return a;
-
-            }
-        }
         return null;
     }
 
@@ -61,7 +55,7 @@ public class FishingInstructor extends User{
             adventureToUpdate.setCancellationConditions(adventureData.getCancellationConditions());
             adventureToUpdate.setPrice(adventureData.getPrice());
             adventureToUpdate.setFishingEquipment(adventureData.getFishingEquipment());
-            adventureToUpdate.setAddress(new Address(adventureData.getCity(), adventureData.getZipcode(), adventureData.getStreet()));
+            adventureToUpdate.setAddress(new Address(adventureData.getCountry(),  adventureData.getCity(), adventureData.getStreet()));
             adventureToUpdate.setRules(adventureData.getRules());
         }
     }

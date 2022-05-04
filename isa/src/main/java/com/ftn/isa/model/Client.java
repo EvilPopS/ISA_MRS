@@ -2,8 +2,10 @@ package com.ftn.isa.model;
 
 
 import com.ftn.isa.DTO.ClientProfileDTO;
+import com.ftn.isa.DTO.UserRegDTO;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -18,13 +20,30 @@ public class Client extends User {
     public Client() {
     }
 
+    public Client(UserRegDTO data) {
+            this.setName(data.getName());
+            this.setSurname(data.getSurname());
+            this.setEmail(data.getEmail());
+            this.setAddress(new Address(data.getCountry(), data.getCity(), data.getAddress()));
+            this.setPhoneNumber(data.getPhoneNumber());
+            this.setProfilePicture(new Photo(data.getProfilePicture()));
+            this.setPassword(data.getPassword());
+            this.setDeleted(false);
+            this.setActive(false);
+            this.setUserType(UserType.CLIENT);
+            this.setLoyaltyPoints(0);
+            this.setLoyaltyType(LoyaltyType.REGULAR);
+            this.noPenalties = 0;
+            this.reservations = new HashSet<>();
+    }
+
     public void updatePersonalInfo(ClientProfileDTO data) {
         this.setName(data.getName());
         this.setSurname(data.getSurname());
         this.setPassword(data.getPassword());
         Address address = this.getAddress();
         address.setPlaceName(data.getCity());
-        address.setZipCode(data.getZipcode());
+        address.setCountry(data.getCountry());
         address.setStreet(data.getStreet());
         this.getProfilePicture().setPhotoPath(data.getProfilePicture());
         this.setPhoneNumber(data.getPhoneNumber());

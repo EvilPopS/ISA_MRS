@@ -15,7 +15,7 @@
                         <input type="text" id="rules" class="form-control" v-model="data.rules">
                         <span>
                             <div class="inline-inputs">
-                                <label class="label" for="price">Price/day:</label>
+                                <label class="label" for="price">Price/day €:</label>
                                 <input type="text" id="price" class="form-control rating" v-model="data.price">
                             </div>
                             <div class="inline-inputs">
@@ -32,12 +32,12 @@
                     <div class="col-4">
                         <span>Address</span>
                         <hr class="solid">
+                        <label class="label" for="zip-code">Country:</label>
+                        <input type="text" id="zip-code" class="form-control" v-model="data.country">
                         <label class="label" for="city">City:</label>
                         <input type="text" id="city" class="form-control" v-model="data.city">
                         <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" v-model="data.street">
-                        <label class="label" for="zip-code">Zip code:</label>
-                        <input type="text" id="zip-code" class="form-control" v-model="data.zipCode">
                         <span>Rating</span>
                         <hr class="solid">
                         <span>
@@ -60,9 +60,19 @@
                             <img id="imgPreview" :src="require('@/assets/' + newPicture)"/>
                         </div>
                         <div v-for="pic in this.localPhotos" :key="pic" class="pillPic">
-                            <span  @click="deletePic(pic)"><img id="picGallery" :src="require('@/assets/' + pic)"/></span>
+                            <span  @click="deletePic(pic)"><img class="picGallery" :src="require('@/assets/' + pic)"/></span>
                         </div>
-                        <button type="button" class="btn btn-success" @click="AddNewPhoto">Add photo</button>
+                        <div>
+                            <button type="button" class="btn btn-success" @click="AddNewPhoto">Add photo</button>
+                        </div>
+                        <div id="mapContainer">
+                            <MapContainer
+                                :coordinates = "[cottage.lon, cottage.lat]"
+                                :map-height = "200"
+                                @changed-location = "changedLocationFunc"
+                            >
+                            </MapContainer>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -87,11 +97,12 @@
 import ErrorPopUp from "./ErrorPopUp.vue"
 import SuccessPopUp from "./SuccessPopUp.vue"
 import axios from 'axios';
+import MapContainer from "./MapContainer.vue"
 
 export default {
     name: "DetailCottageModal",
     components: {
-        ErrorPopUp, SuccessPopUp
+        ErrorPopUp, SuccessPopUp, MapContainer
     },
     props: {
         cottage: Object,
@@ -105,17 +116,24 @@ export default {
             localPhotos: [],
             localServices: [],
 
+            changedLocation: false,
+
             errMessage: '',
             succMessage: 'Cottage data is changed successfully!',
             errorPopUpVisible: false,
             localSuccPopUpVisible: false,
 
-            data: this.cottage
+            data: Object
         }
     },
     methods: {
         closeWindow : function(){
             this.$emit('modal-closed');
+        },
+        changedLocationFunc(lon, lat){
+            this.changedLocation = true
+            this.data.lon = lon
+            this.data.lat = lat
         },
         closePopUp() {
             this.errorPopUpVisible = false;
@@ -153,7 +171,9 @@ export default {
             })
         },
         AddNewPhoto(){
-            this.localPhotos.push(this.newPicture)
+            if (!this.localPhotos.includes(this.newPicture)){
+                    this.localPhotos.push(this.newPicture)    //zbog duplikata
+                }
         },
         changeCottage(){
             try { this.checkInputs(); } 
@@ -171,7 +191,7 @@ export default {
                 this.data.additionalServices += this.localServices[s]
                 if (counter < this.localServices.length) this.data.additionalServices += ','
             } 
-            axios.put("api/cottage-owner/change-cottage-data/" + "srdjan@gmail.com", this.data)
+            axios.put("api/cottage-owner/change-cottage-data/" + window.sessionStorage.getItem("email"), this.data)
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
@@ -196,8 +216,8 @@ export default {
             if(!this.validate(this.data.city, cityReg))
                 throw "Make sure you entered a valid city name!";
             
-            if (!this.validate(this.data.zipCode, numReg))
-                throw "Make sure you entered a valid zip code.";
+            if (!this.validate(this.data.country, cityReg))
+                throw "Make sure you entered a valid country name.";
             
             if (!this.validate(this.data.street, streetReg))
                 throw "Make sure you entered a valid street name.";
@@ -225,16 +245,21 @@ export default {
 
             if (this.localServices.length < 1)
                 throw "You need to add at least one local service.";
+
+            if (this.changedLocation && !(this.cottage.city !== this.data.city || this.cottage.street !== this.data.street)){
+                throw "Location on the map is changed, but you didn't change city/street in input fields.";
+            }
         }
         
     },
-    created(){
+    mounted(){
+            this.data = Object.assign({}, this.cottage)
             try {
                 this.localServices = this.cottage.additionalServices.split(',')
-                this.localPhotos = this.cottage.photos
+                this.localPhotos = Object.assign([], this.cottage.photos)
             }catch (err){
                 this.localServices = this.cottage.additionalServices //ako ne uspe split znaci da ima samo jedna
-                this.localPhotos = this.cottage.photos
+                this.localPhotos = Object.assign([], this.cottage.photos)
             }
    }
 
@@ -272,7 +297,7 @@ export default {
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 90%;
     }
 
     /* The Close Button */
@@ -333,8 +358,8 @@ export default {
         cursor: pointer;
     }
 
-    #picGallery {
-        height: 80px;
+    .picGallery {
+        height: 90px;
         width: auto;
         border-radius: 5px;
     }
@@ -357,6 +382,10 @@ export default {
         height: 70px;
         width: auto;
         padding: 5px;
+    }
+
+    #mapContainer {
+        margin-top: 5%;
     }
 
 </style>

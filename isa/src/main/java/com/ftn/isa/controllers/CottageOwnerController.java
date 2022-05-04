@@ -44,7 +44,7 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if (cottageOwnerData.arePropsValid())
+        if (!cottageOwnerData.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         cottageOwnerService.save(cottageOwnerData, cottageOwner);
@@ -61,7 +61,9 @@ public class CottageOwnerController  {
 
         Set<Cottage> cottages = cottageOwner.getCottages();
         Set<CottageDTO> cottagesSet = new HashSet<>();
-        for (Cottage c : cottages){ cottagesSet.add(new CottageDTO(c));}
+        for (Cottage c : cottages) {
+            if (!c.isDeleted()) cottagesSet.add(new CottageDTO(c));
+        }
 
         return new ResponseEntity<Set<CottageDTO>>(cottagesSet, HttpStatus.OK);
     }
@@ -76,11 +78,12 @@ public class CottageOwnerController  {
         if (cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Address address = new Address(cottageDTO.getCity(), cottageDTO.getZipCode(), cottageDTO.getStreet());
-        Set<Photo> photos = new HashSet<Photo>();
-        for (String p : cottageDTO.getPhotos()){
+        Set<Photo> photos = new HashSet<>();
+        for (String p : cottageDTO.getPhotos())
             photos.add(new Photo(p));
-        }
+
+        Address address = new Address(cottageDTO.getCountry(), cottageDTO.getCity(), cottageDTO.getStreet(),
+                                        cottageDTO.getLon(), cottageDTO.getLat());
 
         Cottage cottage = new Cottage(cottageDTO.getName(), cottageDTO.getDescription(),
                 cottageDTO.getCapacity(), cottageDTO.getRules(),
@@ -92,7 +95,7 @@ public class CottageOwnerController  {
         cottageOwner.getCottages().add(cottage);
         cottageOwnerService.save(cottageOwner);
 
-        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value="/{email}/delete-cottage/{id}")
@@ -108,7 +111,7 @@ public class CottageOwnerController  {
 
     @CrossOrigin(origins = "http://localhost:8081")
     @PutMapping(consumes="application/json", value="/change-cottage-data/{email}")
-    public ResponseEntity<HttpStatus> updatePersonalData(@PathVariable String email, @RequestBody CottageDTO cottageDTO) {
+    public ResponseEntity<HttpStatus> updateCottageData(@PathVariable String email, @RequestBody CottageDTO cottageDTO) {
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -116,7 +119,7 @@ public class CottageOwnerController  {
         if (cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Set<Photo> photos = new HashSet<Photo>();
+        Set<Photo> photos = new HashSet<>();
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId() == cottageDTO.getId()){
                 photos = photoService.addOrDeletePhoto(c, cottageDTO);
@@ -124,7 +127,7 @@ public class CottageOwnerController  {
             }
         }
         cottageOwnerService.save(cottageOwner, cottageDTO, photos);
-        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "http://localhost:8081")
@@ -144,7 +147,6 @@ public class CottageOwnerController  {
             }
         }
 
-        //nije moglo drugacije jer nismo uradili ovo za rezervaciju kao u dijagramu klasa
         for (ReservationDTO resDTO : reservations) {
             for (Client client : clientService.getAllClients()) {
                 for (Reservation r : client.getReservations()) {

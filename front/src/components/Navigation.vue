@@ -1,27 +1,28 @@
 <template>
     <div class="topnav">
-        <div v-if="isUnauth">
+        <div v-if="userRole === 'unauth'">
             <a @click="mainHomePageRedirect()" class="homeNav">Home</a>
             <a @click="registrationPageRedirect()" class="homeNav">Register</a>
             <a @click="loginPageRedirect()" class="homeNav">Login</a>
             <a @click="searchPageRedirect()" class="homeNav">Search</a>
+        </div>  
+
+        <div v-else-if="userRole === 'admin'">
+            <a @click="adminProfileRedirect()" class="homeNav">Profile</a>
+            <a @click="AdminNotificationsRedirect()" class="homeNav">Notifications</a>
         </div>
 
-        <div v-if="isAdmin">
-            <a @click="homeRedirect()" class="homeNav">Profile</a>
-        </div>
-
-        <div v-if="isClient">
+        <div v-else-if="userRole === 'client'">
             <a @click="clientProfileRedirect()" class="homeNav">Profile</a>
         </div>
 
-        <div v-if="isCottageOwner">
+        <div v-else-if="userRole === 'cottageOwner'">
             <a @click="cottageOwnerHomeRedirect()" class="homeNav">Profile</a>
             <a @click="allCottagesRedirect()" class="homeNav">Cottages</a>
             <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
         </div>
 
-        <div v-if="isInstructor">
+        <div v-else-if="userRole === 'instructor'">
             <a @click="instructorProfilePageRedirect()" class="homeNav">Profile</a>
             <a @click="adventuresRedirect()" class="homeNav">Adventures</a>
         </div>
@@ -34,15 +35,25 @@
     export default {
         name: "Navigation",
         data(){
+            let role = "unauth";
+            try {
+                role = window.sessionStorage.getItem("userRole");
+            } catch (e) {}
             return {
-                isAdmin: false,
-                isClient: false,
-                isCottageOwner: true,
-                isInstructor : false,
-                isUnauth: false
+                userRole: role
             }
         },
         methods: {
+
+            adminProfileRedirect : function () {
+                pushView(this, "AdminProfilePage");
+            },
+
+            AdminNotificationsRedirect : function (){
+                pushView(this, "AdminNotifications");
+            },
+
+
             cottageOwnerHomeRedirect : function () {
                 pushView(this, "CottageOwnerHomePage");
             },

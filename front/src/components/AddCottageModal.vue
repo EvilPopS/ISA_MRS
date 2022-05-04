@@ -15,7 +15,7 @@
                         <input type="text" id="rules" class="form-control" v-model="data.rules">
                         <span>
                             <div class="inline-inputs">
-                                <label class="label" for="price">Price/day:</label>
+                                <label class="label" for="price">Price/day €:</label>
                                 <input type="text" id="price" class="form-control rating" v-model="data.price">
                             </div>
                             <div class="inline-inputs">
@@ -32,12 +32,12 @@
                     <div class="col-4">
                         <span>Address</span>
                         <hr class="solid">
+                        <label class="label" for="zip-code">Country:</label>
+                        <input type="text" id="zip-code" class="form-control" v-model="data.country">
                         <label class="label" for="city">City:</label>
                         <input type="text" id="city" class="form-control" v-model="data.city">
                         <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" v-model="data.street">
-                        <label class="label" for="zip-code">Zip code:</label>
-                        <input type="text" id="zip-code" class="form-control" v-model="data.zipCode">
                         <label class="label" for="capacity">Capacity:</label>
                         <input type="text" id="capacity" class="form-control" v-model="data.capacity">
                     </div>
@@ -52,7 +52,17 @@
                         <div v-for="pic in this.localPhotos" :key="pic" class="pillPic">
                             <span  @click="deletePic(pic)"><img id="picGallery" :src="require('@/assets/' + pic)"/></span>
                         </div>
-                        <button type="button" class="btn btn-success btn-added" @click="AddNewPhoto">Add photo</button>
+                        <div>
+                            <button type="button" class="btn btn-success btn-added" @click="AddNewPhoto">Add photo</button>
+                        </div>
+                        <div id="mapContainer">
+                            <MapContainer
+                                :coordinates = "[45.249962, 19.849027]"
+                                :map-height = "200"
+                                @changed-location = "changedLocationFunc"
+                            >
+                            </MapContainer>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -77,11 +87,12 @@
 import ErrorPopUp from "./ErrorPopUp.vue"
 import SuccessPopUp from "./SuccessPopUp.vue"
 import axios from 'axios';
+import MapContainer from "./MapContainer.vue"
 
 export default {
     name: "AddCottageModal",
     components: {
-        ErrorPopUp, SuccessPopUp
+        ErrorPopUp, SuccessPopUp, MapContainer
     },
     props: {
         showAddNewCottage: Boolean,
@@ -95,6 +106,7 @@ export default {
 
             localPhotos: [],
             localServices: [],
+            changedLocation: false,
 
             errMessage: '',
             succMessage: 'New cottage is added successfully!',
@@ -109,17 +121,24 @@ export default {
                 additionalServices: '',
                 city: '',
                 street: '',
-                zipCode: '',
+                country: '',
                 averageRating: 0,
                 noRatings: 0,
                 capacity: 0,
-                photos: []
+                photos: [],
+                lon: '',
+                lat: ''
             }
         }
     },
     methods: {
         closeWindow : function(){
             this.$emit('modal-closed');
+        },
+        changedLocationFunc(lon, lat){
+            this.changedLocation = true
+            this.data.lon = lon
+            this.data.lat = lat
         },
         closePopUp() {
             this.errorPopUpVisible = false;
@@ -175,7 +194,7 @@ export default {
                 this.data.additionalServices += this.localServices[s]
                 if (counter < this.localServices.length) this.data.additionalServices += ','
             } 
-            axios.post("api/cottage-owner/add-cottage/" + "srdjan@gmail.com", this.data)
+            axios.post("api/cottage-owner/add-cottage/" + window.sessionStorage.getItem("email"), this.data)
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
@@ -201,8 +220,8 @@ export default {
             if(!this.validate(this.data.city, cityReg))
                 throw "Make sure you entered a valid city name!";
             
-            if (!this.validate(this.data.zipCode, numReg))
-                throw "Make sure you entered a valid zip code.";
+            if (!this.validate(this.data.country, cityReg))
+                throw "Make sure you entered a valid country name.";
             
             if (!this.validate(this.data.street, streetReg))
                 throw "Make sure you entered a valid street name.";
@@ -230,6 +249,10 @@ export default {
 
             if (this.localServices.length < 1)
                 throw "You need to add at least one local service.";
+
+            if (!this.changedLocation)
+                throw "You need to change location on the map";
+
         }
         
     }
@@ -335,7 +358,7 @@ export default {
     }
 
     #picGallery {
-        height: 80px;
+        height: 90px;
         width: auto;
         border-radius: 5px;
     }
@@ -358,6 +381,10 @@ export default {
         height: 70px;
         width: auto;
         padding: 5px;
+    }
+
+    #mapContainer {
+        margin-top: 5%;
     }
 
 </style>

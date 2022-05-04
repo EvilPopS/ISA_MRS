@@ -68,13 +68,16 @@ public class FishingInstructorController {
         if (fishingInstructor == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Address adventureAddress = new Address(adventureDTO.getCity(), adventureDTO.getZipcode(), adventureDTO.getStreet());
+        Address adventureAddress = new Address(adventureDTO.getCountry(), adventureDTO.getCity(), adventureDTO.getStreet());
         Set<Photo> photos = new HashSet<>();
-        for (String p : adventureDTO.getPhotos()){photos.add(new Photo(p));}
+        for (String p : adventureDTO.getPhotos())
+            photos.add(new Photo(p));
+
         Adventure adventure = new Adventure(adventureDTO.getName(), adventureDTO.getDescription(), photos,
-                 adventureDTO.getCapacity(), adventureDTO.getRules(),
-                false, adventureAddress, adventureDTO.getRating(),adventureDTO.getNoRatings(), RentalType.ADVENTURE, adventureDTO.getPrice(),
-                adventureDTO.getBiography(), adventureDTO.getFishingEquipment(), adventureDTO.getCancellationConditions());
+                 adventureDTO.getCapacity(), adventureDTO.getRules(), false, adventureAddress, adventureDTO.getRating(),
+                adventureDTO.getNoRatings(), RentalType.ADVENTURE, adventureDTO.getPrice(), adventureDTO.getBiography(),
+                adventureDTO.getFishingEquipment(), adventureDTO.getCancellationConditions());
+
         adventure.setPhotos(photos);
 
         fishingInstructor.getAdventures().add(adventure);
@@ -103,14 +106,13 @@ public class FishingInstructorController {
     @DeleteMapping(value="/{email}/deleteAdventure/{id}")
     public ResponseEntity<HttpStatus> deleteAdventure(@PathVariable String email, @PathVariable String id){
         FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
-        if (fishingInstructor == null){
+        if (fishingInstructor == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
         fishingInstructorService.deleteAdventure(fishingInstructor, Long.parseLong(id));
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
-
 
     @PutMapping(consumes="application/json", value="/data-update")
     public ResponseEntity<FishingInstructorDTO> updatePersonalData(@RequestBody FishingInstructorDTO fishingInstructorData) {
@@ -119,7 +121,7 @@ public class FishingInstructorController {
         if (fishingInstructor == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if (fishingInstructorData.arePropsValid())
+        if (!fishingInstructorData.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         fishingInstructorService.updatePersonalInfo(fishingInstructorData, fishingInstructor);

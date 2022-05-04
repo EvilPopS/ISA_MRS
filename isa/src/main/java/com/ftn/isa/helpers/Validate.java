@@ -1,16 +1,22 @@
 package com.ftn.isa.helpers;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 
 public class Validate {
     private static final String REG_NAME = "^[a-zA-Z\\s]+";
-    private static final String REG_EMAIL = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+    private static final String REG_EMAIL = "^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+$";
     private static final String REG_NUMBER = "^[0-9]+$";
     private static final String REG_PASSWORD = "^[a-zA-Z0-9!@#$%^&*()_+=]{6,30}$";
-    private static final String REG_STREET = "^[a-zA-Z0-9 -.]+&";
+    private static final String REG_STREET = "^[a-zA-Z0-9 -.]+$";
     private static final String REG_WORDS = "^[a-zA-Z -]+$";
+    private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+    public static LocalDateTime getTodaysDate() {
+        return LocalDateTime.now();
+    }
 
     public static boolean validateSurName(String surName) {
         return surName != null && surName.matches(REG_NAME);

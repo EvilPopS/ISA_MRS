@@ -1,6 +1,5 @@
 package com.ftn.isa.model;
 
-import com.ftn.isa.DTO.ClientProfileDTO;
 import com.ftn.isa.DTO.CottageOwnerDTO;
 
 import javax.persistence.*;
@@ -21,7 +20,7 @@ public class CottageOwner extends User{
         this.setPassword(data.getPassword());
         Address address = this.getAddress();
         address.setPlaceName(data.getCity());
-        address.setZipCode(data.getZipcode());
+        address.setCountry(data.getCountry());
         address.setStreet(data.getStreet());
         this.getProfilePicture().setPhotoPath(data.getProfilePicture());
         this.setPhoneNumber(data.getPhoneNumber());

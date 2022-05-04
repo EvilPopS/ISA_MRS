@@ -9,7 +9,7 @@ public class CottageOwnerDTO {
     private String name;
     private String surname;
     private String city;
-    private String zipcode;
+    private String country;
     private String street;
     private String phoneNumber;
     private String profilePicture;
@@ -23,7 +23,7 @@ public class CottageOwnerDTO {
         this.name = cottageOwner.getName();
         this.surname = cottageOwner.getSurname();
         this.city = cottageOwner.getAddress().getPlaceName();
-        this.zipcode = cottageOwner.getAddress().getZipCode();
+        this.country = cottageOwner.getAddress().getCountry();
         this.street = cottageOwner.getAddress().getStreet();
         this.phoneNumber = cottageOwner.getPhoneNumber();
         this.profilePicture = cottageOwner.getProfilePicture().getPhotoPath();
@@ -41,13 +41,15 @@ public class CottageOwnerDTO {
         this.loyaltyPoints = cottageOwner.getLoyaltyPoints();
     }
 
-    public CottageOwnerDTO(String email, String password, String name, String surname, String city, String zipcode, String street, String phoneNumber, String profilePicture, String userType, String loyaltyStatus, int loyaltyPoints) {
+    public CottageOwnerDTO(String email, String password, String name, String surname, String city, String country,
+                           String street, String phoneNumber, String profilePicture, String userType, String loyaltyStatus,
+                           int loyaltyPoints) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.city = city;
-        this.zipcode = zipcode;
+        this.country = country;
         this.street = street;
         this.phoneNumber = phoneNumber;
         this.profilePicture = profilePicture;
@@ -61,7 +63,7 @@ public class CottageOwnerDTO {
                 Validate.validateSurName(this.name) &&
                 Validate.validateSurName(this.surname) &&
                 Validate.validateWords(this.city) &&
-                Validate.validateNumber(this.zipcode) &&
+                Validate.validateWords(this.country) &&
                 Validate.validateStreet(this.street) &&
                 Validate.validateNumber(this.phoneNumber);
     }
@@ -106,12 +108,12 @@ public class CottageOwnerDTO {
         this.city = city;
     }
 
-    public String getZipcode() {
-        return zipcode;
+    public String getCountry() {
+        return country;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getStreet() {

@@ -35,12 +35,12 @@
                     <div class="col-4">
                         <span class="span-text">Address</span>
                         <hr class="solid">
+                        <label class="label" for="zip-code">Country:</label>
+                        <input type="text" id="zip-code" class="form-control" v-model="adventure.country">
                         <label class="label" for="city">City:</label>
                         <input type="text" id="city" class="form-control" v-model="adventure.city">
                         <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" v-model="adventure.street">
-                        <label class="label" for="zip-code">Zip code:</label>
-                        <input type="text" id="zip-code" class="form-control" v-model="adventure.zipcode">
                         <p>&nbsp;</p>
                         <p>&nbsp;</p>
                         <p>&nbsp;</p>
@@ -123,7 +123,7 @@ export default {
                 fishingEquipment : '',
                 city : '',
                 street : '',
-                zipcode : '',
+                country : '',
                 capacity :  '',
                 rating : '',
                 noRatings : '',
@@ -186,10 +186,8 @@ export default {
             }
 
 
-            axios.put('api/fishingInstructor/' + 'instructor@gmail.com' 
+            axios.put('api/fishingInstructor/' + window.sessionStorage.getItem("email") 
             + '/adventureUpdate/' + adventure.id, adventure).then((response) => {
-
-
 
 
             }).catch((e)=>{

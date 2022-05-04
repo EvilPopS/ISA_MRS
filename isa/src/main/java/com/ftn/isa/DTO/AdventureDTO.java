@@ -4,9 +4,7 @@ import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Adventure;
 import com.ftn.isa.model.Photo;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class AdventureDTO {
@@ -21,7 +19,7 @@ public class AdventureDTO {
     private String fishingEquipment;
     private String city;
     private String street;
-    private String zipcode;
+    private String country;
     private int capacity;
     private Double rating;
     private int noRatings;
@@ -38,7 +36,7 @@ public class AdventureDTO {
         this.fishingEquipment = adventure.getFishingEquipment();
         this.city = adventure.getAddress().getPlaceName();
         this.street = adventure.getAddress().getStreet();
-        this.zipcode = adventure.getAddress().getZipCode();
+        this.country = adventure.getAddress().getCountry();
         this.rating = adventure.getAverageRate();
         this.capacity = adventure.getCapacity();
         this.noRatings = adventure.getNoRatings();
@@ -47,7 +45,9 @@ public class AdventureDTO {
 
     public AdventureDTO(){}
 
-    public AdventureDTO(Long id,String name, String description, String rules, Double price, Double cancellationConditions, String biography, String fishingEquipment, String city, String street, String zipcode, int capacity, Double rating, int noRatings, Set<String> photos) {
+    public AdventureDTO(Long id,String name, String description, String rules, Double price, Double cancellationConditions,
+                        String biography, String fishingEquipment, String city, String street, String country, int capacity,
+                        Double rating, int noRatings, Set<String> photos) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -58,7 +58,7 @@ public class AdventureDTO {
         this.fishingEquipment = fishingEquipment;
         this.city = city;
         this.street = street;
-        this.zipcode = zipcode;
+        this.country = country;
         this.capacity = capacity;
         this.rating = rating;
         this.noRatings = noRatings;
@@ -157,12 +157,12 @@ public class AdventureDTO {
         this.street = street;
     }
 
-    public String getZipcode() {
-        return zipcode;
+    public String getCountry() {
+        return country;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public double getRating() {
@@ -192,7 +192,7 @@ public class AdventureDTO {
     public boolean propsValid() {
         return  Validate.validateSurName(this.name) &&
                 Validate.validateWords(this.city) &&
-                Validate.validateNumber(this.zipcode) &&
+                Validate.validateNumber(this.country) &&
                 Validate.validateStreet(this.street) &&
                 this.price > 0 && !this.biography.equals("") && this.capacity > 0 &&
                 this.photos.size() > 0 && this.noRatings == 0 && this.rating == 0

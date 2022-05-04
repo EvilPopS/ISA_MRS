@@ -1,5 +1,5 @@
 <template>
-    <UserEditProfileForm
+    <UserEditProfileForm 
         :type                = this.type
         :profilePicture      = this.profilePicture
         :points              = this.points
@@ -25,16 +25,18 @@
         @handle-submit       = "handleSubmit"
         @set-new-profile-pic = "setNewProfilePic"
         @succ-popup-close    = "succPopUpClose"
-        />
+    
+    />
 </template>
 
+
 <script>
-    import UserEditProfileForm from "../components/UserEditProfileForm.vue";
+    import UserEditProfileForm from "../components/UserEditProfileForm.vue"
     import axios from 'axios';
     
     export default {
-        name: "ClientProfilePage",
-        components: {
+        name: "AdminProfilePage",
+       components: {
             UserEditProfileForm
         },
         data() {
@@ -69,7 +71,7 @@
                     phoneNumber: data.phoneNumber,
                     profilePicture: data.profilePicture
                 }
-                axios.put("api/client/data-update", requestBody)
+                axios.put("api/fishingInstructor/data-update", requestBody)
                     .then(() => {
                         this.succPopUpVisible = true;
                     });
@@ -82,7 +84,7 @@
             }
         },
         created() {
-            axios.get("api/client/" + window.sessionStorage.getItem("email"))
+            axios.get("api/admin/" + window.sessionStorage.getItem("email"))
                 .then((response) => {
                     let data = response.data;
 

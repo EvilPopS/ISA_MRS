@@ -11,8 +11,7 @@ public class AddressService {
     @Autowired
     public AddressRepository addressRepository;
 
-    public Address save(String city, String zipCode, String street) {
-        Address address = new Address(city, zipCode, street);
-        return addressRepository.save(address);
+    public Address save(String city, String country, String street) {
+        return addressRepository.save(new Address(country, city,  street));
     }
 }

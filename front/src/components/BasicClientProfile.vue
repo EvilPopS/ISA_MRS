@@ -15,7 +15,7 @@
                     <p><b>Name: </b>{{ data.name }}</p>
                     <p><b>Surname: </b>{{ data.surname }}</p>
                     <p>
-                        <b>Address: </b>{{ data.city }}, {{data.zipcode}}
+                        <b>Address: </b>{{ data.country }}, {{ data.city }}
                     </p>
                 </div>
                 <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">

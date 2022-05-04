@@ -1,6 +1,5 @@
 package com.ftn.isa.DTO;
 
-import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Client;
 
 public class BasicClientDTO {
@@ -9,7 +8,7 @@ public class BasicClientDTO {
     private String name;
     private String surname;
     private String city;
-    private String zipcode;
+    private String country;
     private String profilePicture;
     private String loyaltyStatus;
 
@@ -18,7 +17,7 @@ public class BasicClientDTO {
         this.name = client.getName();
         this.surname = client.getSurname();
         this.city = client.getAddress().getPlaceName();
-        this.zipcode = client.getAddress().getZipCode();
+        this.country = client.getAddress().getCountry();
         this.profilePicture = client.getProfilePicture().getPhotoPath();
         switch (client.getLoyaltyType()) {
             case REGULAR:
@@ -33,12 +32,12 @@ public class BasicClientDTO {
     }
 
     public BasicClientDTO(String email, String name, String surname, String city,
-                            String zipcode, String profilePicture, String loyaltyStatus) {
+                            String country, String profilePicture, String loyaltyStatus) {
         this.email = email;
         this.name = name;
         this.surname = surname;
         this.city = city;
-        this.zipcode = zipcode;
+        this.country = country;
         this.profilePicture = profilePicture;
         this.loyaltyStatus = loyaltyStatus;
     }
@@ -75,12 +74,12 @@ public class BasicClientDTO {
         this.city = city;
     }
 
-    public String getZipcode() {
-        return zipcode;
+    public String getCountry() {
+        return country;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getProfilePicture() {

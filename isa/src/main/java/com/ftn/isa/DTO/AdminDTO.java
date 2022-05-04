@@ -1,10 +1,10 @@
 package com.ftn.isa.DTO;
 
-
 import com.ftn.isa.helpers.Validate;
-import com.ftn.isa.model.Client;
+import com.ftn.isa.model.Admin;
 
-public class ClientProfileDTO {
+public class AdminDTO {
+
     private String email;
     private String password;
     private String name;
@@ -19,18 +19,18 @@ public class ClientProfileDTO {
     private int loyaltyPoints;
 
 
-    public ClientProfileDTO(Client client) {
-        this.email = client.getEmail();
-        this.password = client.getPassword();
-        this.name = client.getName();
-        this.surname = client.getSurname();
-        this.city = client.getAddress().getPlaceName();
-        this.country = client.getAddress().getCountry();
-        this.street = client.getAddress().getStreet();
-        this.phoneNumber = client.getPhoneNumber();
-        this.profilePicture = client.getProfilePicture().getPhotoPath();
-        this.userType = "CLIENT";
-        switch (client.getLoyaltyType()) {
+    public AdminDTO(Admin admin) {
+        this.email = admin.getEmail();
+        this.password = admin.getPassword();
+        this.name = admin.getName();
+        this.surname = admin.getSurname();
+        this.city = admin.getAddress().getPlaceName();
+        this.country = admin.getAddress().getCountry();
+        this.street = admin.getAddress().getStreet();
+        this.phoneNumber = admin.getPhoneNumber();
+        this.profilePicture = admin.getProfilePicture().getPhotoPath();
+        this.userType = "ADMIN";
+        switch (admin.getLoyaltyType()) {
             case REGULAR:
                 this.loyaltyStatus = "REGULAR";
                 break;
@@ -40,12 +40,21 @@ public class ClientProfileDTO {
             default:
                 this.loyaltyStatus = "GOLD";
         }
-        this.loyaltyPoints = client.getLoyaltyPoints();
+        this.loyaltyPoints = admin.getLoyaltyPoints();
     }
 
-    public ClientProfileDTO(String email, String password, String name, String surname, String city, String country,
-                            String street, String phoneNumber, String profilePicture, String userType,
-                            String loyaltyStatus, int loyaltyPoints) {
+    public boolean arePropsValid() {
+        return Validate.validatePassword(this.password) &&
+                Validate.validateSurName(this.name) &&
+                Validate.validateSurName(this.surname) &&
+                Validate.validateWords(this.city) &&
+                Validate.validateWords(this.country) &&
+                Validate.validateStreet(this.street) &&
+                Validate.validateNumber(this.phoneNumber);
+    }
+
+    public AdminDTO(String email, String password, String name, String surname, String city, String country, String street,
+                    String phoneNumber, String profilePicture, String userType, String loyaltyStatus, int loyaltyPoints) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -60,15 +69,6 @@ public class ClientProfileDTO {
         this.loyaltyPoints = loyaltyPoints;
     }
 
-    public boolean arePropsValid() {
-        return Validate.validatePassword(this.password) &&
-                Validate.validateSurName(this.name) &&
-                Validate.validateSurName(this.surname) &&
-                Validate.validateWords(this.city) &&
-                Validate.validateWords(this.country) &&
-                Validate.validateStreet(this.street) &&
-                Validate.validateNumber(this.phoneNumber);
-    }
 
     public String getEmail() {
         return email;

@@ -9,14 +9,45 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="country", nullable = false)
+    private String country;
+
     @Column(name = "place_name", nullable = false)
     private String placeName;
 
-    @Column(name = "zip_code", nullable = false)
-    private String zipCode;
-
     @Column(name = "street", nullable = false)
     private String street;
+
+    @Column(name = "lon")
+    private String lon;
+
+    @Column(name = "lat")
+    private String lat;
+
+
+    public Address(){}
+
+    public Address(String country, String placeName, String street) {
+        this.country = country;
+        this.placeName = placeName;
+        this.street = street;
+    }
+
+    public Address(String country, String placeName, String street, String lon, String lat) {
+        this.country = country;
+        this.placeName = placeName;
+        this.street = street;
+        this.lon = lon;
+        this.lat = lat;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
 
     public Long getId() {
         return id;
@@ -24,14 +55,6 @@ public class Address {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Address(){}
-
-    public Address(String placeName, String zipCode, String street) {
-        this.placeName = placeName;
-        this.zipCode = zipCode;
-        this.street = street;
     }
 
     public String getPlaceName() {
@@ -42,19 +65,27 @@ public class Address {
         this.placeName = placeName;
     }
 
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
     public String getStreet() {
         return street;
     }
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
     }
 }
