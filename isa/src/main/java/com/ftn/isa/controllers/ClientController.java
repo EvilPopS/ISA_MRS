@@ -64,8 +64,11 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
 
         Client client = new Client(clientData);
-
-        clientService.saveOrUpdateClient(client);
+        try {
+            clientService.saveOrUpdateClient(client);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
         try {
             emailService.sendMail(client, "Confirmation mail",

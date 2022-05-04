@@ -24,7 +24,7 @@ public class Client extends User {
             this.setName(data.getName());
             this.setSurname(data.getSurname());
             this.setEmail(data.getEmail());
-            this.setAddress(new Address(data.getCountry(), data.getCity(), "", data.getAddress()));
+            this.setAddress(new Address(data.getCountry(), data.getCity(), data.getZipcode(), data.getAddress()));
             this.setPhoneNumber(data.getPhoneNumber());
             this.setProfilePicture(new Photo(data.getProfilePicture()));
             this.setPassword(data.getPassword());

@@ -40,7 +40,11 @@
                         <label>City: </label>
                         <input type="text" v-model="city">
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-3">
+                        <label>Zipcode: </label>
+                        <input type="text" v-model="zipcode">
+                    </div>
+                    <div class="col-sm-3">
                         <label>Address: </label>
                         <input type="text" v-model="address">
                     </div>
@@ -48,11 +52,11 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <label>Password: </label>
-                        <input type="text" v-model="password">
+                        <input type="password" v-model="password">
                     </div>
                     <div class="col-sm-6">
                         <label>Confirm password: </label>
-                        <input type="text" v-model="confirmPassword">
+                        <input type="password" v-model="confirmPassword">
                     </div>
                 </div>
             </div>
@@ -93,16 +97,23 @@
         @close = closePopUp
         :mess = errMessage
     /> 
+    
+    <SuccessPopUp v-show="succPopUpVisible"
+        @close = closeSuccPopUp
+        :mess = succMessage
+    />
 </template>
 
 <script>
     import ErrorPopUp from "@/components/ErrorPopUp.vue"; 
+    import SuccessPopUp from "@/components/SuccessPopUp.vue";
     import axios from 'axios';
 
     export default {
         name: "RegistrationPage",
         components: {
-            ErrorPopUp
+            ErrorPopUp,
+            SuccessPopUp
         },
         data() {
             return {
@@ -115,6 +126,7 @@
                 confirmPassword: "",
                 country: "",
                 city: "",
+                zipcode: "",
                 address: "",
                 phoneNumber: "",
                 profilePicture: "default.jpg",
@@ -123,7 +135,10 @@
                 regReason: "",
 
                 errMessage: "",
-                errorPopUpVisible: false
+                errorPopUpVisible: false,
+
+                succMessage: "",
+                succPopUpVisible: false
             };
         },
         methods: {
@@ -136,6 +151,10 @@
             closePopUp() {
                 this.errorPopUpVisible = false;
             },
+            closeSuccPopUp() {
+                this.succPopUpVisible = false;
+                this.$router.push({ name: "LoginPage" });
+            },
             submitRegistration() {
                 try {
                     validateUniRegForm(this);
@@ -147,8 +166,32 @@
                 }
 
                 if (this.isRegClientSelected) {
-                    axios.post().then((response) => {
-
+                    let requestBody = {
+                        name: this.name,
+                        surname: this.surname,
+                        email: this.email,
+                        password: this.password,
+                        country: this.country,
+                        city: this.city,
+                        zipcode: this.zipcode,
+                        address: this.address,
+                        phoneNumber: this.phoneNumber,
+                        profilePicture: this.profilePicture
+                    }
+                    axios.post("api/client/register", requestBody).then((response) => {
+                        this.succMessage = "Your account has been successfully registered, and confirmation email has been sent to" 
+                                                + this.email + 
+                                            " To activate your account please click link in the email message!"
+                        this.succPopUpVisible = true;
+                    }).catch(err => {
+                        if (err.response.status === 409){
+                            this.errMessage = "An account with the given email address already exists!";
+                            this.errorPopUpVisible = true;
+                        } 
+                        else if (err.response.status === 422) {
+                            this.errMessage = "Please make sure your phone number is not used by another account.";
+                            this.errorPopUpVisible = true;
+                        }
                     });
                 }
                 else {
@@ -182,7 +225,10 @@
             throw "Make sure you entered a valid country name.";
 
         if (!validate(formData.city, cityReg))
-            throw "Make sure you entered a valid city name!";
+            throw "Make sure you entered a valid city name.";
+
+        if (!validate(formData.zipcode, numReg))
+            throw "Make sure you entered a valid zipcode."
         
         if (!validate(formData.street, streetReg))
             throw "Make sure you entered a valid street name.";
