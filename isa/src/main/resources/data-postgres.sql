@@ -1,12 +1,13 @@
-insert into address (country, place_name, street, zip_code)
-    values ('Srbija', 'Sabac', 'Karadjordjeva 26', '15000'),
-            ('Srbija', 'Novi Sad', 'Zeleznicka 36', '21000'),
-            ('Srbija', 'Novi Sad', 'Sonje Marinkovic 5', '21000'),
-            ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '21000'),
-            ('Srbija', 'Novi Sad', 'Vase Pelagic 1', '21000'),
-            ('Srbija', 'Sremska Kamenica', 'Ulica Heroja 2', '21000'),
-            ('Srbija', 'Kula', 'Marsala Tita 200', '25230'),
-            ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '31315');
+insert into address (country, place_name, street, zip_code, lon, lat)
+    values ('Srbija', 'Sabac', 'Karadjordjeva 26', '15000', null, null ),
+            ('Srbija', 'Novi Sad', 'Zeleznicka 36', '21000', null, null),
+            ('Srbija', 'Novi Sad', 'Sonje Marinkovic 5', '21000', null, null),
+            ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '21000', '19.83383399956332', '45.25697997579121'),
+            ('Srbija', 'Novi Sad', 'Vase Pelagic 1', '21000', '19.840324439532647', '45.251395995531226'),
+            ('Srbija', 'Sremska Kamenica', 'Karadjordjeva 33', '21000', '19.835541721737165', '45.22357844341107'),
+            ('Srbija', 'Kula', 'Marsala Tita 200', '25230', null, null),
+            ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '31315', '19.652715410573126', '43.66153258311601'),
+           ('Srbija', 'Novi Sad', 'Partizanski put 2', '21000', '19.819806290382964', ' 45.15281270382178');
 
 insert into photo (photo_path, rental_id)
     values ('default.jpg', null),
@@ -56,7 +57,7 @@ insert into cottage (id, name, description, capacity, rules, is_deleted, address
     values (nextval('my_seq_gen_rental'), 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
                 false, 8, 0, 0, 0, 90, 'wifi,parking,internet,bazen', 3, 5),
            (nextval('my_seq_gen_rental'), 'Fruskogorska zora', 'Najlepsa vikendica u okolini NS.', 5, 'Zabranjeno pusenje!',
-            false, 6, 0, 0, 0, 100, 'wifi,klima,parking,rostilj', 4, 5);
+            false, 9, 0, 0, 0, 100, 'wifi,klima,parking,rostilj', 4, 5);
 
 insert into loyalty_program (discount, increase, loyalty_type)
     values (0, 0, 0),

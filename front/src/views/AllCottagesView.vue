@@ -17,7 +17,7 @@
                             <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
                             <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
                             <p class="card-text"><b>Description:</b>{{cottage.description}}</p>
-                            <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}</p>
+                            <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
                             <span>
                                 <button class="btn btn-success card-btns" @click="showDetailCottageModal(cottage)">Details</button>
                                 <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(cottage)">Delete</button>
@@ -49,15 +49,20 @@
     </div>
     <div v-else-if="confirmationPopUpVisible">
         <ConfirmationPopUp
-        :succPopUpVisible = "succPopUpVisible"
         :title="deletionTitle"
         :message="deletionMessage"
         @modal-closed = "confirmationPopUpVisible = false"
-        @succ-popup-close = "succPopUpVisible = false"
         @confirmed-event = "confirmDeletion"
         />
     </div>
-
+    <ErrorPopUp v-show="errorPoup" 
+        @close = "errorPoup = false"
+        :mess = "errMsg"
+        /> 
+    <SuccessPopUp v-show="succPoupUp"
+        @close = "succPoupUp = false"
+        :mess = succMessage
+    />
     
 </template>
 
@@ -66,11 +71,13 @@
  import DetailCottageModal from '../components/DetailCottageModal.vue'
  import AddCottageModal from '../components/AddCottageModal.vue'
  import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
+ import ErrorPopUp from '../components/ErrorPopUp.vue'
+ import SuccessPopUp from '../components/SuccessPopUp.vue'
 
 export default {
    name: "AllCottagesView",
    components: {
-       DetailCottageModal, AddCottageModal, ConfirmationPopUp
+       DetailCottageModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp
    },
    data (){
        return {
@@ -78,11 +85,14 @@ export default {
            sendCottage: {},
            cottageToDelete: {},
            searched: '',
+           errorPoup: false,
+           errMsg: "Cottage cannot be deleted due to upcoming reservations",
+           succPoupUp: false,
+           succMessage: '',
 
            showDetails: false,
            showAddNewCottage: false,
            showDeleteCottage: false,
-           succPopUpVisible: false,
            confirmationPopUpVisible: false,
 
            deletionMessage: "Are you sure about deleting this cottage?",
@@ -109,25 +119,33 @@ export default {
             this.cottageToDelete = cottage;
             this.confirmationPopUpVisible = true;
         },
+        closeSuccPopUp() {
+            this.succPoupUp = false 
+        },
         confirmDeletion(){
+            this.confirmationPopUpVisible = false
             axios.delete('api/cottage-owner/' + 'srdjan@gmail.com' + '/delete-cottage/' + this.cottageToDelete.id).then((response) => {
-                
-            }).catch(function (error) {
-                console.log(error);
-                alert(error)
-            });
-            this.cottages = this.cottages.filter((item) => {
-                return this.cottageToDelete !== item       //ako vratimo true isti su
+                this.succMessage = "Cottage is successfully deleted!"
+                this.succPoupUp = true
+
+                this.cottages = this.cottages.filter((item) => {
+                    return this.cottageToDelete !== item       //ako vratimo true isti su
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
+                })
+                this.cottageToDelete = {}   //reset vreednosti
+            }).catch((error) => {
+                this.errMsg = "Cottage cannot be deleted due to upcoming reservations"
+                this.errorPoup = true
             })
-            this.cottageToDelete = {}   //reset vreednosti
+            
         }
    },
    mounted(){
        axios.get('api/cottage-owner/all-cottages/' + "srdjan@gmail.com").then((response) => {
            this.cottages = response.data
         }).catch((error) => {
-            console.log('Error happened: ' + error.name);
+            this.errMsg = "Error happened: " + error.data
+            this.errorPoup = true
     })
 
    },

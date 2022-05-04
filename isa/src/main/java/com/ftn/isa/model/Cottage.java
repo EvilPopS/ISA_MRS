@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Where(clause = "is_deleted = false")
+//@Where(clause = "is_deleted = false")
 public class Cottage extends RentalService{
     @Column(name = "additional_services", nullable = false)
     private String additionalServices;

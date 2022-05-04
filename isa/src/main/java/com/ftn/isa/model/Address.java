@@ -21,12 +21,18 @@ public class Address {
     @Column(name = "street", nullable = false)
     private String street;
 
-    public Long getId() {
-        return id;
+    @Column(name = "lon", nullable = true)
+    private String lon;
+
+    @Column(name = "lat", nullable = true)
+    private String lat;
+
+    public String getLon() {
+        return lon;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setLon(String lon) {
+        this.lon = lon;
     }
 
     public Address(){}
@@ -36,6 +42,30 @@ public class Address {
         this.placeName = placeName;
         this.zipCode = zipCode;
         this.street = street;
+    }
+
+    public Address(String placeName, String zipCode, String street, String lon, String lat) {
+        this.placeName = placeName;
+        this.zipCode = zipCode;
+        this.street = street;
+        this.lon = lon;
+        this.lat = lat;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getPlaceName() {

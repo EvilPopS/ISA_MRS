@@ -1,46 +1,84 @@
 <template>
-  <form id="form-style" @submit.prevent="emitSubmit()">
-        <img id="profilePic" @click="changeProfilePhoto()"  :src="setProfPic()" alt="Client profile picture should be here...">
+  <form @submit.prevent="emitSubmit()">
+      <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <hr class="solid">
+                    <img id="profilePic" @click="changeProfilePhoto()"  :src="setProfPic()" alt="Client profile picture should be here...">
+                    <div class= "badge bg-success text-wrap rounded-pill status">
+                        {{email}}
+                    </div>
+                    <div class= "badge bg-success text-wrap rounded-pill status">
+                        {{type}}
+                    </div>
+                </div>
+                <div class="col-8">
+                    <hr class="solid">
+                    <div>
+                        <div class="inline-inputs">
+                            <label style="display: block">NO. accumulated loyalty points: </label>
+                            <input disabled type="text" class= "form-control" v-model="points">
+                        </div>
 
-        <label>Account type: </label>
-        <input disabled type="text" v-model="type">
+                        <div class="inline-inputs">
+                            <label>Loyalty program status: </label>
+                            <input disabled type="text" class= "form-control" v-model="loyalty">
+                        </div>
+                    </div>
 
-        <label>Number of accumulated loyalty points: </label>
-        <input disabled type="text" v-model="points">
+                    <div>
+                        <div class="inline-inputs">
+                            <label>Name: </label>
+                            <input type="text" class= "form-control" v-model="name">        
+                        </div>
 
-        <label>Loyalty prpgram status: </label>
-        <input disabled type="text" v-model="loyalty">
+                        <div class="inline-inputs">
+                            <label>Surname: </label>
+                            <input type="text" class= "form-control" v-model="surname">
+                        </div>
+                    </div>
 
-        <label>Email: </label>
-        <input disabled type="text" v-model="email">
-        
-        <label>Name: </label>
-        <input type="text" v-model="name">
+                    <div>
+                        <div class="inline-inputs">
+                            <label>City: </label>
+                            <input type="text" class= "form-control" v-model="city">
+                        </div>
 
-        <label>Surname: </label>
-        <input type="text" v-model="surname">
+                        <div class="inline-inputs">
+                            <label>Street: </label>
+                            <input type="text" class= "form-control" v-model="street">
+                        </div>
+                    </div>
 
-        <label>City: </label>
-        <input type="text" v-model="city">
+                    <div>
+                        <div class="inline-inputs">
+                            <label>Zipcode: </label>
+                            <input type="text" class= "form-control" v-model="zipcode">
+                        </div>
 
-        <label>Zipcode: </label>
-        <input type="text" v-model="zipcode">
+                        <div class="inline-inputs">
+                            <label>Phone number: </label>
+                            <input type="text" class= "form-control" v-model="phoneNumber">
+                        </div>
+                    </div>                           
 
-        <label>Street: </label>
-        <input type="text" v-model="street">
+                    <div>
+                        <div class="inline-inputs">
+                            <label>Password: </label>
+                            <input type="password" class= "form-control" v-model="password">
+                        </div>
 
-        <label>Phone number: </label>
-        <input type="text" v-model="phoneNumber">
-
-        <label>Password: </label>
-        <input type="password" v-model="password">
-
-        <label>Confirm Password: </label>
-        <input type="password" v-model="confirmPassword">
-
-        <div class="submit">
-            <button id="subBtn">Update personal data</button>
-        </div>
+                        <div class="inline-inputs">
+                            <label>Confirm Password: </label>
+                            <input type="password" class= "form-control" v-model="confirmPassword">
+                        </div>
+                    </div>      
+                    <div class="submit">
+                        <button id="subBtn">Update personal data</button>
+                    </div>
+                </div>
+            </div>
+      </div>
     </form>
 
     <PopUp v-show="picPopUpVisible" @close="closePopUp();">
@@ -205,6 +243,32 @@
 </script>
 
 <style>
+    #form-style {
+        max-width: 420px;
+        margin: 30px auto;
+        background: white;
+        text-align: left;
+        padding: 40px;
+        border-radius: 10px;
+    }
+
+    input, select {
+        display: block;
+        padding: 10px 6px;
+        width: 100%;
+        box-sizing: border-box;
+        border: none;
+        border-bottom: 1px solid #ddd;
+        color: #555
+    }
+    input[type="checkbox"]{
+        display: inline-block;
+        width: 16px;
+        margin: 0 10px 0 0;
+        position: relative;
+        top: 2px
+    }
+
     #imgPreview:hover {
         border-radius: 5px;
         width: 35%;
@@ -231,16 +295,16 @@
 
     #profilePic {
         border-radius: 40px;
-        width: 170px;
-        height: 170px;
+        width: 200px;
+        height: 200px;
         display: block;
         margin: 0 auto;
         padding: 10px;
     }
 
     #profilePic:hover {
-        width: 200px;
-        height: 200px;
+        width: 230px;
+        height: 230px;
         border-radius: 20px;
         background: linear-gradient(rgb(255, 253, 253), rgb(241, 239, 239));
     }
@@ -252,15 +316,6 @@
         font-weight: bold;
     }
 
-    #form-style {
-        max-width: 420px;
-        margin: 30px auto;
-        background: white;
-        text-align: left;
-        padding: 40px;
-        border-radius: 10px;
-    }
-
     label {
         color: #aaa;
         display: inline-block;
@@ -270,22 +325,6 @@
         letter-spacing: 1px;
         font-weight: bold;
     }
-    input, select {
-        display: block;
-        padding: 10px 6px;
-        width: 100%;
-        box-sizing: border-box;
-        border: none;
-        border-bottom: 1px solid #ddd;
-        color: #555
-    }
-    input[type="checkbox"]{
-        display: inline-block;
-        width: 16px;
-        margin: 0 10px 0 0;
-        position: relative;
-        top: 2px
-    }
 
     .submit button {
         background: rgb(3, 94, 30);
@@ -294,6 +333,7 @@
         margin-top: 20px;
         color: white;
         border-radius: 20px;
+        margin-bottom: 5%;
     }
     .submit {
         text-align: center;
@@ -323,4 +363,30 @@
         background: rgba(218, 214, 214, 70%);
         color: black;
     }
+
+</style>
+
+<style scoped>
+
+    div.status{
+        font-size: 20px;
+        align-content: center;
+        text-align: center;
+        margin-bottom: 3%;
+        margin-top: 5%;
+    }
+
+    div.row {
+        margin-top: 5%;
+    }
+
+    .inline-inputs {
+        display: inline-block;
+        margin: 0 5%;
+    }
+
+    div.inline-inputs input {
+        size: 100px;
+    }
+
 </style>

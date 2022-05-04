@@ -18,6 +18,8 @@ public class CottageDTO {
     private String city;
     private String zipCode;
     private String street;
+    private String lon;
+    private String lat;
     private Double averageRating;
     private double price;
     private String additionalServices;
@@ -32,6 +34,8 @@ public class CottageDTO {
         this.city = cottage.getAddress().getPlaceName();
         this.zipCode = cottage.getAddress().getZipCode();
         this.street = cottage.getAddress().getStreet();
+        this.lon = cottage.getAddress().getLon();
+        this.lat = cottage.getAddress().getLat();
         this.averageRating = cottage.getAverageRate();
         this.price = cottage.getPrice();
         this.additionalServices = cottage.getAdditionalServices();
@@ -42,7 +46,7 @@ public class CottageDTO {
     }
 
     public CottageDTO(String name, String description, int capacity, String rules,
-                      String city, String zipCode, String street, Double averageRating,
+                      String city, String zipCode, String street, String lon, String lat,Double averageRating,
                       double price, String additionalServices, int noRatings, int noRooms, Long id) {
         this.name = name;
         this.description = description;
@@ -51,12 +55,30 @@ public class CottageDTO {
         this.city = city;
         this.zipCode = zipCode;
         this.street = street;
+        this.lon = lon;
+        this.lat = lat;
         this.averageRating = averageRating;
         this.price = price;
         this.additionalServices = additionalServices;
         this.noRatings = noRatings;
         this.noRooms = noRooms;
         this.id = id;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
     }
 
     public Long getId() {
