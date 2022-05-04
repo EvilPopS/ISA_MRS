@@ -20,7 +20,7 @@ public class CottageOwner extends User{
         this.setPassword(data.getPassword());
         Address address = this.getAddress();
         address.setPlaceName(data.getCity());
-        address.setZipCode(data.getCountry());
+        address.setCountry(data.getCountry());
         address.setStreet(data.getStreet());
         this.getProfilePicture().setPhotoPath(data.getProfilePicture());
         this.setPhoneNumber(data.getPhoneNumber());

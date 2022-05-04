@@ -38,7 +38,7 @@ public class CottageOwnerService {
             if (cottage.getId() == cottageDTO.getId()) {
                 cottage.setPhotos(photos);
                 cottage.getAddress().setPlaceName(cottageDTO.getCity());
-                cottage.getAddress().setZipCode(cottageDTO.getZipCode());
+                cottage.getAddress().setCountry(cottageDTO.getCountry());
                 cottage.getAddress().setStreet(cottageDTO.getStreet());
                 cottage.getAddress().setLon(cottageDTO.getLon());
                 cottage.getAddress().setLat(cottageDTO.getLat());
@@ -58,8 +58,10 @@ public class CottageOwnerService {
     public void deleteCottage(CottageOwner cottageOwner, Long id) throws Exception {
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId() == id){
-                if (c.isDeleted()) throw new Exception("Cottage with this id is already deleted");
-                else if (c.hasUpcomingReservations()) throw new Exception("Cottage cannot be deleted due to upcoming reservations");
+                if (c.isDeleted())
+                    throw new Exception("Cottage with this id is already deleted");
+                else if (c.hasUpcomingReservations())
+                    throw new Exception("Cottage cannot be deleted due to upcoming reservations");
                 c.setDeleted(true);
                 break;
             }

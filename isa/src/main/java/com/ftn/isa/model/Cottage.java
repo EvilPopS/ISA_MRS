@@ -1,11 +1,8 @@
 package com.ftn.isa.model;
 
 
-import org.hibernate.annotations.Where;
-
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 //@Where(clause = "is_deleted = false")

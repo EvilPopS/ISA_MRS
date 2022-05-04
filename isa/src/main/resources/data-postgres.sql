@@ -5,7 +5,7 @@ insert into address (country, place_name, street, lon, lat)
             ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '19.83383399956332', '45.25697997579121'),
             ('Srbija', 'Novi Sad', 'Vase Pelagic 1', '19.840324439532647', '45.251395995531226'),
             ('Srbija', 'Sremska Kamenica', 'Karadjordjeva 33', '19.835541721737165', '45.22357844341107'),
-            ('Srbija', 'Kula', 'Marsala Tita 200', '25230', null, null),
+            ('Srbija', 'Kula', 'Marsala Tita 200', null, null),
             ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '19.652715410573126', '43.66153258311601'),
            ('Srbija', 'Novi Sad', 'Partizanski put 2', '19.819806290382964', ' 45.15281270382178');
 
