@@ -30,7 +30,7 @@ public class FishingInstructor extends User{
         this.setPassword(data.getPassword());
         Address address = this.getAddress();
         address.setPlaceName(data.getCity());
-        address.setZipCode(data.getZipcode());
+        address.setZipCode(data.getCountry());
         address.setStreet(data.getStreet());
         this.getProfilePicture().setPhotoPath(data.getProfilePicture());
         this.setPhoneNumber(data.getPhoneNumber());
@@ -61,7 +61,7 @@ public class FishingInstructor extends User{
             adventureToUpdate.setCancellationConditions(adventureData.getCancellationConditions());
             adventureToUpdate.setPrice(adventureData.getPrice());
             adventureToUpdate.setFishingEquipment(adventureData.getFishingEquipment());
-            adventureToUpdate.setAddress(new Address("Neka drzava", adventureData.getCity(), adventureData.getZipcode(), adventureData.getStreet()));
+            adventureToUpdate.setAddress(new Address("Neka drzava", adventureData.getCity(), adventureData.getCountry(), adventureData.getStreet()));
             adventureToUpdate.setRules(adventureData.getRules());
         }
     }

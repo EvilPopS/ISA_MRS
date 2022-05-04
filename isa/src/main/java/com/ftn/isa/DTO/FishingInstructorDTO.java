@@ -1,7 +1,6 @@
 package com.ftn.isa.DTO;
 
 import com.ftn.isa.helpers.Validate;
-import com.ftn.isa.model.Client;
 import com.ftn.isa.model.FishingInstructor;
 
 public class FishingInstructorDTO {
@@ -11,7 +10,7 @@ public class FishingInstructorDTO {
     private String name;
     private String surname;
     private String city;
-    private String zipcode;
+    private String country;
     private String street;
     private String phoneNumber;
     private String profilePicture;
@@ -26,7 +25,7 @@ public class FishingInstructorDTO {
         this.name = instructor.getName();
         this.surname = instructor.getSurname();
         this.city = instructor.getAddress().getPlaceName();
-        this.zipcode = instructor.getAddress().getZipCode();
+        this.country = instructor.getAddress().getCountry();
         this.street = instructor.getAddress().getStreet();
         this.phoneNumber = instructor.getPhoneNumber();
         this.profilePicture = instructor.getProfilePicture().getPhotoPath();
@@ -49,18 +48,20 @@ public class FishingInstructorDTO {
                 Validate.validateSurName(this.name) &&
                 Validate.validateSurName(this.surname) &&
                 Validate.validateWords(this.city) &&
-                Validate.validateNumber(this.zipcode) &&
+                Validate.validateWords(this.country) &&
                 Validate.validateStreet(this.street) &&
                 Validate.validateNumber(this.phoneNumber);
     }
 
-    public FishingInstructorDTO(String email, String password, String name, String surname, String city, String zipcode, String street, String phoneNumber, String profilePicture, String userType, String loyaltyStatus, int loyaltyPoints) {
+    public FishingInstructorDTO(String email, String password, String name, String surname, String city, String country,
+                                String street, String phoneNumber, String profilePicture, String userType, String loyaltyStatus,
+                                int loyaltyPoints) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.city = city;
-        this.zipcode = zipcode;
+        this.country = country;
         this.street = street;
         this.phoneNumber = phoneNumber;
         this.profilePicture = profilePicture;
@@ -110,12 +111,12 @@ public class FishingInstructorDTO {
         this.city = city;
     }
 
-    public String getZipcode() {
-        return zipcode;
+    public String getCountry() {
+        return country;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getStreet() {

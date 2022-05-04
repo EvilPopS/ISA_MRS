@@ -10,7 +10,7 @@ public class AdminDTO {
     private String name;
     private String surname;
     private String city;
-    private String zipcode;
+    private String country;
     private String street;
     private String phoneNumber;
     private String profilePicture;
@@ -25,7 +25,7 @@ public class AdminDTO {
         this.name = admin.getName();
         this.surname = admin.getSurname();
         this.city = admin.getAddress().getPlaceName();
-        this.zipcode = admin.getAddress().getZipCode();
+        this.country = admin.getAddress().getCountry();
         this.street = admin.getAddress().getStreet();
         this.phoneNumber = admin.getPhoneNumber();
         this.profilePicture = admin.getProfilePicture().getPhotoPath();
@@ -48,18 +48,19 @@ public class AdminDTO {
                 Validate.validateSurName(this.name) &&
                 Validate.validateSurName(this.surname) &&
                 Validate.validateWords(this.city) &&
-                Validate.validateNumber(this.zipcode) &&
+                Validate.validateWords(this.country) &&
                 Validate.validateStreet(this.street) &&
                 Validate.validateNumber(this.phoneNumber);
     }
 
-    public AdminDTO(String email, String password, String name, String surname, String city, String zipcode, String street, String phoneNumber, String profilePicture, String userType, String loyaltyStatus, int loyaltyPoints) {
+    public AdminDTO(String email, String password, String name, String surname, String city, String country, String street,
+                    String phoneNumber, String profilePicture, String userType, String loyaltyStatus, int loyaltyPoints) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.city = city;
-        this.zipcode = zipcode;
+        this.country = country;
         this.street = street;
         this.phoneNumber = phoneNumber;
         this.profilePicture = profilePicture;
@@ -109,12 +110,12 @@ public class AdminDTO {
         this.city = city;
     }
 
-    public String getZipcode() {
-        return zipcode;
+    public String getCountry() {
+        return country;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getStreet() {

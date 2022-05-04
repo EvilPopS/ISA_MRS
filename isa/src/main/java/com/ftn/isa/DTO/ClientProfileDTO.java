@@ -10,7 +10,7 @@ public class ClientProfileDTO {
     private String name;
     private String surname;
     private String city;
-    private String zipcode;
+    private String country;
     private String street;
     private String phoneNumber;
     private String profilePicture;
@@ -25,7 +25,7 @@ public class ClientProfileDTO {
         this.name = client.getName();
         this.surname = client.getSurname();
         this.city = client.getAddress().getPlaceName();
-        this.zipcode = client.getAddress().getZipCode();
+        this.country = client.getAddress().getCountry();
         this.street = client.getAddress().getStreet();
         this.phoneNumber = client.getPhoneNumber();
         this.profilePicture = client.getProfilePicture().getPhotoPath();
@@ -43,7 +43,7 @@ public class ClientProfileDTO {
         this.loyaltyPoints = client.getLoyaltyPoints();
     }
 
-    public ClientProfileDTO(String email, String password, String name, String surname, String city, String zipcode,
+    public ClientProfileDTO(String email, String password, String name, String surname, String city, String country,
                             String street, String phoneNumber, String profilePicture, String userType,
                             String loyaltyStatus, int loyaltyPoints) {
         this.email = email;
@@ -51,7 +51,7 @@ public class ClientProfileDTO {
         this.name = name;
         this.surname = surname;
         this.city = city;
-        this.zipcode = zipcode;
+        this.country = country;
         this.street = street;
         this.phoneNumber = phoneNumber;
         this.profilePicture = profilePicture;
@@ -65,7 +65,7 @@ public class ClientProfileDTO {
                 Validate.validateSurName(this.name) &&
                 Validate.validateSurName(this.surname) &&
                 Validate.validateWords(this.city) &&
-                Validate.validateNumber(this.zipcode) &&
+                Validate.validateWords(this.country) &&
                 Validate.validateStreet(this.street) &&
                 Validate.validateNumber(this.phoneNumber);
     }
@@ -110,12 +110,12 @@ public class ClientProfileDTO {
         this.city = city;
     }
 
-    public String getZipcode() {
-        return zipcode;
+    public String getCountry() {
+        return country;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getStreet() {

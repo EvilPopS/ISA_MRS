@@ -12,11 +12,11 @@ public class CottageDTO {
     private Long id;
     private String name;
     private String description;
-    private Set<String> photos = new HashSet<String>();
+    private Set<String> photos = new HashSet<>();
     private int capacity;
     private String rules;
+    private String country;
     private String city;
-    private String zipCode;
     private String street;
     private String lon;
     private String lat;
@@ -31,29 +31,30 @@ public class CottageDTO {
         this.description = cottage.getDescription();
         this.capacity = cottage.getCapacity();
         this.rules = cottage.getRules();
+        this.country = cottage.getAddress().getCountry();
         this.city = cottage.getAddress().getPlaceName();
-        this.zipCode = cottage.getAddress().getZipCode();
         this.street = cottage.getAddress().getStreet();
         this.lon = cottage.getAddress().getLon();
         this.lat = cottage.getAddress().getLat();
         this.averageRating = cottage.getAverageRate();
         this.price = cottage.getPrice();
         this.additionalServices = cottage.getAdditionalServices();
-        for (Photo p : cottage.getPhotos()){this.photos.add(p.getPhotoPath());}
+        for (Photo p : cottage.getPhotos())
+            this.photos.add(p.getPhotoPath());
         this.noRatings = cottage.getNoRatings();
         this.noRooms = cottage.getNoRooms();
         this.id = cottage.getId();
     }
 
-    public CottageDTO(String name, String description, int capacity, String rules,
-                      String city, String zipCode, String street, String lon, String lat,Double averageRating,
+    public CottageDTO(String name, String description, int capacity, String rules, String country,
+                      String city, String street, String lon, String lat,Double averageRating,
                       double price, String additionalServices, int noRatings, int noRooms, Long id) {
         this.name = name;
         this.description = description;
         this.capacity = capacity;
         this.rules = rules;
+        this.country = country;
         this.city = city;
-        this.zipCode = zipCode;
         this.street = street;
         this.lon = lon;
         this.lat = lat;
@@ -153,20 +154,20 @@ public class CottageDTO {
         this.rules = rules;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public String getCity() {
         return city;
     }
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
     }
 
     public String getStreet() {
@@ -196,11 +197,9 @@ public class CottageDTO {
     public boolean arePropsValidAdding() {
         return  Validate.validateSurName(this.name) &&
                 Validate.validateWords(this.city) &&
-                Validate.validateNumber(this.zipCode) &&
+                Validate.validateWords(this.country) &&
                 Validate.validateStreet(this.street) &&
                 this.price > 0 && this.noRooms > 0 && this.capacity > 0 &&
-                this.photos.size() > 0 && this.noRatings == 0 && this.averageRating == 0
-                ;
-
+                this.photos.size() > 0 && this.noRatings == 0 && this.averageRating == 0;
     }
 }

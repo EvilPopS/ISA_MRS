@@ -78,12 +78,12 @@ public class CottageOwnerController  {
         if (cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Address address = new Address("Neka drzava",cottageDTO.getCity(), cottageDTO.getZipCode(), cottageDTO.getStreet(), cottageDTO.getLon(), cottageDTO.getLat());
-
-        Set<Photo> photos = new HashSet<Photo>();
-        for (String p : cottageDTO.getPhotos()){
+        Set<Photo> photos = new HashSet<>();
+        for (String p : cottageDTO.getPhotos())
             photos.add(new Photo(p));
-        }
+
+        Address address = new Address(cottageDTO.getCountry(), cottageDTO.getCity(), cottageDTO.getStreet(),
+                                        cottageDTO.getLon(), cottageDTO.getLat());
 
         Cottage cottage = new Cottage(cottageDTO.getName(), cottageDTO.getDescription(),
                 cottageDTO.getCapacity(), cottageDTO.getRules(),
@@ -95,7 +95,7 @@ public class CottageOwnerController  {
         cottageOwner.getCottages().add(cottage);
         cottageOwnerService.save(cottageOwner);
 
-        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value="/{email}/delete-cottage/{id}")
@@ -119,7 +119,7 @@ public class CottageOwnerController  {
         if (cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Set<Photo> photos = new HashSet<Photo>();
+        Set<Photo> photos = new HashSet<>();
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId() == cottageDTO.getId()){
                 photos = photoService.addOrDeletePhoto(c, cottageDTO);
@@ -127,7 +127,7 @@ public class CottageOwnerController  {
             }
         }
         cottageOwnerService.save(cottageOwner, cottageDTO, photos);
-        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "http://localhost:8081")
@@ -147,7 +147,6 @@ public class CottageOwnerController  {
             }
         }
 
-        //nije moglo drugacije jer nismo uradili ovo za rezervaciju kao u dijagramu klasa
         for (ReservationDTO resDTO : reservations) {
             for (Client client : clientService.getAllClients()) {
                 for (Reservation r : client.getReservations()) {

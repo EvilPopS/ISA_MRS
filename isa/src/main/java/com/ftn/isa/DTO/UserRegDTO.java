@@ -9,7 +9,6 @@ public class UserRegDTO {
     private String email;
     private String country;
     private String city;
-    private String zipcode;
     private String address;
     private String phoneNumber;
     private String password;
@@ -21,7 +20,6 @@ public class UserRegDTO {
                 Validate.validateSurName(this.name) &&
                 Validate.validateSurName(this.surname) &&
                 Validate.validateWords(this.country) &&
-                Validate.validateNumber(this.zipcode) &&
                 Validate.validateWords(this.city) &&
                 Validate.validateStreet(this.address) &&
                 Validate.validateNumber(this.phoneNumber) &&
@@ -58,14 +56,6 @@ public class UserRegDTO {
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public String getZipcode() {
-        return zipcode;
-    }
-
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
     }
 
     public String getCity() {

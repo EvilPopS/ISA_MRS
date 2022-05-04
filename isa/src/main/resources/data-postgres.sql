@@ -1,13 +1,13 @@
-insert into address (country, place_name, street, zip_code, lon, lat)
-    values ('Srbija', 'Sabac', 'Karadjordjeva 26', '15000', null, null ),
-            ('Srbija', 'Novi Sad', 'Zeleznicka 36', '21000', null, null),
-            ('Srbija', 'Novi Sad', 'Sonje Marinkovic 5', '21000', null, null),
-            ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '21000', '19.83383399956332', '45.25697997579121'),
-            ('Srbija', 'Novi Sad', 'Vase Pelagic 1', '21000', '19.840324439532647', '45.251395995531226'),
-            ('Srbija', 'Sremska Kamenica', 'Karadjordjeva 33', '21000', '19.835541721737165', '45.22357844341107'),
+insert into address (country, place_name, street, lon, lat)
+    values ('Srbija', 'Sabac', 'Karadjordjeva 26', null, null ),
+            ('Srbija', 'Novi Sad', 'Zeleznicka 36', null, null),
+            ('Srbija', 'Novi Sad', 'Sonje Marinkovic 5', null, null),
+            ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '19.83383399956332', '45.25697997579121'),
+            ('Srbija', 'Novi Sad', 'Vase Pelagic 1', '19.840324439532647', '45.251395995531226'),
+            ('Srbija', 'Sremska Kamenica', 'Karadjordjeva 33', '19.835541721737165', '45.22357844341107'),
             ('Srbija', 'Kula', 'Marsala Tita 200', '25230', null, null),
-            ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '31315', '19.652715410573126', '43.66153258311601'),
-           ('Srbija', 'Novi Sad', 'Partizanski put 2', '21000', '19.819806290382964', ' 45.15281270382178');
+            ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '19.652715410573126', '43.66153258311601'),
+           ('Srbija', 'Novi Sad', 'Partizanski put 2', '19.819806290382964', ' 45.15281270382178');
 
 insert into photo (photo_path, rental_id)
     values ('default.jpg', null),
@@ -83,5 +83,14 @@ insert into request(id, is_answered, message, sent_time, request_type, sender_id
 values (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 111111111', '02/05/2022 23:44', 1, 6),
        (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
 
-
+insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id)
+    values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4),
+            ('1/5/2022', '11/5/2022', false, true, 30, 1, 4),
+            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4),
+            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4),
+            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4),
+            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4),
+            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4),
+            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4),
+            ('10/5/2022', '29/5/2022', false, true, 50, 5, 4)
 

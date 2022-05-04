@@ -3,7 +3,6 @@ package com.ftn.isa.DTO;
 import com.ftn.isa.model.Address;
 import com.ftn.isa.model.Photo;
 import com.ftn.isa.model.RentalService;
-
 import java.util.ArrayList;
 import java.util.List;
 

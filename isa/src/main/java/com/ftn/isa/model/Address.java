@@ -15,38 +15,27 @@ public class Address {
     @Column(name = "place_name", nullable = false)
     private String placeName;
 
-    @Column(name = "zip_code", nullable = false)
-    private String zipCode;
-
     @Column(name = "street", nullable = false)
     private String street;
 
-    @Column(name = "lon", nullable = true)
+    @Column(name = "lon")
     private String lon;
 
-    @Column(name = "lat", nullable = true)
+    @Column(name = "lat")
     private String lat;
 
-    public String getLon() {
-        return lon;
-    }
-
-    public void setLon(String lon) {
-        this.lon = lon;
-    }
 
     public Address(){}
 
-    public Address(String country, String placeName, String zipCode, String street) {
+    public Address(String country, String placeName, String street) {
         this.country = country;
         this.placeName = placeName;
-        this.zipCode = zipCode;
         this.street = street;
     }
 
-    public Address(String placeName, String zipCode, String street, String lon, String lat) {
+    public Address(String country, String placeName, String street, String lon, String lat) {
+        this.country = country;
         this.placeName = placeName;
-        this.zipCode = zipCode;
         this.street = street;
         this.lon = lon;
         this.lat = lat;
@@ -76,14 +65,6 @@ public class Address {
         this.placeName = placeName;
     }
 
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
     public String getStreet() {
         return street;
     }
@@ -98,5 +79,13 @@ public class Address {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
     }
 }
