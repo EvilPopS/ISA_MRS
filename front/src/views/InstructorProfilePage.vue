@@ -10,7 +10,7 @@
         :name                = this.name
         :surname             = this.surname
         :phoneNumber         = this.phoneNumber
-        :zipcode             = this.zipcode
+        :country             = this.country
         :city                = this.city
         :street              = this.street
         :currentProfilePic   = this.currentProfilePic
@@ -18,7 +18,7 @@
         :currentName         = this.currentName
         :currentSurname      = this.currentSurname
         :currentCity         = this.currentCity
-        :currentZipcode      = this.currentZipcode
+        :currentCountry      = this.currentCountry
         :currentStreet       = this.currentStreet
         :currentPhoneNumber  = this.currentPhoneNumber
         :succPopUpVisible    = this.succPopUpVisible
@@ -47,7 +47,7 @@
                 name: '',
                 surname: '',
                 city: '',
-                zipcode: '',
+                country: '',
                 street: '',
                 phoneNumber: '',
                 profilePicture: 'logo.png',
@@ -66,7 +66,7 @@
                     name: data.name,
                     surname: data.surname,
                     city: data.city,
-                    zipcode: data.zipcode,
+                    country: data.country,
                     street: data.street,
                     phoneNumber: data.phoneNumber,
                     profilePicture: data.profilePicture
@@ -84,7 +84,7 @@
             }
         },
         created() {
-            axios.get("api/fishingInstructor/" + "instructor@gmail.com")
+            axios.get("api/fishingInstructor/" + window.sessionStorage.getItem("email"))
                 .then((response) => {
                     let data = response.data;
 
@@ -94,7 +94,7 @@
                     this.name = data.name;
                     this.surname = data.surname;
                     this.city = data.city;
-                    this.zipcode = data.zipcode;
+                    this.country = data.country;
                     this.street = data.street;
                     this.phoneNumber = data.phoneNumber;
                     this.profilePicture = data.profilePicture;
@@ -106,7 +106,7 @@
                     this.currentName = data.name;
                     this.currentSurname = data.surname;
                     this.currentCity = data.city;
-                    this.currentZipcode = data.zipcode;
+                    this.currentCountry = data.country;
                     this.currentStreet = data.street;
                     this.currentPhoneNumber =data.phoneNumber;
                     this.currentProfilePic =data.profilePicture;

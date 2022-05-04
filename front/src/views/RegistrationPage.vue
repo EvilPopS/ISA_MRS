@@ -40,11 +40,7 @@
                         <label>City: </label>
                         <input type="text" v-model="city">
                     </div>
-                    <div class="col-sm-3">
-                        <label>Zipcode: </label>
-                        <input type="text" v-model="zipcode">
-                    </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-6">
                         <label>Address: </label>
                         <input type="text" v-model="address">
                     </div>
@@ -126,7 +122,6 @@
                 confirmPassword: "",
                 country: "",
                 city: "",
-                zipcode: "",
                 address: "",
                 phoneNumber: "",
                 profilePicture: "default.jpg",
@@ -174,13 +169,12 @@
                         password: this.password,
                         country: this.country,
                         city: this.city,
-                        zipcode: this.zipcode,
                         address: this.address,
                         phoneNumber: this.phoneNumber,
                         profilePicture: this.profilePicture
                     }
                     axios.post("api/client/register", requestBody).then((response) => {
-                        this.succMessage = "Your account has been successfully registered, and confirmation email has been sent to" 
+                        this.succMessage = "Your account has been successfully registered, and confirmation email has been sent to " 
                                                 + this.email + 
                                             " To activate your account please click link in the email message!"
                         this.succPopUpVisible = true;
@@ -228,9 +222,6 @@
         if (!validate(formData.city, cityReg))
             throw "Make sure you entered a valid city name.";
 
-        if (!validate(formData.zipcode, numReg))
-            throw "Make sure you entered a valid zipcode."
-        
         if (!validate(formData.street, streetReg))
             throw "Make sure you entered a valid street name.";
 

@@ -4,17 +4,27 @@
             <div class="row">
                 <div class="col-4">
                     <hr class="solid">
-                    <img id="profilePic" @click="changeProfilePhoto()"  :src="setProfPic()" alt="Client profile picture should be here...">
-                    <div class= "badge bg-success text-wrap rounded-pill status">
-                        {{email}}
+                    <div class="row justify-content-center">
+                        <img id="profilePic" @click="changeProfilePhoto()"  :src="setProfPic()" alt="Client profile picture should be here...">
                     </div>
-                    <div class= "badge bg-success text-wrap rounded-pill status">
-                        {{type}}
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <div class= "badge bg-success text-wrap rounded-pill status">
+                                {{email}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <div class= "badge bg-success text-wrap rounded-pill status">
+                                {{type}}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-8">
                     <hr class="solid">
-                    <div>
+                    <div v-show="userType !== 'admin'">
                         <div class="inline-inputs">
                             <label style="display: block">NO. accumulated loyalty points: </label>
                             <input disabled type="text" class= "form-control" v-model="points">
@@ -40,20 +50,21 @@
 
                     <div>
                         <div class="inline-inputs">
-                            <label>City: </label>
-                            <input type="text" class= "form-control" v-model="city">
+                            <label>Country: </label>
+                            <input type="text" class= "form-control" v-model="country">
                         </div>
 
                         <div class="inline-inputs">
-                            <label>Street: </label>
-                            <input type="text" class= "form-control" v-model="street">
+                            <label>City: </label>
+                            <input type="text" class= "form-control" v-model="city">
                         </div>
                     </div>
 
                     <div>
                         <div class="inline-inputs">
-                            <label>Zipcode: </label>
-                            <input type="text" class= "form-control" v-model="zipcode">
+                            <label>Street: </label>
+                            <input type="text" class= "form-control" v-model="street">
+
                         </div>
 
                         <div class="inline-inputs">
@@ -128,7 +139,7 @@
             name : String,
             surname : String,
             city : String,
-            zipcode : String,
+            country : String,
             street : String,
             phoneNumber : String,
             type : String,
@@ -140,7 +151,7 @@
             currentName: String,
             currentSurname: String,
             currentCity: String,
-            currentZipcode: String,
+            currentCountry: String,
             currentStreet: String,
             currentPhoneNumber: String,
         },
@@ -149,7 +160,9 @@
                 picPopUpVisible: false,
                 errMessage : '',
                 errorPopUpVisible: false,
-                succMessage: "Personal information has been changed successfully!"
+                succMessage: "Personal information has been changed successfully!",
+
+                userType: window.sessionStorage.getItem("userRole")
             }
         },
         methods: {
@@ -193,7 +206,7 @@
                     name: this.name,
                     surname: this.surname,
                     city: this.city,
-                    zipcode: this.zipcode,
+                    country: this.country,
                     street: this.street,
                     phoneNumber: this.phoneNumber
                 });
@@ -214,8 +227,8 @@
         if(!validate(formData.city, cityReg))
             throw "Make sure you entered a valid city name!";
         
-        if (!validate(formData.zipcode, numReg))
-            throw "Make sure you entered a valid zipcode.";
+        if (!validate(formData.country, cityReg))
+            throw "Make sure you entered a valid country name.";
         
         if (!validate(formData.street, streetReg))
             throw "Make sure you entered a valid street name.";
@@ -230,7 +243,7 @@
                 formData.currentName === formData.name &&
                 formData.currentSurname === formData.surname &&
                 formData.currentCity === formData.city &&
-                formData.currentZipcode === formData.zipcode &&
+                formData.currentCountry === formData.country &&
                 formData.currentStreet === formData.street &&
                 formData.currentPhoneNumber === formData.phoneNumber &&
                 formData.currentProfilePic === formData.profilePicture)
@@ -298,13 +311,14 @@
         width: 200px;
         height: 200px;
         display: block;
-        margin: 0 auto;
+        margin-bottom: 10px;
         padding: 10px;
     }
 
     #profilePic:hover {
-        width: 230px;
-        height: 230px;
+        margin-bottom: 0;
+        width: 210px;
+        height: 210px;
         border-radius: 20px;
         background: linear-gradient(rgb(255, 253, 253), rgb(241, 239, 239));
     }

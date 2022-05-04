@@ -44,7 +44,7 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if (cottageOwnerData.arePropsValid())
+        if (!cottageOwnerData.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         cottageOwnerService.save(cottageOwnerData, cottageOwner);

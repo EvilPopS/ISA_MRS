@@ -46,7 +46,7 @@ public class ClientController {
         if (client == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if (clientData.arePropsValid())
+        if (!clientData.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         clientService.updatePersonalInfo(clientData, client);

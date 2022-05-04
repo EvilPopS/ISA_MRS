@@ -32,12 +32,12 @@
                     <div class="col-4">
                         <span>Address</span>
                         <hr class="solid">
+                        <label class="label" for="zip-code">Country:</label>
+                        <input type="text" id="zip-code" class="form-control" v-model="data.country">
                         <label class="label" for="city">City:</label>
                         <input type="text" id="city" class="form-control" v-model="data.city">
                         <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" v-model="data.street">
-                        <label class="label" for="zip-code">Zip code:</label>
-                        <input type="text" id="zip-code" class="form-control" v-model="data.zipCode">
                         <label class="label" for="capacity">Capacity:</label>
                         <input type="text" id="capacity" class="form-control" v-model="data.capacity">
                     </div>
@@ -121,7 +121,7 @@ export default {
                 additionalServices: '',
                 city: '',
                 street: '',
-                zipCode: '',
+                country: '',
                 averageRating: 0,
                 noRatings: 0,
                 capacity: 0,
@@ -194,7 +194,7 @@ export default {
                 this.data.additionalServices += this.localServices[s]
                 if (counter < this.localServices.length) this.data.additionalServices += ','
             } 
-            axios.post("api/cottage-owner/add-cottage/" + "srdjan@gmail.com", this.data)
+            axios.post("api/cottage-owner/add-cottage/" + window.sessionStorage.getItem("email"), this.data)
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
@@ -220,8 +220,8 @@ export default {
             if(!this.validate(this.data.city, cityReg))
                 throw "Make sure you entered a valid city name!";
             
-            if (!this.validate(this.data.zipCode, numReg))
-                throw "Make sure you entered a valid zip code.";
+            if (!this.validate(this.data.country, cityReg))
+                throw "Make sure you entered a valid country name.";
             
             if (!this.validate(this.data.street, streetReg))
                 throw "Make sure you entered a valid street name.";

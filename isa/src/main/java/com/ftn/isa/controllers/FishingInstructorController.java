@@ -121,7 +121,7 @@ public class FishingInstructorController {
         if (fishingInstructor == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if (fishingInstructorData.arePropsValid())
+        if (!fishingInstructorData.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         fishingInstructorService.updatePersonalInfo(fishingInstructorData, fishingInstructor);

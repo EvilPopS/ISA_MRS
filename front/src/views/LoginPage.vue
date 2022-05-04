@@ -67,6 +67,8 @@
                 axios.post("api/user/login", requestBody).then(response => {
                     window.sessionStorage.setItem("email", this.email);
                     let userType = response.data;
+                    window.sessionStorage.setItem("userRole", userType);
+
                     if (userType === "client") 
                         this.$router.push({ name: "ClientProfilePage" });
                     else if (userType === "cottageOwner")
@@ -75,6 +77,8 @@
                     //     this.$router.push({ name: viewName });
                     else if (userType === "instructor")
                         this.$router.push({ name: "InstructorProfilePage" });
+                    else if (userType === "admin")
+                        this.$router.push({ name: "AdminProfilePage" });
 
                 }).catch(err => {
                     if (err.response.status === 401) {
@@ -87,7 +91,7 @@
     }
 
     function validateForm(formData) {
-        let emailReg = /^[a-zA-Z0-9-.,]{7,25}@[a-zA-Z0-9 -.,]{7,25}$/
+        let emailReg = /^[a-zA-Z0-9-.,]{2,25}@[a-zA-Z0-9 -.,]{2,25}$/
         let passwordReg = /^[a-zA-Z0-9!@#$%^&*()_+-]{6,30}$/;
 
         if (!validate(formData.email, emailReg))

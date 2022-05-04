@@ -33,7 +33,7 @@ const routes = [
   },
 
   {
-    path : '/adminProfilePage',
+    path : '/AdminProfilePage',
     name : 'AdminProfilePage',
     component : AdminProfilePage
   },

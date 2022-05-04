@@ -26,12 +26,12 @@
       <div class="col-4">
         <span> Address </span>
         <hr class="solid">
+        <label class="label">Country</label>
+        <input type="text" v-model="data.country" name="country" placeholder="Adventure country">
         <label class="label">City</label>
         <input type="text" v-model="data.city" name="city" placeholder="Adventure city">
         <label class="label">Street</label>
         <input type="text" v-model="data.street" name="street" placeholder="Adventure street">
-        <label class="label">Zip code</label>
-        <input type="text" v-model="data.zipCode" name="zipcode" placeholder="Adventure zip code">
       </div>
       <div class="col-4">
         <div>
@@ -64,7 +64,7 @@ export default {
           rules : '',
           street : '',
           city : '' ,
-          zipcode : '',
+          country : '',
 
           rentalType : '',
           price : '',
