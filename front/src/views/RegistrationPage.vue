@@ -163,6 +163,7 @@
                 } catch (error) {
                     this.errMessage = error;
                     this.errorPopUpVisible = true;
+                    return;
                 }
 
                 if (this.isRegClientSelected) {

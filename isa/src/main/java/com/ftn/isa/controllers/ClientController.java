@@ -4,7 +4,6 @@ import com.ftn.isa.DTO.BasicClientDTO;
 import com.ftn.isa.DTO.ClientProfileDTO;
 import com.ftn.isa.DTO.UserRegDTO;
 import com.ftn.isa.model.Client;
-import com.ftn.isa.model.User;
 import com.ftn.isa.services.ClientService;
 import com.ftn.isa.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;

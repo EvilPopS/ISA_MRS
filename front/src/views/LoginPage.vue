@@ -56,6 +56,7 @@
                 } catch (error) {
                     this.errMessage = error;
                     this.errorPopUpVisible = true;
+                    return;
                 }
 
                 let requestBody = {
@@ -64,9 +65,22 @@
                 }
 
                 axios.post("api/user/login", requestBody).then(response => {
+                    window.sessionStorage.setItem("email", this.email);
+                    let userType = response.data;
+                    if (userType === "client") 
+                        this.$router.push({ name: "ClientProfilePage" });
+                    else if (userType === "cottageOwner")
+                        this.$router.push({ name: "CottageOwnerHomePage" });
+                    // else if (userType === "boatOwner")
+                    //     this.$router.push({ name: viewName });
+                    else if (userType === "instructor")
+                        this.$router.push({ name: "InstructorProfilePage" });
 
                 }).catch(err => {
-                    if (err.response.status === 200) {}
+                    if (err.response.status === 401) {
+                        this.errMessage = "You put in wrong username or password, please try again.";
+                        this.errorPopUpVisible = true;
+                    }
                 });
             }
         }
@@ -82,6 +96,10 @@
         if (!validate(formData.password, passwordReg))
             throw "Make sure entered a valid password.";
 
+    }
+
+    function validate(toTest, regex) {
+        return regex.test(toTest)
     }
 </script>
 

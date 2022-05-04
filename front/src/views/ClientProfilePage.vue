@@ -82,7 +82,7 @@
             }
         },
         created() {
-            axios.get("api/client/" + "strahinjapopovic@gmail.com")
+            axios.get("api/client/" + window.sessionStorage.getItem("email"))
                 .then((response) => {
                     let data = response.data;
 
