@@ -16,12 +16,12 @@ insert into photo (photo_path, rental_id)
            ('cottage-inside.jpg', 4),
            ('cottage1.jpg', 5);
 
-insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted,
+insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted, loyalty_points,
                         is_active, photo_id, user_type, loyalty_type)
-    values (nextval('my_seq_gen_user'), 'admin1@gmail.com', 'admin123', 'Miroslav', 'Ilic', 2, '0614264444', false,
-                true, null, 1, 0),
-           (nextval('my_seq_gen_user'), 'admin2@gmail.com', 'admin123', 'Saban', 'Saulic', 3, '0614283764', false,
-                true, null, 1, 0);
+    values (nextval('my_seq_gen_user'), 'admin1@gmail.com', 'admin123', 'Miroslav', 'Ilic', 2, '0614264444', false, 100,
+                true, 2, 1, 0),
+           (nextval('my_seq_gen_user'), 'admin2@gmail.com', 'admin123', 'Saban', 'Saulic', 3, '0614283764', false,100,
+                true, 2, 1, 0);
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                             rental_type, price, biography, fishing_equipment, cancellation_conditions)
@@ -68,7 +68,9 @@ insert into loyalty_program (discount, increase, loyalty_type)
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
                                 user_type, address_id, photo_id, loyalty_points)
     values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126',
-                'Instric', 4, 5, 1, 0);
+                'Instric', 4, 5, 1, 0),
+           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Instro2', 'sifra1223', '0619990009',
+        'Instriiiic', 4, 3, 1, 0);
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
@@ -77,14 +79,9 @@ values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva 
        (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
             false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 6);
 
-insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id)
-    values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4),
-            ('1/5/2022', '11/5/2022', false, true, 30, 1, 4),
-            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4),
-            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4),
-            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4),
-            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4),
-            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4),
-            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4),
-            ('10/5/2022', '29/5/2022', false, true, 50, 5, 4)
+insert into request(id, is_answered, message, sent_time, request_type, sender_id)
+values (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 111111111', '02/05/2022 23:44', 1, 6),
+       (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
+
+
 

@@ -11,6 +11,9 @@ import AdventuresView from '../views/AdventuresView'
 import AllReservations from '../views/AllReservations'
 import AdventureSearchView from  '../views/AdventureSearchView'
 import EntityBasicView from '../views/EntityBasicView.vue'
+import AdminProfilePage from '../views/AdminProfileView.vue'
+import AdminNotifications from '../views/AdminNotifications.vue'
+
 
 const routes = [
   {
@@ -19,10 +22,22 @@ const routes = [
     component: CottageOwnerHomePage
   },
   {
+    path : '/adminNotifications',
+    name : 'AdminNotifications',
+    component : AdminNotifications
+  },
+  {
     path: '/InstructorProfilePage',
     name: 'InstructorProfilePage',
     component: InstructorProfilePage
   },
+
+  {
+    path : '/adminProfilePage',
+    name : 'AdminProfilePage',
+    component : AdminProfilePage
+  },
+
   {
     path: '/ClientProfilePage',
     name: 'ClientProfilePage',
