@@ -2,6 +2,7 @@ package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.CottageDTO;
 import com.ftn.isa.DTO.CottageOwnerDTO;
+import com.ftn.isa.DTO.OwnersSearchResDTO;
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.repository.CottageOwnerRepository;
@@ -9,6 +10,7 @@ import com.ftn.isa.helpers.WrongInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,4 +71,19 @@ public class CottageOwnerService {
         cottageOwnerRepository.save(cottageOwner);
     }
 
+    public List<OwnersSearchResDTO> search(CottageOwner cottageOwner, String minPrice, String maxPrice, String location, String minCapacity, String serviceName) {
+        List<OwnersSearchResDTO> rentals = new ArrayList<>();
+        for (Cottage c : cottageOwner.getCottages()){
+            if (!c.isDeleted() && (c.getPrice() >= Double.parseDouble(minPrice))
+                    && (c.getPrice() <= Double.parseDouble(maxPrice)) && (c.getAddress().getPlaceName().equalsIgnoreCase(location))
+                    && (c.getCapacity() >= Double.parseDouble(minCapacity))) {
+                if (serviceName.equals(""))
+                    rentals.add(new OwnersSearchResDTO(c));
+                else
+                    if ((c.getName().equalsIgnoreCase(serviceName)))
+                        rentals.add(new OwnersSearchResDTO(c));
+            }
+        }
+        return rentals;
+    }
 }

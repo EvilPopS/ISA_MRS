@@ -1,6 +1,7 @@
 package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.*;
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -194,6 +197,29 @@ public class CottageOwnerController  {
         cottageOwnerService.save(cottageOwner);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value="/ownersSearch")
+    @CrossOrigin(origins = "http://localhost:8081")
+    public ResponseEntity<List<OwnersSearchResDTO>> search(@RequestParam String email, @RequestParam String minPrice,
+                                                           @RequestParam String maxPrice, @RequestParam String location,
+                                                           @RequestParam String minCapacity, @RequestParam String serviceName) {
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!Validate.validatePrice(minPrice) || !Validate.validatePrice(maxPrice)
+                || !Validate.validatePrice(minCapacity) || (!location.equals("") && !Validate.validateWords(location)))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<OwnersSearchResDTO> rentals = new ArrayList<>();
+        try {
+            rentals = cottageOwnerService.search(cottageOwner, minPrice, maxPrice, location, minCapacity, serviceName);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(rentals, HttpStatus.OK );
     }
 
 }

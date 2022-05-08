@@ -24,8 +24,8 @@
         <div class="split right">
             <form id="search-form" class="form-group" @submit.prevent="submitSearchForm()">
                 <div class="col-md-12">
-                    <label >Service name:</label>
-                    <input  type="text" v-model="minPrice" title="Service name">
+                    <label >Service name(optional):</label>
+                    <input  type="text" v-model="serviceName" title="Service name">
                 </div>
 
                 <div class="row">
@@ -42,7 +42,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <label >Min Capacity: </label>
-                        <input  type="number" min="1" max="5" v-model="minRate" title="Capacity of your service.">
+                        <input  type="number" min="1" v-model="capacity" title="Min Capacity of your service.">
                     </div> 
                     <div class="col-md-8">
                         <label >Location: </label>
@@ -56,7 +56,7 @@
         </div>
     </div>
     <div v-else>
-        <h1>You don't have permission to visit this page!</h1>
+        <h3>You don't have permission to visit this page!</h3>
     </div>
 
     <ErrorPopUp v-show="errorPopUpVisible" 
@@ -81,8 +81,8 @@
                 location: '',
                 capacity: '',
                 serviceName: '',
-                searchRole: '',
                 showSearh: false,
+                roleURL: '',
 
                 errMessage : '',
                 errorPopUpVisible: false,
@@ -112,25 +112,34 @@
                     this.errorPopUpVisible = true;
                     return;
                 }
-                
-                axios.get("api/rental/search?"  + "&email=" + window.sessionStorage.getItem("email")
+                axios.get("api/" + this.roleURL + "/ownersSearch?"  + "&email=" + window.sessionStorage.getItem("email")
                                                 + "&minPrice=" + this.minPrice
                                                 + "&maxPrice=" + this.maxPrice
                                                 + "&location=" + this.location 
                                                 + "&minCapacity=" + this.capacity 
                                                 + "&serviceName=" + this.serviceName 
-                                                + "&searchRole=" + this.searchRole
                    ).then((response) => {
                         this.showInitSearchResMess = false;
                         response.data.length === 0 ? this.toShowNoResultsMess = true : this.toShowNoResultsMess = false    
 
                         this.searchResult = response.data;
-                   });
+                   }).catch((error) => {
+                        this.errMessage = "Error happened: " + error.data
+                        this.errorPopUpVisible = true
+                    });
             }
         },
         mounted() {
             this.searchRole = window.sessionStorage.getItem("userRole")
-            if ((this.searchRole === "cottageOwner") || (this.searchRole === "instructor") || (this.searchRole === "boatOwner")) this.showSearh = true
+            if (this.searchRole === "cottageOwner"){
+                this.roleURL = "cottage-owner"
+                this.showSearh = true
+            } else if (this.searchRole === "instructor"){
+                this.roleURL = "fishingInstructor"
+                this.showSearh = true
+            } else {
+                //za boat
+            }
         }
     }
 
@@ -147,14 +156,6 @@
         if (formData.capacity === '')
             throw "You need to enter capacity!"
 
-        if (formData.serviceName !== '' && !/^[a-zA-Z0-9 -]{2,50}$/.test(formData.location))
-            throw "Make sure you entered valid service name."
-
-    }
-
-    function formatDateStr(dateStr) {
-        let dateComps = dateStr.split("-");
-        return dateComps[2] + "/" + dateComps[1] + "/" + dateComps[0]; 
     }
 </script>
 
@@ -276,5 +277,9 @@
         width: 70%;
         align-content: center;
         margin: 0 auto;
+    }
+
+    h3 {
+        margin-top: 10%;
     }
 </style>
