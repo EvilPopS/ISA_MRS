@@ -6,7 +6,7 @@
         <p id="no-search-result-mess" v-show="toShowNoResultsMess">
             Search resulted in... no result, don't be so strict with that criterion!
         </p>
-        <div v-for="res in this.searchResult" :key="res.id"> 
+        <div v-for="res in this.searchResult" :key="res.id" @click="entityBasicView(res.id, res.type);"> 
             <div class="card"> 
                 <p class="entity-name">{{res.name}}</p>
                 <img v-if="res.type == 'Adventure'" class="card-icon" src="@/assets/adventure_icon.png">
@@ -118,6 +118,13 @@
         methods: {
             closePopUp() {
                 this.errorPopUpVisible = false;
+            },
+            entityBasicView(id, type) {
+                console.log(id, type);
+                window.sessionStorage.setItem("entityDataId", id);
+                window.sessionStorage.setItem("entityDataType", type);
+
+                this.$router.push({ name: "EntityBasicView" })
             },
             submitSearchForm() {
                 let formData = {

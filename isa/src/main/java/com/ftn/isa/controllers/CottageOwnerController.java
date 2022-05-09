@@ -75,7 +75,7 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if (cottageDTO.arePropsValidAdding())
+        if (!cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Set<Photo> photos = new HashSet<>();
@@ -116,7 +116,7 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if (cottageDTO.arePropsValidAdding())
+        if (!cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Set<Photo> photos = new HashSet<>();
