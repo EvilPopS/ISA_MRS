@@ -16,7 +16,7 @@
                     <div class="entity-info-holder">
                         <span class="information-style"><span class="attr-name-style">Location: </span>{{res.city}}</span>
                         <span class="information-style"><span class="attr-name-style">Price: </span>{{res.price}} &euro;/day</span>
-                        <span class="information-style"><span class="attr-name-style">Min Capacity: </span>{{res.capacity}}</span>
+                        <span class="information-style"><span class="attr-name-style">Capacity: </span>{{res.capacity}}</span>
                     </div>
                 </div>
             </div>
