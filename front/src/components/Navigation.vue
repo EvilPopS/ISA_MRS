@@ -96,6 +96,9 @@
             
             searchPageRedirect: function() {
                 pushView(this, "SearchPage");
+            },
+            searchPageRedirect: function() {
+                pushView(this, "ClientReservationHistory");
             }
         }
     }
