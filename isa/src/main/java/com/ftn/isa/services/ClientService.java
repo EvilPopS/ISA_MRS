@@ -1,16 +1,29 @@
 package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.ClientProfileDTO;
-import com.ftn.isa.model.Client;
+import com.ftn.isa.DTO.ReservationHistoryDTO;
+import com.ftn.isa.model.*;
+import com.ftn.isa.repository.AdventureRepository;
+import com.ftn.isa.repository.BoatRepository;
 import com.ftn.isa.repository.ClientRepository;
+import com.ftn.isa.repository.CottageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ClientService {
     @Autowired
     private ClientRepository clientRepo;
+    @Autowired
+    private AdventureRepository adventureRepo;
+    @Autowired
+    private CottageRepository cottageRepo;
+    @Autowired
+    private BoatRepository boatRepo;
 
     public Client findByEmail(String email) {
         return clientRepo.findByEmail(email);
@@ -29,5 +42,37 @@ public class ClientService {
         clientRepo.save(client);
     }
 
+    public List<ReservationHistoryDTO> getReservationHistory(String email) {
+        Set<Reservation> reservations = clientRepo.findByEmail(email).getReservations();
+        List<Adventure> adventures = adventureRepo.findAll();
+        List<Cottage> cottages = cottageRepo.findAll();
+        List<Boat> boats = boatRepo.findAll();
+
+        List<ReservationHistoryDTO> reservationHistory = new ArrayList<>();
+
+        boolean breaker;
+        for (Reservation res : reservations) {
+            for(Adventure adv : adventures)
+                if (matchReservation(res, adv, reservationHistory))
+                    break;
+            for(Cottage cot : cottages)
+                if (matchReservation(res, cot, reservationHistory))
+                    break;
+            for(Boat boat : boats)
+                if (matchReservation(res, boat, reservationHistory))
+                    break;
+        }
+
+        return reservationHistory;
+    }
+
+    private boolean matchReservation(Reservation res, RentalService rental, List<ReservationHistoryDTO> reservationHistory) {
+        for (Reservation r: rental.getReservations())
+            if (res.getId().equals(r.getId())) {
+                reservationHistory.add(new ReservationHistoryDTO(res, rental));
+                return true;
+            }
+        return false;
+    }
 
 }

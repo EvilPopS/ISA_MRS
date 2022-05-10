@@ -2,6 +2,7 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.BasicClientDTO;
 import com.ftn.isa.DTO.ClientProfileDTO;
+import com.ftn.isa.DTO.ReservationHistoryDTO;
 import com.ftn.isa.DTO.UserRegDTO;
 import com.ftn.isa.model.Client;
 import com.ftn.isa.services.ClientService;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value="api/client")
@@ -89,4 +92,10 @@ public class ClientController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping(value="/reservation-history/{email}")
+    public ResponseEntity<List<ReservationHistoryDTO>> getReservationHistory(@PathVariable String email) {
+        return new ResponseEntity<>(clientService.getReservationHistory(email), HttpStatus.OK);
+    }
+
 }
