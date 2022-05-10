@@ -50,7 +50,6 @@ public class ClientService {
 
         List<ReservationHistoryDTO> reservationHistory = new ArrayList<>();
 
-        boolean breaker;
         for (Reservation res : reservations) {
             for(Adventure adv : adventures)
                 if (matchReservation(res, adv, reservationHistory))

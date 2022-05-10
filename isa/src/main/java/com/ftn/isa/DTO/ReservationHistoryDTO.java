@@ -9,16 +9,16 @@ public class ReservationHistoryDTO {
     private Long id;
     private Long rentalId;
     private String name;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private double price;
 
     public ReservationHistoryDTO(Reservation res, RentalService rental) {
         this.id = res.getId();
         this.rentalId = rental.getId();
         this.name = rental.getName();
-        this.startTime = res.getStartTime();
-        this.endTime = res.getEndTime();
+        this.startDate = res.getStartTime();
+        this.endDate = res.getEndTime();
         this.price = res.getPrice();
     }
 
@@ -46,20 +46,20 @@ public class ReservationHistoryDTO {
         this.name = name;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public LocalDateTime getStartDate() {
+        return startDate;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public LocalDateTime getEndDate() {
+        return endDate;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
     }
 
     public double getPrice() {

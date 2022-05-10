@@ -10,13 +10,13 @@
 
     <div id="res-container" class="row justify-content-center">
         <div id="cards-cont" class="row justify-content-center">
-            <div v-for="reserv in this.reservations" :key="reserv.id">
+            <div v-for="reserv in this.reservations" :key="reserv.id" class="card-style">
                 <label>Reserved rental name:</label>
                 <p>{{reserv.name}}</p>
                 <label>Reservation started on:</label>
-                <p>{{reserv.startDate}}</p>
+                <p>{{formatDateString(reserv.startDate)}}</p>
                 <label>Reservation ended on:</label>
-                <p>{{reserv.endDate}}</p>
+                <p>{{formatDateString(reserv.endDate)}}</p>
                 <label>Reservation price per day:</label>
                 <p>{{reserv.price}}</p>
             </div>
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+     
     export default {
         name: "ClientReservationHistory",
         data() {
@@ -38,7 +40,16 @@
                 
             };
         },
+        created() {
+            axios.get("api/client/reservation-history/" + window.sessionStorage.getItem("email")).then((response) => {
+                console.log(response.data);
+                this.reservations = response.data;
+            });
+        },
         methods: {
+            formatDateString(date) {
+                return date.split("T")[0].split("-").reverse().join("/");
+            },
             sortByName() {
                 if (this.nameSortBtnClicked)
                     this.reservations.reverse();
@@ -65,8 +76,15 @@
                     uncheckSortButtons(this);
                     this.startDateSortBtnClicked = true;
 
-                    this.reservations.sort(function(left, right) { 
+                    this.reservations.sort(function(left, right) {
+                        let lDate = new Date(left.startDate).toISOString();
+                        let rDate = new Date(right.startDate).toISOString();
+                        if (lDate < rDate) 
+                            return -1;
+                        else if (lDate > rDate)
+                            return 1;
 
+                        return 0;
                     });
                 }
             },
@@ -78,7 +96,14 @@
                     this.endDateSortBtnClicked = true;
 
                     this.reservations.sort(function(left, right) { 
+                        let lDate = new Date(left.endDate).toISOString();
+                        let rDate = new Date(right.endDate).toISOString();
+                        if (lDate < rDate) 
+                            return -1;
+                        else if (lDate > rDate)
+                            return 1;
 
+                        return 0;
                     });
                 }
             },
