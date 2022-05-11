@@ -124,7 +124,7 @@
                 city: "",
                 address: "",
                 phoneNumber: "",
-                profilePicture: "default.jpg",
+                profilePicture: "addPhoto.png",
 
                 userType: "",
                 regReason: "",
@@ -190,7 +190,51 @@
                     });
                 }
                 else {
-                    // TODO: na osnovu izabranog tipa korisnika pozvati odgovarajuci api endpoint
+                    let requestBody = {
+                        name: this.name,
+                        surname: this.surname,
+                        email: this.email,
+                        password: this.password,
+                        country: this.country,
+                        city: this.city,
+                        address: this.address,
+                        phoneNumber: this.phoneNumber,
+                        profilePicture: this.profilePicture,
+                        userType: this.userType,
+                        regReason: this.regReason
+                    }
+                    if (this.userType == "cottage-owner"){
+                        axios.post("api/cottage-owner/register", requestBody).then((response) => {
+                            this.succMessage = "Your account has been successfully registered. Registration request will be processed by admin as soon as possible!"
+                            this.succPopUpVisible = true;
+                        }).catch(err => {
+                            if (err.response.status === 409){
+                                this.errMessage = "An account with the given email address already exists!";
+                                this.errorPopUpVisible = true;
+                            } 
+                            else if (err.response.status === 422) {
+                                this.errMessage = "Please make sure your phone number is not used by another account.";
+                                this.errorPopUpVisible = true;
+                            }
+                        });
+                    } else if (this.userType == "instructor"){
+                        axios.post("api/fishingInstructor/register", requestBody).then((response) => {
+                            this.succMessage = "Your account has been successfully registered. Registration request will be processed by admin as soon as possible!"
+                            this.succPopUpVisible = true;
+                        }).catch(err => {
+                            if (err.response.status === 409){
+                                this.errMessage = "An account with the given email address already exists!";
+                                this.errorPopUpVisible = true;
+                            } 
+                            else if (err.response.status === 422) {
+                                this.errMessage = "Please make sure your phone number is not used by another account.";
+                                this.errorPopUpVisible = true;
+                            }
+                        });
+                    } else if (this.userType == "boat-owner") {
+                        //ovde ce ici boat
+                    }
+                    
                 }
             }
 

@@ -2,9 +2,11 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.AdventureDTO;
 import com.ftn.isa.DTO.FishingInstructorDTO;
+import com.ftn.isa.DTO.OwnerRegDTO;
 import com.ftn.isa.model.*;
 import com.ftn.isa.services.AdventureService;
 import com.ftn.isa.services.FishingInstructorService;
+import com.ftn.isa.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,9 @@ public class FishingInstructorController {
 
     @Autowired
     private AdventureService adventureService;
+
+    @Autowired
+    private RequestService requestService;
 
     @GetMapping(value = "/{email}/searchAdventure")
     public ResponseEntity<List<AdventureDTO>> searchAdventureByName(@RequestParam String adventureName, @PathVariable String email){
@@ -133,4 +138,40 @@ public class FishingInstructorController {
         fishingInstructorService.updatePersonalInfo(fishingInstructorData, fishingInstructor);
         return new ResponseEntity<>(fishingInstructorData, HttpStatus.OK);
     }
+
+    @PostMapping(consumes="application/json", value="/register")
+    @CrossOrigin(origins = "http://localhost:8081")
+    public ResponseEntity<HttpStatus> registerUser(@RequestBody OwnerRegDTO ownerData) {
+        if (!ownerData.arePropsValid())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (fishingInstructorService.findByEmail(ownerData.getEmail()) != null)
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+
+        FishingInstructor fishingInstructor = null;
+        try {
+            fishingInstructor = new FishingInstructor(ownerData);
+            fishingInstructorService.save(fishingInstructor);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        Request regRequest = new Request(RequestType.ACCOUNT_REGISTRATION, fishingInstructor, ownerData.getRegReason());
+        requestService.save(regRequest);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value="/confirm-mail/{email}")
+    public ResponseEntity<HttpStatus> activateAccount(@PathVariable String email){
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        fishingInstructor.setActive(true);
+        fishingInstructorService.save(fishingInstructor);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
