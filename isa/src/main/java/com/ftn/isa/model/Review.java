@@ -23,6 +23,14 @@ public class Review extends Notification{
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private Client sender;
 
+    public Review(String message, boolean isAnswered, String localDateTime) {
+        super(message, isAnswered, localDateTime);
+    }
+
+    public Review() {
+
+    }
+
     public Double getGrade() {
         return grade;
     }

@@ -21,6 +21,9 @@
                             </div>
                         </div>
                     </div>
+                
+                        
+
                 </div>
                 <div class="col-8">
                     <hr class="solid">
@@ -91,7 +94,15 @@
             </div>
       </div>
     </form>
-
+    <div class="row">
+        <div class="col-5"></div>
+            <div class="col-2">
+                <button class="btn btn-danger" @click="deleteClicked()">Delete my account</button>
+            </div>
+        <div class="col-5"></div>
+        
+    </div>
+    
     <PopUp v-show="picPopUpVisible" @close="closePopUp();">
         <div id="popupCont">
             <label id="popupLabel">Choose new profile picture: </label>
@@ -114,20 +125,34 @@
         @close = closeSuccPopUp
         :mess = succMessage
     />
+    <MessageInputModal  v-if="showMessageModal" 
+    
+            @message-modal-closed="showMessageModal = false"
+            @delete-request-sent="sendRequestToAdmin"
+            />
+
+
+    
 
 </template>
 
 <script>
+    import axios from 'axios'
     import PopUp from "@/components/PopUp.vue"
     import ErrorPopUp from "@/components/ErrorPopUp.vue"
     import SuccessPopUp from "@/components/SuccessPopUp.vue"
+    // import {useModal} from "jenesius-vue-modal"
+    import MessageInputModal from '@/components/MessageInputModal.vue'
 
     export default {
         name: "UserEditProfileForm",
         components: {
             PopUp,
             ErrorPopUp,
-            SuccessPopUp
+            SuccessPopUp,
+            MessageInputModal
+            
+
         },
         props :  {
             succPopUpVisible: Boolean,
@@ -154,6 +179,7 @@
             currentCountry: String,
             currentStreet: String,
             currentPhoneNumber: String,
+
         },
         data() {
             return {
@@ -162,10 +188,34 @@
                 errorPopUpVisible: false,
                 succMessage: "Personal information has been changed successfully!",
 
-                userType: window.sessionStorage.getItem("userRole")
+                userType: window.sessionStorage.getItem("userRole"),
+
+                showMessageModal : false,
+                deletionRequest : {
+                    senderId : '',
+                    isAnswered : false,
+                    message : '',
+                    sentTime : '',
+                    requestType : 'ACCOUNT DELETION'
+                }
             }
         },
         methods: {
+
+            sendRequestToAdmin(reasonMessage){
+                this.deletionRequest.sentTime = '11/05/2022 08:10';
+                this.deletionRequest.message = reasonMessage;
+                
+                axios.post('/api/admin/sendDeleteRequest/' + this.email + '/' + this.type, this.deletionRequest ).then((response) => {
+
+                })
+                this.showMessageModal = false;
+            },
+
+            deleteClicked(){
+                this.showMessageModal = true;
+            },
+
             changeProfilePhoto() {
                 this.picPopUpVisible = true;
             },

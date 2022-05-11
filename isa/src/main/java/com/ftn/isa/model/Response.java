@@ -13,6 +13,14 @@ public class Response extends Notification{
     @JoinColumn(name = "notification_id", referencedColumnName = "id")
     private Notification notification;
 
+    public Response(String message, boolean isAnswered, String localDateTime) {
+        super(message, isAnswered, localDateTime);
+    }
+
+    public Response() {
+
+    }
+
     public Notification getNotification(){
         return notification;
     }
