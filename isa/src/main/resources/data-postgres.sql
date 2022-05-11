@@ -7,18 +7,20 @@ insert into address (country, place_name, street, lon, lat)
             ('Srbija', 'Sremska Kamenica', 'Karadjordjeva 33', '19.835541721737165', '45.22357844341107'),
             ('Srbija', 'Kula', 'Marsala Tita 200', null, null),
             ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '19.652715410573126', '43.66153258311601'),
-           ('Srbija', 'Novi Sad', 'Partizanski put 2', '19.819806290382964', ' 45.15281270382178');
+           ('Srbija', 'Novi Sad', 'Partizanski put 2', '19.819806290382964', ' 45.15281270382178'),
+           ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '19.83383399956332', '45.25697997579121');
 
 insert into photo (photo_path, rental_id)
     values ('default.jpg', null),
             ('logo.png', null),
            ('cottage2.jpg', 4),
            ('cottage-inside.jpg', 4),
+           ('cottage1.jpg', 5),
+           ('cottage1.jpg', 6),
            ('home-page-pic-instructor.jpg', 1),
            ('home-page-pic-instructor.jpg', 2),
            ('home-page-pic-boat.jpg', 1),
            ('home-page-pic-boat.jpg', 2);
-
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted, loyalty_points,
                         is_active, photo_id, user_type, loyalty_type)
@@ -61,7 +63,9 @@ insert into cottage (id, name, description, capacity, rules, is_deleted, address
     values (nextval('my_seq_gen_rental'), 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
                 false, 8, 0, 0, 0, 90, 'wifi,parking,internet,bazen', 3, 5),
            (nextval('my_seq_gen_rental'), 'Fruskogorska zora', 'Najlepsa vikendica u okolini NS.', 5, 'Zabranjeno pusenje!',
-            false, 9, 0, 0, 0, 100, 'wifi,klima,parking,rostilj', 4, 5);
+            false, 9, 0, 0, 0, 100, 'wifi,klima,parking,rostilj', 4, 5),
+           (nextval('my_seq_gen_rental'), 'Centar NS', 'Najlepsi pogled na centar NS.', 5, 'Zabranjeno pusenje!',
+            false, 10, 0, 0, 0, 60, 'wifi,klima,parking,rostilj', 4, 5);
 
 insert into loyalty_program (discount, increase, loyalty_type)
     values (0, 0, 0),

@@ -3,6 +3,8 @@ package com.ftn.isa.model;
 
 import com.ftn.isa.DTO.AdventureDTO;
 import com.ftn.isa.DTO.FishingInstructorDTO;
+import com.ftn.isa.DTO.OwnerRegDTO;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +14,27 @@ public class FishingInstructor extends User{
     @OneToMany(cascade = CascadeType.ALL, fetch= FetchType.EAGER)
     @JoinColumn(name="instructor_id", referencedColumnName = "id")
     private Set<Adventure> adventures = new HashSet<>();
+
+    public FishingInstructor() {
+
+    }
+
+    public FishingInstructor(OwnerRegDTO data) {
+        this.setName(data.getName());
+        this.setSurname(data.getSurname());
+        this.setEmail(data.getEmail());
+        this.setAddress(new Address(data.getCountry(), data.getCity(), data.getAddress()));
+        this.setPhoneNumber(data.getPhoneNumber());
+        this.setProfilePicture(new Photo(data.getProfilePicture()));
+        this.setPassword(data.getPassword());
+        this.setDeleted(false);
+        this.setActive(false);
+        this.setUserType(UserType.INSTRUCTOR);
+        this.setLoyaltyPoints(0);
+        this.setLoyaltyType(LoyaltyType.REGULAR);
+        this.adventures = new HashSet<>();
+    }
+
 
     public Set<Adventure> getAdventures() {
         return adventures;

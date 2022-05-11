@@ -1,16 +1,15 @@
 package com.ftn.isa.controllers;
 
-import com.ftn.isa.DTO.CottageDTO;
-import com.ftn.isa.DTO.CottageOwnerDTO;
-import com.ftn.isa.DTO.ReservationDTO;
+import com.ftn.isa.DTO.*;
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.services.*;
-import com.ftn.isa.helpers.WrongInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +26,9 @@ public class CottageOwnerController  {
 
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private RequestService requestService;
 
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping(value="/{email}")
@@ -160,6 +162,64 @@ public class CottageOwnerController  {
         }
 
         return new ResponseEntity<Set<ReservationDTO>>(reservations, HttpStatus.OK);
+    }
+
+    @PostMapping(consumes="application/json", value="/register")
+    @CrossOrigin(origins = "http://localhost:8081")
+    public ResponseEntity<HttpStatus> registerUser(@RequestBody OwnerRegDTO ownerData) {
+        if (!ownerData.arePropsValid())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (cottageOwnerService.findByEmail(ownerData.getEmail()) != null)
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+
+        CottageOwner cottageOwner = null;
+        try {
+            cottageOwner = new CottageOwner(ownerData);
+            cottageOwnerService.save(cottageOwner);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        Request regRequest = new Request(RequestType.ACCOUNT_REGISTRATION, cottageOwner, ownerData.getRegReason());
+        requestService.save(regRequest);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value="/confirm-mail/{email}")
+    public ResponseEntity<HttpStatus> activateAccount(@PathVariable String email){
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        cottageOwner.setActive(true);
+        cottageOwnerService.save(cottageOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value="/ownersSearch")
+    @CrossOrigin(origins = "http://localhost:8081")
+    public ResponseEntity<List<OwnersSearchResDTO>> search(@RequestParam String email, @RequestParam String minPrice,
+                                                           @RequestParam String maxPrice, @RequestParam String location,
+                                                           @RequestParam String minCapacity, @RequestParam String serviceName) {
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!Validate.validatePrice(minPrice) || !Validate.validatePrice(maxPrice)
+                || !Validate.validatePrice(minCapacity) || (!location.equals("") && !Validate.validateWords(location)))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<OwnersSearchResDTO> rentals = new ArrayList<>();
+        try {
+            rentals = cottageOwnerService.search(cottageOwner, minPrice, maxPrice, location, minCapacity, serviceName);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(rentals, HttpStatus.OK );
     }
 
 }

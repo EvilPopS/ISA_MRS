@@ -22,6 +22,7 @@
             <a @click="cottageOwnerHomeRedirect()" class="homeNav">Profile</a>
             <a @click="allCottagesRedirect()" class="homeNav">Cottages</a>
             <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
+            <a @click="ownersSearch()" class="homeNav">Search</a>
         </div>
 
         <div v-else-if="userRole === 'instructor'">
@@ -98,7 +99,9 @@
             searchPageRedirect: function() {
                 pushView(this, "SearchPage");
             },
-
+            ownersSearch: function() {
+                pushView(this, "OwnersSearch");
+            },
             clientReservationHistory: function() {
                 pushView(this, "ClientReservationHistory");
             }
