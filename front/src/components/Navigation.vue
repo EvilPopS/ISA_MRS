@@ -2,9 +2,9 @@
     <div class="topnav">
         <div v-if="userRole === 'unauth'">
             <a @click="mainHomePageRedirect()" class="homeNav">Home</a>
+            <a @click="searchPageRedirect()" class="homeNav">Search</a>
             <a @click="registrationPageRedirect()" class="homeNav">Register</a>
             <a @click="loginPageRedirect()" class="homeNav">Login</a>
-            <a @click="searchPageRedirect()" class="homeNav">Search</a>
         </div>  
 
         <div v-else-if="userRole === 'admin'">
@@ -14,6 +14,8 @@
 
         <div v-else-if="userRole === 'client'">
             <a @click="clientProfileRedirect()" class="homeNav">Profile</a>
+            <a @click="searchPageRedirect()" class="homeNav">Search</a>
+            <a @click="clientReservationHistory()" class="homeNav">Reservation History</a>
         </div>
 
         <div v-else-if="userRole === 'cottageOwner'">
@@ -35,10 +37,9 @@
     export default {
         name: "Navigation",
         data(){
-            let role = "unauth";
-            try {
-                role = window.sessionStorage.getItem("userRole");
-            } catch (e) {}
+            let role = window.sessionStorage.getItem("userRole");
+            role =  role === null ? "unauth" : role;
+
             return {
                 userRole: role
             }
@@ -97,7 +98,7 @@
             searchPageRedirect: function() {
                 pushView(this, "SearchPage");
             },
-            searchPageRedirect: function() {
+            clientReservationHistory: function() {
                 pushView(this, "ClientReservationHistory");
             }
         }
