@@ -98,7 +98,6 @@
             searchPageRedirect: function() {
                 pushView(this, "SearchPage");
             },
-
             clientReservationHistory: function() {
                 pushView(this, "ClientReservationHistory");
             }
