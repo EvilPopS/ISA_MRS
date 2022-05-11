@@ -63,9 +63,10 @@ public class AdminController {
                 FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(req.getSender().getEmail());
                 if (response.equals("allow")){
                     fishingInstructor.setDeleted(true);
-                    fishingInstructorService.save(fishingInstructor);
+//                    fishingInstructorService.save(fishingInstructor);
                 }
                 req.setAnswered(true);
+                req.setSender(fishingInstructor);
                 requestService.save(req);
 
                 return new ResponseEntity<>(HttpStatus.OK);

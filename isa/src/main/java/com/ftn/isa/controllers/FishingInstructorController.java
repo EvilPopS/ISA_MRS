@@ -73,6 +73,12 @@ public class FishingInstructorController {
         if (fishingInstructor == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        if (!adventureDTO.propsValid()){
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+
         Address adventureAddress = new Address(adventureDTO.getCountry(), adventureDTO.getCity(), adventureDTO.getStreet());
         Set<Photo> photos = new HashSet<>();
         for (String p : adventureDTO.getPhotos())

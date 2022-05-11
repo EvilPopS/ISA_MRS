@@ -14,7 +14,7 @@ import EntityBasicView from '../views/EntityBasicView.vue'
 import AdminProfilePage from '../views/AdminProfileView.vue'
 import AdminNotifications from '../views/AdminNotifications.vue'
 import OwnersSearch from '../views/OwnersSearch.vue'
-
+import ClientReservationHistory from '../views/ClientReservationHistory'
 
 const routes = [
   {
@@ -93,6 +93,11 @@ const routes = [
     path: '/OwnersSearch',
     name: 'OwnersSearch',
     component: OwnersSearch
+  },
+  {
+    path: '/ClientReservationHistory',
+    name: 'ClientReservationHistory',
+    component: ClientReservationHistory
   }
 ]
 

@@ -65,7 +65,9 @@
             }
         },
         created() {
-            axios.get("api/rental/basic/5?type=cottage").then((response) => {
+            let id = window.sessionStorage.getItem("entityDataId");
+            let type = window.sessionStorage.getItem("entityDataType");
+            axios.get("api/rental/basic/" + id +"?type=" + type).then((response) => {
                 let rental = response.data;
                 
                 this.name = rental.name;

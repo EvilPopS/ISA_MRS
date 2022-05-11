@@ -16,7 +16,11 @@ insert into photo (photo_path, rental_id)
            ('cottage2.jpg', 4),
            ('cottage-inside.jpg', 4),
            ('cottage1.jpg', 5),
-           ('cottage1.jpg', 6);
+           ('cottage1.jpg', 6),
+           ('home-page-pic-instructor.jpg', 1),
+           ('home-page-pic-instructor.jpg', 2),
+           ('home-page-pic-boat.jpg', 1),
+           ('home-page-pic-boat.jpg', 2);
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted, loyalty_points,
                         is_active, photo_id, user_type, loyalty_type)
@@ -46,7 +50,7 @@ insert into boat_owner (id, email, password, name, surname, address_id, phone_nu
 
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, user_type, loyalty_type, no_penalties, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'strahinjapopovic@gmail.com', 'sifra123', 'Strahinja', 'Popovic', 1, '0601231231', false,
+    values (nextval('my_seq_gen_user'), 'client1@gmail.com', 'sifra123', 'Marko', 'Markovic', 1, '0601231231', false,
                 true, 1, 0, 0, 0, 124);
 
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
@@ -96,5 +100,8 @@ insert into reservation (start_time, end_time, is_action, is_reserved, price, re
             ('1/6/2022', '12/6/2022', false, true, 50, 3, 4),
             ('21/4/2022', '2/5/2022', false, true, 50, 3, 4),
             ('12/4/2022', '29/4/2022', false, true, 50, 4, 4),
-            ('10/5/2022', '29/5/2022', false, true, 50, 5, 4)
+            ('10/6/2022', '12/6/2022', false, true, 40, 4, 4),
+            ('15/6/2022', '27/6/2022', false, true, 30, 2, 4),
+            ('18/6/2022', '21/6/2022', false, true, 40, 3, 4),
+            ('21/6/2022', '25/6/2022', false, true, 60, 4, 4)
 
