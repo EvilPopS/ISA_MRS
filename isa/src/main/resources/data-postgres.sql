@@ -91,5 +91,16 @@ insert into request(id, is_answered, message, sent_time, request_type, sender_id
 values (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 111111111', '02/05/2022 23:44', 1, 6),
        (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
 
-
-
+insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id)
+    values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4),
+            ('1/5/2022', '11/5/2022', false, true, 30, 1, 4),
+            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4),
+            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4),
+            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4),
+            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4),
+            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4),
+            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4),
+            ('10/6/2022', '12/6/2022', false, true, 40, 4, 4),
+            ('15/6/2022', '27/6/2022', false, true, 30, 2, 4),
+            ('18/6/2022', '21/6/2022', false, true, 40, 3, 4),
+            ('21/6/2022', '25/6/2022', false, true, 60, 4, 4)
