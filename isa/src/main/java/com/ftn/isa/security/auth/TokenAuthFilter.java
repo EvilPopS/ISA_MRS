@@ -8,7 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ftn.isa.services.UserService;
+import com.ftn.isa.services.CustomUserDetailsService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,11 +18,11 @@ import io.jsonwebtoken.ExpiredJwtException;
 public class TokenAuthFilter extends OncePerRequestFilter {
 
     private final TokenUtils tokenUtils;
-    private final UserService userService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public TokenAuthFilter(TokenUtils tokenHelper, UserService userService) {
+    public TokenAuthFilter(TokenUtils tokenHelper, CustomUserDetailsService customUserDetailsService) {
         this.tokenUtils = tokenHelper;
-        this.userService = userService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
             if (authToken != null) {
                 String email = tokenUtils.getEmailFromToken(authToken);
                 if (email != null) {
-                    UserDetails userDetails = userService.loadUserByUsername(email);
+                    UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
                     if (tokenUtils.validateToken(authToken, userDetails)) {
                         TokenBasedAuth authentication = new TokenBasedAuth(userDetails);

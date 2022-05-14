@@ -4,7 +4,6 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class TokenBasedAuth extends AbstractAuthenticationToken {
-
     private static final long serialVersionUID = 1L;
 
     private String token;

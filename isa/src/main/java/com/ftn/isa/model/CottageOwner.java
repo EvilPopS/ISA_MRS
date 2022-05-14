@@ -29,7 +29,7 @@ public class CottageOwner extends User{
         this.setPassword(data.getPassword());
         this.setDeleted(false);
         this.setActive(false);
-        this.setUserType(UserType.COTTAGE_OWNER);
+        this.setRole(new Role("ROLE_COTTAGE_OWNER"));
         this.setLoyaltyPoints(0);
         this.setLoyaltyType(LoyaltyType.REGULAR);
         this.cottages = new HashSet<>();

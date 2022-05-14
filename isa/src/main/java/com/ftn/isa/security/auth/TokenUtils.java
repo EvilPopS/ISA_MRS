@@ -103,4 +103,7 @@ public class TokenUtils {
         return request.getHeader(AUTH_HEADER);
     }
 
+    public int getExpiredIn() {
+        return EXPIRES_IN;
+    }
 }
