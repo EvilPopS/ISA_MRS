@@ -89,7 +89,7 @@ export default {
                 this.getHistoryData()
                 this.getUpcomingData()
             }).catch((error) => {
-                alert('Error happened: ' + error.name)
+                alert('Error happened: ' + error.data)
             });
     }
 }
