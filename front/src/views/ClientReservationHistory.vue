@@ -41,10 +41,11 @@
             };
         },
         created() {
-            axios.get("api/client/reservation-history/" + window.sessionStorage.getItem("email")).then((response) => {
-                console.log(response.data);
-                this.reservations = response.data;
-            });
+            axios.get("api/client/reservation-history", {headers: {'authorization': window.localStorage.getItem("token") }})
+                .then((response) => {
+                    this.reservations = response.data;
+                }
+            );
         },
         methods: {
             formatDateString(date) {

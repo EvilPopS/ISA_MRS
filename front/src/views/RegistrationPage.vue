@@ -173,10 +173,11 @@
                         phoneNumber: this.phoneNumber,
                         profilePicture: this.profilePicture
                     }
-                    axios.post("api/client/register", requestBody).then((response) => {
+                    axios.post("api/unauth/register/client", requestBody).then((response) => {
+                        axios.get("api/unauth/send-confirmation-mail/" + this.email).then(response => {console.log("Uspeoooooooooooooooo")});
                         this.succMessage = "Your account has been successfully registered, and confirmation email has been sent to " 
                                                 + this.email + 
-                                            " To activate your account please click link in the email message!"
+                                            ". To activate your account please click link in the email message!"
                         this.succPopUpVisible = true;
                     }).catch(err => {
                         if (err.response.status === 409){
@@ -184,7 +185,7 @@
                             this.errorPopUpVisible = true;
                         } 
                         else if (err.response.status === 422) {
-                            this.errMessage = "Please make sure your phone number is not used by another account.";
+                            this.errMessage = "Please make sure the data you entered are valid and the phone number is not used already.";
                             this.errorPopUpVisible = true;
                         }
                     });

@@ -46,7 +46,7 @@ public abstract class User implements UserDetails {
     @JoinColumn(name = "photo_id", referencedColumnName = "id")
     private Photo profilePicture;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private Role role;
 

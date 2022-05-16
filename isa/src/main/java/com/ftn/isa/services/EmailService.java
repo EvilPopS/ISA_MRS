@@ -19,9 +19,9 @@ public class EmailService {
     private Environment env;
 
     @Async
-    public void sendMail(User receiver, String mailSubj, String mailText) throws MailException {
+    public void sendMail(String email, String mailSubj, String mailText) throws MailException {
         SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo(receiver.getEmail());
+        mail.setTo(email);
         mail.setFrom(Objects.requireNonNull(env.getProperty("spring.mail.username")));
         mail.setSubject(mailSubj);
         mail.setText(mailText);

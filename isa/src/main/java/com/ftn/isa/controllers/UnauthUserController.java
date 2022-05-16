@@ -1,7 +1,6 @@
 package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.LoginDTO;
-import com.ftn.isa.DTO.ReservationHistoryDTO;
 import com.ftn.isa.DTO.UserRegDTO;
 import com.ftn.isa.DTO.UserTokenDTO;
 import com.ftn.isa.configs.ServerConfig;
@@ -13,18 +12,18 @@ import com.ftn.isa.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
+@EnableAsync
 @RequestMapping(value="api/unauth")
 public class UnauthUserController {
     @Autowired
@@ -46,6 +45,7 @@ public class UnauthUserController {
         if (clientService.findByEmail(clientData.getEmail()) != null)
             return new ResponseEntity<>(HttpStatus.CONFLICT);
 
+        clientData.setPassword(new BCryptPasswordEncoder().encode(clientData.getPassword()));
         Client client = new Client(clientData);
         try {
             clientService.saveOrUpdateClient(client);
@@ -53,10 +53,16 @@ public class UnauthUserController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value="/send-confirmation-mail/{email}")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @Async
+    public ResponseEntity<HttpStatus> sendAccountConfirmationMail(@PathVariable String email) {
         try {
-            emailService.sendMail(client, "Confirmation mail",
-                    "Click here to activate your account: http://localhost:8080/api/unauth/confirm-mail/" +
-                            client.getEmail()
+            emailService.sendMail(email, "Confirmation mail",
+                    "Click here to activate your account: http://localhost:8080/api/unauth/confirm-mail/" + email
             );
         } catch(Exception ignored){
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -96,10 +102,12 @@ public class UnauthUserController {
         if(!user.isActive() || user.isDeleted())
             return new ResponseEntity<>(null, HttpStatus.LOCKED);
 
+        String userRole = user.getRole().getName().substring(5);
         return new ResponseEntity<>(
                 new UserTokenDTO(
-                    tokenUtils.generateToken(user.getEmail(), user.getRole().getName().substring(5)),
-                    tokenUtils.getExpiredIn()
+                    tokenUtils.generateToken(user.getEmail(), userRole),
+                    tokenUtils.getExpiredIn(),
+                    userRole
                 ),
                 HttpStatus.OK
         );

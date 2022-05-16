@@ -53,6 +53,15 @@
                 loyalty: '',
                 points: '',
 
+                currentProfilePic: '',
+                currentPassword: '',
+                currentName: '',
+                currentSurname: '',
+                currentCity: '',
+                currentCountry: '',
+                currentStreet: '',
+                currentPhoneNumber: '',
+
                 succPopUpVisible: false
             }
         },
@@ -69,7 +78,7 @@
                     phoneNumber: data.phoneNumber,
                     profilePicture: data.profilePicture
                 }
-                axios.put("api/client/data-update", requestBody)
+                axios.put("api/client/data-update", requestBody, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(() => {
                         this.succPopUpVisible = true;
                     });
@@ -82,7 +91,7 @@
             }
         },
         created() {
-            axios.get("api/client/" + window.sessionStorage.getItem("email"))
+            axios.get("api/client", {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     let data = response.data;
 
