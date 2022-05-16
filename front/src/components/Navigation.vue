@@ -15,7 +15,8 @@
         <div v-else-if="userRole === 'CLIENT'">
             <a @click="clientProfileRedirect()" class="homeNav">Profile</a>
             <a @click="searchPageRedirect()" class="homeNav">Search</a>
-            <a @click="clientReservationHistory()" class="homeNav">Reservation History</a>
+            <a @click="clientReservHistoryRedirect()" class="homeNav">Reservation History</a>
+            <a @click="clientUpcomingReservsRedirect()" class="homeNav">Upcoming Reservations</a>
         </div>
 
         <div v-else-if="userRole === 'COTTAGE_OWNER'">
@@ -101,8 +102,11 @@
             ownersSearch: function() {
                 pushView(this, "OwnersSearch");
             },
-            clientReservationHistory: function() {
+            clientReservHistoryRedirect: function() {
                 pushView(this, "ClientReservationHistory");
+            },
+            clientUpcomingReservsRedirect: function() {
+                pushView(this, "ClientUpcomingReservations");
             }
         }
     }

@@ -7,7 +7,7 @@
     import ReservationsGallery from '@/components/ReservationsGallery.vue';
      
     export default {
-        name: "ClientReservationHistory",
+        name: "ClientUpcomingReservations",
         components: {
             ReservationsGallery
         },
@@ -17,7 +17,7 @@
             };
         },
         created() {
-            axios.get("api/client/reservation-history", {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.get("api/client/upcoming-reservations", {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     this.reservations = response.data;
                 }
