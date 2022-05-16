@@ -92,6 +92,6 @@ public class ClientController {
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        return new ResponseEntity<>(clientService.getReservationHistory(email), HttpStatus.OK);
+        return new ResponseEntity<>(clientService.getUpcomingReservations(email), HttpStatus.OK);
     }
 }
