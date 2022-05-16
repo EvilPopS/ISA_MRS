@@ -49,11 +49,14 @@ public class TokenUtils {
     public String getToken(HttpServletRequest request) {
         String authHeader = getAuthHeaderFromHeader(request);
 
-        // Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0
-        //          IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                                                      // Bearer sklj.blab.labal
         if (authHeader != null && authHeader.startsWith("Bearer "))
             return authHeader.substring(7);
         return null;
+    }
+
+    public String getEmailDirectlyFromHeader(HttpServletRequest request) {
+        return this.getEmailFromToken(this.getToken(request));
     }
 
     public String getEmailFromToken(String token) throws ExpiredJwtException {

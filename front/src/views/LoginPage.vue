@@ -64,20 +64,21 @@
                     password: this.password
                 }
 
-                axios.post("api/user/login", requestBody).then(response => {
-                    window.sessionStorage.setItem("email", this.email);
-                    let userType = response.data;
-                    window.sessionStorage.setItem("userRole", userType);
+                axios.post("api/unauth/login", requestBody).then(response => {
+                    window.localStorage.setItem("token", "Bearer " + response.data.accessToken);
 
-                    if (userType === "client") 
+                    let userType = response.data.role;
+                    window.localStorage.setItem("userRole", userType);
+
+                    if (userType === "CLIENT") 
                         this.$router.push({ name: "ClientProfilePage" });
-                    else if (userType === "cottageOwner")
+                    else if (userType === "COTTAGE_OWNER")
                         this.$router.push({ name: "CottageOwnerHomePage" });
-                    // else if (userType === "boatOwner")
+                    // else if (userType === "BOAT_OWNER")
                     //     this.$router.push({ name: viewName });
-                    else if (userType === "instructor")
+                    else if (userType === "INSTRUCTOR")
                         this.$router.push({ name: "InstructorProfilePage" });
-                    else if (userType === "admin")
+                    else if (userType === "ADMIN")
                         this.$router.push({ name: "AdminProfilePage" });
 
                 }).catch(err => {
@@ -99,7 +100,6 @@
 
         if (!validate(formData.password, passwordReg))
             throw "Make sure entered a valid password.";
-
     }
 
     function validate(toTest, regex) {

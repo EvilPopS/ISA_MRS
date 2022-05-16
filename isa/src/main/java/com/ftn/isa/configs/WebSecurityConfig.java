@@ -55,15 +55,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/unauth/**").permitAll()
                 .anyRequest().authenticated().and()
                 .cors().and()
-                .addFilterBefore(new TokenAuthFilter(tokenUtils, customUserDetailsService),
-                                BasicAuthenticationFilter.class);
+                .addFilterBefore(
+                        new TokenAuthFilter(tokenUtils, customUserDetailsService),
+                        BasicAuthenticationFilter.class
+                );
 
         http.csrf().disable();
     }
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers(HttpMethod.POST, "/api/unauth/login");
-
+        web.ignoring().antMatchers(HttpMethod.POST, "/api/unauth/login",
+                                                                "/api/unauth/register/client");
+        web.ignoring().antMatchers(HttpMethod.GET, "/api/rental/search",
+                                                            "/api/rental/basic/*",
+                                                            "/api/unauth/send-confirmation-mail/*",
+                                                            "/api/unauth/confirm-mail/*");
     }
 }
