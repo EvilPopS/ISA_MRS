@@ -3,6 +3,7 @@ package com.ftn.isa.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -21,6 +22,17 @@ public abstract class Notification {
 
     @Column(name = "sent_time", nullable = false)
     private LocalDateTime sentTime;
+
+    public Notification(String message, boolean isAnswered, String localDateTime){
+        this.message = message;
+        this.isAnswered = isAnswered;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        this.sentTime = LocalDateTime.parse(localDateTime, formatter);
+    }
+
+    public Notification() {
+
+    }
 
     public Long getId() {
         return id;

@@ -1,3 +1,10 @@
+INSERT INTO role (name) VALUES ('ROLE_CLIENT'),
+                                ('ROLE_COTTAGE_OWNER'),
+                                ('ROLE_BOAT_OWNER'),
+                                ('ROLE_INSTRUCTOR'),
+                                ('ROLE_ADMIN');
+
+
 insert into address (country, place_name, street, lon, lat)
     values ('Srbija', 'Sabac', 'Karadjordjeva 26', null, null ),
             ('Srbija', 'Novi Sad', 'Zeleznicka 36', null, null),
@@ -7,21 +14,27 @@ insert into address (country, place_name, street, lon, lat)
             ('Srbija', 'Sremska Kamenica', 'Karadjordjeva 33', '19.835541721737165', '45.22357844341107'),
             ('Srbija', 'Kula', 'Marsala Tita 200', null, null),
             ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '19.652715410573126', '43.66153258311601'),
-           ('Srbija', 'Novi Sad', 'Partizanski put 2', '19.819806290382964', ' 45.15281270382178');
+           ('Srbija', 'Novi Sad', 'Partizanski put 2', '19.819806290382964', ' 45.15281270382178'),
+           ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '19.83383399956332', '45.25697997579121');
 
 insert into photo (photo_path, rental_id)
     values ('default.jpg', null),
             ('logo.png', null),
            ('cottage2.jpg', 4),
            ('cottage-inside.jpg', 4),
-           ('cottage1.jpg', 5);
+           ('cottage1.jpg', 5),
+           ('cottage1.jpg', 6),
+           ('home-page-pic-instructor.jpg', 1),
+           ('home-page-pic-instructor.jpg', 2),
+           ('home-page-pic-boat.jpg', 1),
+           ('home-page-pic-boat.jpg', 2);
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted, loyalty_points,
-                        is_active, photo_id, user_type, loyalty_type)
+                        is_active, photo_id, role_id, loyalty_type)
     values (nextval('my_seq_gen_user'), 'admin1@gmail.com', 'admin123', 'Miroslav', 'Ilic', 2, '0614264444', false, 100,
-                true, 2, 1, 0),
+                true, 2, 5, 0),
            (nextval('my_seq_gen_user'), 'admin2@gmail.com', 'admin123', 'Saban', 'Saulic', 3, '0614283764', false,100,
-                true, 2, 1, 0);
+                true, 2, 5, 0);
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                             rental_type, price, biography, fishing_equipment, cancellation_conditions)
@@ -38,17 +51,17 @@ insert into boat (id, name, description, capacity, rules, is_deleted, address_id
                 'Pecaroska oprema, ne znam sta sve ide tu.', 35.0);
 
 insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                            is_active, photo_id, user_type, loyalty_type, loyalty_points)
+                            is_active, photo_id, role_id, loyalty_type, loyalty_points)
     values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', 'boat123', 'Bojan', 'Bojanic', 7, '06222332323', false, true, null,
                 3, 0, 10);
 
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                        is_active, photo_id, user_type, loyalty_type, no_penalties, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'strahinjapopovic@gmail.com', 'sifra123', 'Strahinja', 'Popovic', 1, '0601231231', false,
-                true, 1, 0, 0, 0, 124);
+                        is_active, photo_id, role_id, loyalty_type, no_penalties, loyalty_points)
+    values (nextval('my_seq_gen_user'), 'client1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O',
+                                'Marko', 'Markovic', 1, '0601231231', false, true, 1, 1, 0, 0, 124);
 
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                           is_active, photo_id, user_type, loyalty_type, loyalty_points)
+                           is_active, photo_id, role_id, loyalty_type, loyalty_points)
 values (nextval('my_seq_gen_user'), 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
         2, 0, 10);
 
@@ -57,7 +70,9 @@ insert into cottage (id, name, description, capacity, rules, is_deleted, address
     values (nextval('my_seq_gen_rental'), 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
                 false, 8, 0, 0, 0, 90, 'wifi,parking,internet,bazen', 3, 5),
            (nextval('my_seq_gen_rental'), 'Fruskogorska zora', 'Najlepsa vikendica u okolini NS.', 5, 'Zabranjeno pusenje!',
-            false, 9, 0, 0, 0, 100, 'wifi,klima,parking,rostilj', 4, 5);
+            false, 9, 0, 0, 0, 100, 'wifi,klima,parking,rostilj', 4, 5),
+           (nextval('my_seq_gen_rental'), 'Centar NS', 'Najlepsi pogled na centar NS.', 5, 'Zabranjeno pusenje!',
+            false, 10, 0, 0, 0, 60, 'wifi,klima,parking,rostilj', 4, 5);
 
 insert into loyalty_program (discount, increase, loyalty_type)
     values (0, 0, 0),
@@ -66,7 +81,7 @@ insert into loyalty_program (discount, increase, loyalty_type)
             (30, 30, 3);
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
-                                user_type, address_id, photo_id, loyalty_points)
+                                role_id, address_id, photo_id, loyalty_points)
     values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126',
                 'Instric', 4, 5, 1, 0),
            (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Instro2', 'sifra1223', '0619990009',
@@ -92,5 +107,7 @@ insert into reservation (start_time, end_time, is_action, is_reserved, price, re
             ('1/6/2022', '12/6/2022', false, true, 50, 3, 4),
             ('21/4/2022', '2/5/2022', false, true, 50, 3, 4),
             ('12/4/2022', '29/4/2022', false, true, 50, 4, 4),
-            ('10/5/2022', '29/5/2022', false, true, 50, 5, 4)
-
+            ('10/6/2022', '12/6/2022', false, true, 40, 4, 4),
+            ('15/6/2022', '27/6/2022', false, true, 30, 2, 4),
+            ('18/6/2022', '21/6/2022', false, true, 40, 3, 4),
+            ('21/6/2022', '25/6/2022', false, true, 60, 4, 4)

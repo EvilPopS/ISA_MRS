@@ -46,11 +46,11 @@ public class RentalServService {
 
     public RentalService getEntityByTypeAndId(String type, Long id) throws Exception {
         switch (type) {
-            case "cottage":
+            case "Cottage":
                 return cottageRepository.getCottageById(id);
-            case "boat":
+            case "Boat":
                 return boatRepository.getBoatById(id);
-            case "adventure":
+            case "Adventure":
                 return adventureRepository.getAdventureById(id);
         }
         throw new Exception("Type is invalid!");

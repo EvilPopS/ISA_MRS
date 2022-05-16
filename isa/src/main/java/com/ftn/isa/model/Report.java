@@ -21,6 +21,15 @@ public class Report extends Notification{
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
+    public Report(String message, boolean isAnswered, String localDateTime) {
+        super(message, isAnswered, localDateTime);
+    }
+
+    public Report() {
+
+    }
+
+
     public boolean isNegative() {
         return isNegative;
     }

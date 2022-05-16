@@ -2,19 +2,17 @@ package com.ftn.isa.DTO;
 
 import com.ftn.isa.model.RentalService;
 
-public class RentalSearchResDTO {
-    private Long id;
+public class OwnersSearchResDTO {
     private String name;
     private String type;
-    private double rate;
+    private double capacity;
     private double price;
     private String city;
     private String street;
 
-    public RentalSearchResDTO() {}
+    public OwnersSearchResDTO() {}
 
-    public RentalSearchResDTO(RentalService rental) {
-        this.id = rental.getId();
+    public OwnersSearchResDTO(RentalService rental) {
         this.name = rental.getName();
         switch (rental.getRentalType()) {
             case COTTAGE:
@@ -26,18 +24,18 @@ public class RentalSearchResDTO {
             default:
                 this.type = "Adventure";
         }
-        this.rate = rental.getAverageRate();
+        this.capacity = rental.getCapacity();
         this.price = rental.getPrice();
         this.city = rental.getAddress().getPlaceName();
         this.street = rental.getAddress().getStreet();
     }
 
-    public Long getId() {
-        return id;
+    public double getCapacity() {
+        return capacity;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCapacity(double capacity) {
+        this.capacity = capacity;
     }
 
     public String getName() {
@@ -54,14 +52,6 @@ public class RentalSearchResDTO {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public double getRate() {
-        return rate;
-    }
-
-    public void setRate(double rate) {
-        this.rate = rate;
     }
 
     public double getPrice() {
@@ -87,4 +77,5 @@ public class RentalSearchResDTO {
     public void setStreet(String street) {
         this.street = street;
     }
+
 }

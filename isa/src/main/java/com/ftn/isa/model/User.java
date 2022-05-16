@@ -1,11 +1,16 @@
 package com.ftn.isa.model;
 
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class User {
+public abstract class User implements UserDetails {
 
     @Id
     @SequenceGenerator(name = "my_seq_gen_user", sequenceName = "my_seq_gen_user", initialValue = 1, allocationSize = 1)
@@ -41,14 +46,49 @@ public abstract class User {
     @JoinColumn(name = "photo_id", referencedColumnName = "id")
     private Photo profilePicture;
 
-    @Column(name = "user_type", nullable = false)
-    private UserType userType;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    private Role role;
 
     @Column(name = "loyalty_type", nullable = false)
     private LoyaltyType loyaltyType;
 
     @Column(name = "loyalty_points")
     private int loyaltyPoints;
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Role r = this.role;
+        return new ArrayList<Role>() {
+            {add(r);}
+        };
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !this.isDeleted() && this.isActive;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 
     public String getEmail() {
         return email;
@@ -122,12 +162,12 @@ public abstract class User {
         this.profilePicture = profilePicture;
     }
 
-    public UserType getUserType() {
-        return userType;
+    public Role getRole() {
+        return role;
     }
 
-    public void setUserType(UserType userType) {
-        this.userType = userType;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public LoyaltyType getLoyaltyType() {

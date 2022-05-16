@@ -11,7 +11,7 @@
                         <p class="card-text"><b>Rate:</b> {{adventure.averageRating}}</p>
                         <span>
                             <button class="btn btn-success" @click="showAdventureDetail(adventure)">Details</button>
-                            <button @click="deleteAdventure(adventure)" class="btn btn-danger">Delete</button>
+                            <button class="btn btn-danger"  @click="showConfirmDeletionDialog(adventure)" >Delete</button>
                         </span>    
                     </div>
                 </div>
@@ -35,7 +35,19 @@
         @modal-closed = "showAddNewАdventure = false"
         @succ-popup-close = "succPopUpClose"
         />
+    </div>    
+    <div v-else-if="confirmationPopUpVisible">
+        <ConfirmationPopUp
+        :title="deletionTitle"
+        :message="deletionMessage"
+        @modal-closed = "confirmationPopUpVisible = false"
+        @confirmed-event = "deleteAdventure"
+        />
     </div>
+    <SuccessPopUp v-show="succPopUpVisible"
+        @close = "succPopUpVisible = false"
+        :mess = succMessage
+    />
 
     
 </template>
@@ -44,21 +56,38 @@
  import axios from 'axios';
  import AdventureDetail from '../components/AdventureDetail.vue'
  import AddAdventure from '../components/AddAdventure.vue'
+ import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
+ import ErrorPopUp from '../components/ErrorPopUp.vue'
+ import SuccessPopUp from '../components/SuccessPopUp.vue'
+
 
 export default {
    name: "AdventuresView",
    components: {
-     AdventureDetail, AddAdventure
+     AdventureDetail, AddAdventure,
+     ConfirmationPopUp, ErrorPopUp, 
+     SuccessPopUp
    },
    data (){
        return {
            adventures: [],
            sendadventure: {},
+           adventureToDelete : Object,
+
 
            showDetails: false,
            showAddNewАdventure: false,
            showDeleteadventure: false,
-           succPopUpVisible: false
+           succPopUpVisible: false,
+           confirmationPopUpVisible : false,
+           errorPopUpVisible : false,
+
+           
+           errorMessage : '',
+           succMessage : '',
+           deletionTitle : '',
+           deletionMessage : '',
+
        }
    }, 
    
@@ -80,14 +109,31 @@ export default {
         showAddAdventure() {
             this.showAddNewАdventure = true
         },
+        showConfirmDeletionDialog(adventure) {
+            this.adventureToDelete = adventure;
+            this.deletionTitle = 'Are you sure?';
+            this.deletionMessage = 'Adventure: ' + adventure.name + 'is going to be deleted.';
+            
+            this.confirmationPopUpVisible = true;
+        },
         succPopUpClose() {
             this.succPopUpVisible = false;
         },
-        deleteAdventure(adventure){
-            axios.delete('api/fishingInstructor/' + 'instructor@gmail.com' + '/deleteAdventure/' + adventure.id).then((response) => {
-                
-            })
-            this.adventures = this.adventures.filter(item => item != adventure);
+        deleteAdventure(){
+            this.confirmationPopUpVisible = false;
+
+
+            axios.delete('api/fishingInstructor/' + 'instructor@gmail.com' + '/deleteAdventure/' + this.adventureToDelete.id).then((response) => {
+                this.succPopUpVisible = true;
+                this.adventures = this.adventures.filter(item => item != this.adventureToDelete);
+                this.succMessage = "Adventure is successfully deleted!";
+
+            }).catch((e) => {
+                this.errorMessage = e;
+                this.errorPopUpVisible = true;
+                });
+            
+
 
         }
    },

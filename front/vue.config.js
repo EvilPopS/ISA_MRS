@@ -10,6 +10,8 @@ module.exports = defineConfig({
         pathRewrite: { '^/api': '/' },
       },
     },
+    hot: false,
+    liveReload: false
   },
 
 })

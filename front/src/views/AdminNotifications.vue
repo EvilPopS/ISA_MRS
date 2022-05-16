@@ -12,26 +12,62 @@
                             <p class="card-text"> Request message: {{request.message}}</p>
                             <p class="card-text"><small class="text-muted">{{request.sendTime}}</small></p>
                             <span>
-                                <button class="btn btn-success" @click="allowRequest(request)">Allow</button>
-                                <button @click="rejectRequest(request)" class="btn btn-danger">Reject</button>
+                                <button class="btn btn-success" @click="showConfirmAllowingDialog(request)">Allow</button>
+                                <button class="btn btn-danger"  @click="showConfirmRejectionDialog(request)">Reject</button>
                             </span> 
-   
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
+        <div v-if="confirmationPopUpVisible">
+        <ConfirmationPopUp
+        :title="rejectionTitle"
+        :message="rejectionMessage"
+        @modal-closed = "confirmationPopUpVisible = false"
+        @confirmed-event = "rejectRequest"
+        />
     </div>
+    <SuccessPopUp v-show="succPopUpVisible"
+        @close = "succPopUpVisible = false"
+        :mess = succMessage
+    />
+    <ErrorPopUp v-show="errorPopUpVisible" 
+        @close = closeErrorPopUp
+        :mess = errMessage
+    /> 
+
+    </div>
+    
+        
 </template>
 
 <script>
 import axios from 'axios'
+import SuccessPopUp from '../components/SuccessPopUp.vue'
+import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
+import ErrorPopUp from '../components/ErrorPopUp.vue'
 export default {
     name : 'AdminNotifications',
+    components : {
+        SuccessPopUp,
+        ConfirmationPopUp,
+        ErrorPopUp
+    },
     data () {
         return {
             requests : [],
+            confirmationPopUpVisible : false,
+            succPopUpVisible : false,
+            errorPopUpVisible : false,
+
+            rejectionMessage : '',
+            rejectionTitle : '',
+            succMessage : '',
+            errMessage : '',
+
+            requestToBeAllowed : Object,
+            requestToBeRejected : Object
 
         }
     },
@@ -43,19 +79,52 @@ export default {
                 } catch(e) {}
         },
 
-        allowRequest(request){
-            console.log("Allowing request...");
-            // obrisi sendera i stavi isAnswered na true
-            axios.delete('api/admin/deleteUser/' + request.senderId + '/allow').then((response) => {
-
-            })
-            this.requests = this.requests.filter(item => item != request);
+        closeErrorPopUP()  {
+            this.errorPopUpVisible = true;
         },
-        rejectRequest(request){
-            axios.delete('api/admin/deleteUser/' + request.senderId + '/reject').then((response) => {
+
+        showConfirmAllowingDialog(request){
+            this.requestToBeAllowed = request;
+            this.allowRequest();
+
+        },
+        showConfirmRejectionDialog(request){
+            this.requestToBeRejected = request
+            this.rejectionTitle = 'Are you sure?';
+            this.rejectionMessage = 'Request is going to be rejected.'
+            this.confirmationPopUpVisible = true;
+
+        },
+
+
+        allowRequest(){
+            console.log("Allowing request...");
+            this.confirmationPopUpVisible = false;
+            // obrisi sendera i stavi isAnswered na true
+            axios.delete('api/admin/deleteUser/' + this.requestToBeAllowed.senderId + '/allow').then((response) => {
+                this.requests = this.requests.filter(item => item != this.requestToBeAllowed);
+                this.succPopUpVisible = true;
+                this.succMessage = 'Request is successfully allowed.';
+                this.requests.push();
+            }).catch((e) => {
+                this.errMessage = e ;
+                this.errorPopUpVisible = true;
+            })
+            
+        },
+        rejectRequest(){
+            this.confirmationPopUpVisible = false;
+            axios.delete('api/admin/deleteUser/' + this.requestToBeRejected.senderId + '/reject').then((response) => {
+                this.requests = this.requests.filter(item => item != this.requestToBeRejected);
+                this.succPopUpVisible = true;
+                this.succMessage = 'Request is successfully rejected.';
+                this.requests.push();
+            }).catch((e) => {
+                this.errMessage = e;
+                this.errorPopUpVisible = true;
 
             })
-            this.requests = this.requests.filter(item => item != request);
+            
         }
 
     },

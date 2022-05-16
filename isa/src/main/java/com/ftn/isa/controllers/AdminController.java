@@ -3,10 +3,7 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.AdminDTO;
 import com.ftn.isa.DTO.RequestDTO;
-import com.ftn.isa.model.Admin;
-import com.ftn.isa.model.FishingInstructor;
-import com.ftn.isa.model.Request;
-import com.ftn.isa.model.Response;
+import com.ftn.isa.model.*;
 import com.ftn.isa.services.AdminService;
 import com.ftn.isa.services.FishingInstructorService;
 import com.ftn.isa.services.RequestService;
@@ -15,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +31,23 @@ public class AdminController {
     @Autowired
     FishingInstructorService fishingInstructorService;
 
+    @PostMapping(value="/sendDeleteRequest/{email}/{userType}")
+    public ResponseEntity<RequestDTO> addRequest(@RequestBody RequestDTO requestDTO, @PathVariable String email, @PathVariable String userType){
+        User user = null;
+        switch (userType){
+            case "INSTRUCTOR":
+                user = fishingInstructorService.findByEmail(email);
+        }
+
+        Request request = new Request(requestDTO.getMessage(), requestDTO.isAnswered(), requestDTO.getSentTime(), requestDTO.getRequestType(), user);
+
+        requestService.save(request);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+
+
+    }
 
     @GetMapping(value = "/{email}")
     public ResponseEntity<AdminDTO> getByEmail(@PathVariable String email){
@@ -66,6 +82,7 @@ public class AdminController {
                     fishingInstructorService.save(fishingInstructor);
                 }
                 req.setAnswered(true);
+                req.setSender(fishingInstructor);
                 requestService.save(req);
 
                 return new ResponseEntity<>(HttpStatus.OK);
