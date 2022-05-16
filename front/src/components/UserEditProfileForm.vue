@@ -188,7 +188,7 @@
                 errorPopUpVisible: false,
                 succMessage: "Personal information has been changed successfully!",
 
-                userType: window.sessionStorage.getItem("userRole"),
+                userType: window.localStorage.getItem("userRole"),
 
                 showMessageModal : false,
                 deletionRequest : {

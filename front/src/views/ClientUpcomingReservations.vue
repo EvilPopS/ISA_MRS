@@ -17,7 +17,7 @@
             };
         },
         created() {
-            axios.get("api/client/reservation-history", {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.get("api/client/?", {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     this.reservations = response.data;
                 }
