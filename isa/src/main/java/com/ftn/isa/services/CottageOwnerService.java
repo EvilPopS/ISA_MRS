@@ -86,4 +86,23 @@ public class CottageOwnerService {
         }
         return rentals;
     }
+
+    public void addNewCottage(CottageDTO cottageDTO, CottageOwner cottageOwner) {
+        Set<Photo> photos = new HashSet<>();
+        for (String p : cottageDTO.getPhotos())
+            photos.add(new Photo(p));
+
+        Address address = new Address(cottageDTO.getCountry(), cottageDTO.getCity(), cottageDTO.getStreet(),
+                cottageDTO.getLon(), cottageDTO.getLat());
+
+        Cottage cottage = new Cottage(cottageDTO.getName(), cottageDTO.getDescription(),
+                cottageDTO.getCapacity(), cottageDTO.getRules(),
+                false, address, cottageDTO.getAverageRating(), cottageDTO.getNoRatings(),
+                RentalType.COTTAGE, cottageDTO.getPrice(), cottageDTO.getAdditionalServices(), cottageDTO.getNoRooms());
+
+        cottage.setPhotos(photos);
+        cottage.setAddress(address);
+        cottageOwner.getCottages().add(cottage);
+        this.save(cottageOwner);
+    }
 }
