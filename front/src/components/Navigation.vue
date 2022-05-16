@@ -1,31 +1,31 @@
 <template>
     <div class="topnav">
-        <div v-if="userRole === 'unauth'">
+        <div v-if="userRole === 'UNAUTH'">
             <a @click="mainHomePageRedirect()" class="homeNav">Home</a>
             <a @click="searchPageRedirect()" class="homeNav">Search</a>
             <a @click="registrationPageRedirect()" class="homeNav">Register</a>
             <a @click="loginPageRedirect()" class="homeNav">Login</a>
         </div>  
 
-        <div v-else-if="userRole === 'admin'">
+        <div v-else-if="userRole === 'ADMIN'">
             <a @click="adminProfileRedirect()" class="homeNav">Profile</a>
             <a @click="AdminNotificationsRedirect()" class="homeNav">Notifications</a>
         </div>
 
-        <div v-else-if="userRole === 'client'">
+        <div v-else-if="userRole === 'CLIENT'">
             <a @click="clientProfileRedirect()" class="homeNav">Profile</a>
             <a @click="searchPageRedirect()" class="homeNav">Search</a>
             <a @click="clientReservationHistory()" class="homeNav">Reservation History</a>
         </div>
 
-        <div v-else-if="userRole === 'cottageOwner'">
+        <div v-else-if="userRole === 'COTTAGE_OWNER'">
             <a @click="cottageOwnerHomeRedirect()" class="homeNav">Profile</a>
             <a @click="allCottagesRedirect()" class="homeNav">Cottages</a>
             <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
             <a @click="ownersSearch()" class="homeNav">Search</a>
         </div>
 
-        <div v-else-if="userRole === 'instructor'">
+        <div v-else-if="userRole === 'INSTRUCTOR'">
             <a @click="instructorProfilePageRedirect()" class="homeNav">Profile</a>
             <a @click="adventuresRedirect()" class="homeNav">Adventures</a>
         </div>
@@ -38,8 +38,8 @@
     export default {
         name: "Navigation",
         data(){
-            let role = window.sessionStorage.getItem("userRole");
-            role =  role === null ? "unauth" : role;
+            let role = window.localStorage.getItem("userRole");
+            role =  role === null ? "UNAUTH" : role;
 
             return {
                 userRole: role
@@ -54,7 +54,6 @@
             AdminNotificationsRedirect : function (){
                 pushView(this, "AdminNotifications");
             },
-
 
             cottageOwnerHomeRedirect : function () {
                 pushView(this, "CottageOwnerHomePage");
@@ -132,7 +131,7 @@
         z-index: 999;
         height: 50px;
     }
-    .topnav a {
+    .topnav div a {
         float: left;
         color: #f2f2f2;
         text-align: center;
@@ -142,11 +141,11 @@
         z-index: 999;
         max-height: 100%;
     }
-    .topnav a:hover {
+    .topnav div a:hover {
         background-color: rgb(8, 250, 177);
         color: rgba(51, 92, 80, 0.8);
     }
-    .topnav a.active {
+    .topnav div a.active {
         background-color: #272327;
         color: white;
     }

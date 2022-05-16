@@ -29,7 +29,7 @@ public class FishingInstructor extends User{
         this.setPassword(data.getPassword());
         this.setDeleted(false);
         this.setActive(false);
-        this.setUserType(UserType.INSTRUCTOR);
+        this.setRole(new Role("ROLE_INSTRUCTOR"));
         this.setLoyaltyPoints(0);
         this.setLoyaltyType(LoyaltyType.REGULAR);
         this.adventures = new HashSet<>();

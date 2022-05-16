@@ -30,7 +30,7 @@ public class Client extends User {
             this.setPassword(data.getPassword());
             this.setDeleted(false);
             this.setActive(false);
-            this.setUserType(UserType.CLIENT);
+            this.setRole(new Role("ROLE_CLIENT"));
             this.setLoyaltyPoints(0);
             this.setLoyaltyType(LoyaltyType.REGULAR);
             this.noPenalties = 0;
