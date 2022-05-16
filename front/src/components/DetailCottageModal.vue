@@ -191,13 +191,13 @@ export default {
                 this.data.additionalServices += this.localServices[s]
                 if (counter < this.localServices.length) this.data.additionalServices += ','
             } 
-            axios.put("api/cottage-owner/change-cottage-data/" + window.sessionStorage.getItem("email"), this.data)
+            axios.put("api/cottage-owner/change-cottage-data", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert(error)
+                        alert(error.name)
                     });
 
         },

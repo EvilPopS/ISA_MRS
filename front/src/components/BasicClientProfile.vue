@@ -53,10 +53,11 @@ export default {
         }
     },
     mounted() {
-        axios.get('api/client/basic-profile/' + this.clientEmail).then((response) => {
+        axios.get('api/client/basic-profile/' + this.clientEmail, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
                 this.data = response.data
             }).catch((error) => {
-                console.log('Error happened: ' + error.name)
+                console.log('Error happened: ' + error.data)
+                alert("Error happened: " + error.data)
             });
     }
 }

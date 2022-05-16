@@ -131,8 +131,8 @@ public class CottageOwnerController  {
 
     }
 
-    @PostMapping(value = "/add-cottage")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PutMapping(consumes="application/json", value="/change-cottage-data")
     public ResponseEntity<HttpStatus> updateCottageData(HttpServletRequest request, @RequestBody CottageDTO cottageDTO) {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
