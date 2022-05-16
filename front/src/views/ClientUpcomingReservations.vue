@@ -7,7 +7,7 @@
     import ReservationsGallery from '@/components/ReservationsGallery.vue';
      
     export default {
-        name: "ClientReservationHistory",
+        name: "ClientUpcomingReservations",
         components: {
             ReservationsGallery
         },

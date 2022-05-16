@@ -84,4 +84,14 @@ public class ClientController {
         return new ResponseEntity<>(clientService.getReservationHistory(email), HttpStatus.OK);
     }
 
+    @GetMapping(value="/upcoming-reservations")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<ReservationHistoryDTO>> getUpcomingReservations(HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        return new ResponseEntity<>(clientService.getReservationHistory(email), HttpStatus.OK);
+    }
 }
