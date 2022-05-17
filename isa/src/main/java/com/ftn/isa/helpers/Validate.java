@@ -12,7 +12,7 @@ public class Validate {
     private static final String REG_PASSWORD = "^[a-zA-Z0-9!@#$%^&*()_+=]{6,30}$";
     private static final String REG_STREET = "^[a-zA-Z0-9 -.]+$";
     private static final String REG_WORDS = "^[a-zA-Z -]+$";
-    private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public static LocalDateTime getTodaysDate() {
         return LocalDateTime.now();

@@ -26,7 +26,7 @@ public abstract class Notification {
     public Notification(String message, boolean isAnswered, String localDateTime){
         this.message = message;
         this.isAnswered = isAnswered;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         this.sentTime = LocalDateTime.parse(localDateTime, formatter);
     }
 
