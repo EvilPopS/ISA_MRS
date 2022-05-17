@@ -77,15 +77,12 @@ export default {
         },
         positiveFeedback() {
             this.report.isNegative = false
-            console.log(this.report.isNegative)
         },
         negativeFeedback() {
             this.report.isNegative = true
-            console.log(this.report.isNegative)
         },
         changeShowedUp() {
             this.report.hasShowedUp = !this.report.hasShowedUp
-            console.log(this.report.hasShowedUp)
         },
         closePopUp() {
             this.errorPopUpVisible = false;
@@ -130,12 +127,10 @@ export default {
     b {
         color: black;
     }
-
     #close_btn{
         height: 30px;
         width: 25px;
     }
-
     .modal {
         display: block; /* Hidden by default */
         position: fixed; /* Stay in place */
@@ -149,7 +144,6 @@ export default {
         background-color: rgb(0,0,0); /* Fallback color */
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
-
     /* Modal Content */
     .modal-content {
         background-color: #fefefe;
@@ -158,7 +152,6 @@ export default {
         border: 1px solid #888;
         width: 60%;
     }
-
     /* The Close Button */
     .close {
         color: #aaaaaa;
@@ -166,45 +159,36 @@ export default {
         font-size: 16px;
         font-weight: bold;
     }
-
     .close:hover,
     .close:focus {
         color: #000;
         text-decoration: none;
         cursor: pointer;
     }
-
     .my-text-area {
         margin-top: 5%;
         margin-bottom: 5%;
     }
-
     .label-text-area, .label-desc {
         font-size: 15px;
         color: #335c50cc;
         display: block;
     }
-
     .label-desc {
         margin-top: 5%;
     }
-
     textarea.form-control:focus {
         outline: none !important;
         border:1px solid rgba(51, 92, 80, 0.8);
         box-shadow: 0 0 10px rgba(51, 92, 80, 0.8);
     }
-
     h3 {
         color: rgba(51, 92, 80, 0.8);
     }
-
     div input.btn-check{
         visibility: hidden;
     }
-
     label.left-btn-check {
         margin-right: 2%;
     }
-
-</style>
+</style> 

@@ -276,7 +276,7 @@ public class CottageOwnerController  {
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     private void notifySubscribers(CottageOwner cottageOwner, ActionResDTO actionResDTO) {
         for (Subscription s : subscriptionService.getAllSubscriptions()){
-            if (s.getOwner().getId().equals(cottageOwner.getId())){
+            if (s.getOwner().getId().equals(cottageOwner.getId()) && s.isActiveSubscription()){
                 try {
                     emailService.sendMail(s.getClient().getEmail(), "New Action on the radar",
                             "New action reservation is waiting for you! Check this great deal" +
