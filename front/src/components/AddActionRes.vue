@@ -113,7 +113,7 @@ export default {
                 if (counter < this.choosenList.length) this.actionData.actionServices += ','
             }
             
-            axios.post("api/cottage-owner/add-action-reservation", this.actionData, {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.post("api/" + this.roleURL + "/add-action-reservation", this.actionData, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
