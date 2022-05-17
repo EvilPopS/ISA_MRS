@@ -1,69 +1,80 @@
 <template>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <div class="container" style="margin-top: 5%">
-        <div v-if="cottages.length > 0">
-            <span id="fa-search-id">
-                <input type="text" placeholder="Search..." id="search-input" v-model="searched"/>
-                <i class="fa fa-search" id="search-icon-color" aria-hidden="true"></i>
-            </span>
-            <span>
-                <button class="btn btn-success add-btn" id="btn-add" @click="showAddCottageModal()">Add cottage</button>
-            </span>
-            <div class="row">
-                <div class="col-12 col-md-5 col-lg-4" v-for="cottage in filtered" :key="cottage.name">
-                    <div class="card" style="width: 18rem; margin-top: 5%" id="card-body-id">
-                        <img :src="setPicture(cottage)" id="cottage-img" class="card-img-top" alt="This is cottage picture">
-                        <div class="card-body">
-                            <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
-                            <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
-                            <p class="card-text"><b>Description:</b>{{cottage.description}}</p>
-                            <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
-                            <span>
-                                <button class="btn btn-success card-btns" @click="showDetailCottageModal(cottage)">Details</button>
-                                <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(cottage)">Delete</button>
-                            </span>    
+    <div v-if="showSearch">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <div class="container" style="margin-top: 5%">
+            <div v-if="cottages.length > 0">
+                <span id="fa-search-id">
+                    <input type="text" placeholder="Search..." id="search-input" v-model="searched"/>
+                    <i class="fa fa-search" id="search-icon-color" aria-hidden="true"></i>
+                </span>
+                <span>
+                    <button class="btn btn-success add-btn" id="btn-add" @click="showAddCottageModal()">Add cottage</button>
+                </span>
+                <div class="row">
+                    <div class="col-12 col-md-5 col-lg-4" v-for="cottage in filtered" :key="cottage.name">
+                        <div class="card" style="width: 18rem; margin-top: 5%" id="card-body-id">
+                            <img :src="setPicture(cottage)" id="cottage-img" class="card-img-top" alt="This is cottage picture">
+                            <div class="card-body">
+                                <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
+                                <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
+                                <p class="card-text"><b>Description:</b>{{cottage.description}}</p>
+                                <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
+                                <span>
+                                    <button class="btn btn-success card-btns" @click="addNewReservation(cottage)">Calendar</button>
+                                    <button class="btn btn-success card-btns" @click="showDetailCottageModal(cottage)">Details</button>
+                                    <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(cottage)">Delete</button>
+                                </span>    
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div v-else>
+                <h3>There is nothing to show here..</h3>
+            </div>
         </div>
-        <div v-else>
-            <h3>There is nothing to show here..</h3>
+        <div v-if="showDetails">
+            <DetailCottageModal
+            :cottage = "sendCottage"
+            :showDetails = "showDetails"
+            @modal-closed = "showDetails = false"
+            @succ-popup-close = "succPopUpClose"
+            />
         </div>
-    </div>
-    <div v-if="showDetails">
-        <DetailCottageModal
-        :cottage = "sendCottage"
-        :showDetails = "showDetails"
-        @modal-closed = "showDetails = false"
-        @succ-popup-close = "succPopUpClose"
+        <div v-else-if="showAddNewCottage">
+            <AddCottageModal
+            :showAddNewCottage = "showAddNewCottage"
+            :succPopUpVisible = "succPopUpVisible"
+            @modal-closed = "showAddNewCottage = false"
+            @succ-popup-close = "succPopUpClose"
+            />
+        </div>
+        <div v-else-if="confirmationPopUpVisible">
+            <ConfirmationPopUp
+            :title="deletionTitle"
+            :message="deletionMessage"
+            @modal-closed = "confirmationPopUpVisible = false"
+            @confirmed-event = "confirmDeletion"
+            />
+        </div>
+        <div v-else-if="showAddNewRes">
+            <NewReservationsComponent
+                @modal-closed = "showAddNewRes = false"
+                :calendarForCottage="calendarForCottage"
+            />
+        </div>
+        <ErrorPopUp v-show="errorPoup" 
+            @close = "errorPoup = false"
+            :mess = "errMsg"
+            /> 
+        <SuccessPopUp v-show="succPoupUp"
+            @close = "succPoupUp = false"
+            :mess = succMessage
         />
     </div>
-    <div v-else-if="showAddNewCottage">
-        <AddCottageModal
-        :showAddNewCottage = "showAddNewCottage"
-        :succPopUpVisible = "succPopUpVisible"
-        @modal-closed = "showAddNewCottage = false"
-        @succ-popup-close = "succPopUpClose"
-        />
+    <div v-else>
+        <h3>You don't have permission to visit this page!</h3>
     </div>
-    <div v-else-if="confirmationPopUpVisible">
-        <ConfirmationPopUp
-        :title="deletionTitle"
-        :message="deletionMessage"
-        @modal-closed = "confirmationPopUpVisible = false"
-        @confirmed-event = "confirmDeletion"
-        />
-    </div>
-    <ErrorPopUp v-show="errorPoup" 
-        @close = "errorPoup = false"
-        :mess = "errMsg"
-        /> 
-    <SuccessPopUp v-show="succPoupUp"
-        @close = "succPoupUp = false"
-        :mess = succMessage
-    />
-    
 </template>
 
 <script>
@@ -73,11 +84,12 @@
  import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
  import ErrorPopUp from '../components/ErrorPopUp.vue'
  import SuccessPopUp from '../components/SuccessPopUp.vue'
+ import NewReservationsComponent from '../components/NewReservationsComponent.vue'
 
 export default {
    name: "AllCottagesView",
    components: {
-       DetailCottageModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp
+       DetailCottageModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, NewReservationsComponent
    },
    data (){
        return {
@@ -96,7 +108,12 @@ export default {
            confirmationPopUpVisible: false,
 
            deletionMessage: "Are you sure about deleting this cottage?",
-           deletionTitle: "Cottage deleting"
+           deletionTitle: "Cottage deleting",
+
+           showSearch: window.localStorage.getItem("userRole") === "COTTAGE_OWNER",
+           
+           showAddNewRes: false,
+           calendarForCottage: {}
        }
    }, 
    methods: {
@@ -122,9 +139,14 @@ export default {
         closeSuccPopUp() {
             this.succPoupUp = false 
         },
+        addNewReservation(cottage) {
+            this.showAddNewRes = true
+            this.calendarForCottage = cottage
+        },
         confirmDeletion(){
             this.confirmationPopUpVisible = false
-            axios.delete('api/cottage-owner/' + 'srdjan@gmail.com' + '/delete-cottage/' + this.cottageToDelete.id).then((response) => {
+            axios.delete('api/cottage-owner/delete-cottage/' + this.cottageToDelete.id, {headers: {'authorization': window.localStorage.getItem("token") }})
+            .then((response) => {
                 this.succMessage = "Cottage is successfully deleted!"
                 this.succPoupUp = true
 
@@ -141,12 +163,13 @@ export default {
         }
    },
    mounted(){
-       axios.get('api/cottage-owner/all-cottages/' + "srdjan@gmail.com").then((response) => {
+       axios.get('api/cottage-owner/all-cottages', {headers: {'authorization': window.localStorage.getItem("token") }})
+       .then((response) => {
            this.cottages = response.data
         }).catch((error) => {
-            this.errMsg = "Error happened: " + error.data
+            this.errMsg = "Error happened: " + error.name
             this.errorPoup = true
-    })
+        })
 
    },
    computed: {

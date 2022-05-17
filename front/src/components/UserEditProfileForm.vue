@@ -428,6 +428,11 @@
         color: black;
     }
 
+    /*Ovo je h3 za don't have permision da se vidi ispod navigacije, da bude global */
+    h3 {
+        margin-top: 10%;
+    }
+
 </style>
 
 <style scoped>

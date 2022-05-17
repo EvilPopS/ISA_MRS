@@ -1,20 +1,25 @@
 <template>
-    <div id="optionsBar" class="card flex-card">
-        <TabNav
-            :tabs="['Reservations history', 'Upcoming reservations']"
-            :selected="selected"
-            @selected="setSelected"
-        >
-        <Tab :isSelected="selected === 'Reservations history'">
-            <ReservationsHistory :data="historyData"></ReservationsHistory>
-        </Tab>
+    <div v-if="showSearch">
+        <div id="optionsBar" class="card flex-card">
+            <TabNav
+                :tabs="['Reservations history', 'Upcoming reservations']"
+                :selected="selected"
+                @selected="setSelected"
+            >
+            <Tab :isSelected="selected === 'Reservations history'">
+                <ReservationsHistory :data="historyData"></ReservationsHistory>
+            </Tab>
 
-        <Tab :isSelected="selected === 'Upcoming reservations'">
-            <UpcomingReservations :data="upcomingData"></UpcomingReservations>
-        </Tab>
+            <Tab :isSelected="selected === 'Upcoming reservations'">
+                <UpcomingReservations :data="upcomingData"></UpcomingReservations>
+            </Tab>
 
 
-        </TabNav>
+            </TabNav>
+        </div>
+    </div>
+    <div v-else>
+        <h3>You don't have permission to visit this page!</h3>
     </div>
 </template>
 
@@ -32,7 +37,9 @@ export default {
     },
     data(){
         return {
-            logged: "COTTAGE_OWNER",
+            searchRole: '',
+            roleURL: '',
+            showSearch: true,
             resData: [],
             historyData: [],
             upcomingData: [],
@@ -63,15 +70,27 @@ export default {
     mounted(){
         //posto je univerzalna komponenta sada ce na osnovu uloge ulogovanog da se poziva razliciti ajax poziv
         //verovatno ce se uloga dobavljati iz LocalStorage-a
-        if (this.logged === "COTTAGE_OWNER") {
-            axios.get('api/cottage-owner/all-reservations/' + "srdjan@gmail.com").then((response) => {
+        this.searchRole = window.localStorage.getItem("userRole")
+        if (this.searchRole === "COTTAGE_OWNER"){
+            this.roleURL = "cottage-owner"
+            this.showSearh = true
+        } else if (this.searchRole === "INSTRUCTOR"){
+            this.roleURL = "fishingInstructor"
+            this.showSearh = true
+        } else if (this.searchRole === "BOAT_OWNER") {
+            //za boat
+        } else {
+            this.showSearch = false
+        }
+
+        axios.get('api/' + this.roleURL + '/all-reservations', {headers: {'authorization': window.localStorage.getItem("token") }})
+            .then((response) => {
                 this.resData = response.data
                 this.getHistoryData()
                 this.getUpcomingData()
             }).catch((error) => {
-                console.log('Error happened: ' + error.name)
+                alert('Error happened: ' + error.data)
             });
-        }
     }
 }
 </script>

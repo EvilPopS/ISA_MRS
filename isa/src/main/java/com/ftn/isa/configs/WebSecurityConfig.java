@@ -66,10 +66,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers(HttpMethod.POST, "/api/unauth/login",
-                                                                "/api/unauth/register/client");
+                                                                "/api/unauth/register/client",
+                                                                "/api/cottage-owner/register",
+                                                                "/api/fishingInstructor/register");
         web.ignoring().antMatchers(HttpMethod.GET, "/api/rental/search",
                                                             "/api/rental/basic/*",
                                                             "/api/unauth/send-confirmation-mail/*",
-                                                            "/api/unauth/confirm-mail/*");
+                                                            "/api/unauth/confirm-mail/*",
+                                                            "/api/cottage-owner/confirm-mail/*",
+                                                            "/api/fishingInstructor/confirm-mail/*");
     }
 }

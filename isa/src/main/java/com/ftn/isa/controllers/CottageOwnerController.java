@@ -1,14 +1,18 @@
 package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.*;
+import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
+import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,19 +34,41 @@ public class CottageOwnerController  {
     @Autowired
     private RequestService requestService;
 
-    @CrossOrigin(origins = "http://localhost:8081")
-    @GetMapping(value="/{email}")
-    public ResponseEntity<CottageOwnerDTO> getByEmail(@PathVariable String email) {
+    @Autowired
+    private TokenUtils tokenUtils;
+
+    @Autowired
+    private ReservationService reservationService;
+
+    @Autowired
+    private SubscriptionService subscriptionService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @GetMapping
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<CottageOwnerDTO> getByEmail(HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(new CottageOwnerDTO(cottageOwner), HttpStatus.OK);
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @PutMapping(consumes="application/json", value="/data-update")
-    public ResponseEntity<CottageOwnerDTO> updatePersonalData(@RequestBody CottageOwnerDTO cottageOwnerData) {
-        CottageOwner cottageOwner = cottageOwnerService.findByEmail(cottageOwnerData.getEmail());
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<CottageOwnerDTO> updatePersonalData(@RequestBody CottageOwnerDTO cottageOwnerData, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
@@ -54,9 +80,14 @@ public class CottageOwnerController  {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
-    @GetMapping(value="/all-cottages/{email}")
-    public ResponseEntity<Set<CottageDTO>> getAllCottages(@PathVariable String email) {
+    @GetMapping(value="/all-cottages")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<Set<CottageDTO>> getAllCottages(HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -70,9 +101,14 @@ public class CottageOwnerController  {
         return new ResponseEntity<Set<CottageDTO>>(cottagesSet, HttpStatus.OK);
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
-    @PostMapping(value = "/add-cottage/{email}")
-    public ResponseEntity<HttpStatus> addNewCottage(@PathVariable String email, @RequestBody CottageDTO cottageDTO) {
+    @PostMapping(value = "/add-cottage")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addNewCottage(HttpServletRequest request, @RequestBody CottageDTO cottageDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -80,40 +116,35 @@ public class CottageOwnerController  {
         if (!cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Set<Photo> photos = new HashSet<>();
-        for (String p : cottageDTO.getPhotos())
-            photos.add(new Photo(p));
-
-        Address address = new Address(cottageDTO.getCountry(), cottageDTO.getCity(), cottageDTO.getStreet(),
-                                        cottageDTO.getLon(), cottageDTO.getLat());
-
-        Cottage cottage = new Cottage(cottageDTO.getName(), cottageDTO.getDescription(),
-                cottageDTO.getCapacity(), cottageDTO.getRules(),
-                false, address, cottageDTO.getAverageRating(), cottageDTO.getNoRatings(),
-                RentalType.COTTAGE, cottageDTO.getPrice(), cottageDTO.getAdditionalServices(), cottageDTO.getNoRooms());
-
-        cottage.setPhotos(photos);
-        cottage.setAddress(address);
-        cottageOwner.getCottages().add(cottage);
-        cottageOwnerService.save(cottageOwner);
-
+        cottageOwnerService.addNewCottage(cottageDTO, cottageOwner);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(value="/{email}/delete-cottage/{id}")
-    public ResponseEntity<HttpStatus> deleteCottage(@PathVariable String email, @PathVariable String id) throws Exception {
+    @DeleteMapping(value="/delete-cottage/{id}")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> deleteCottage(HttpServletRequest request, @PathVariable String id) throws Exception {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
-        if (cottageOwner == null){
+        if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
         cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
-    @PutMapping(consumes="application/json", value="/change-cottage-data/{email}")
-    public ResponseEntity<HttpStatus> updateCottageData(@PathVariable String email, @RequestBody CottageDTO cottageDTO) {
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PutMapping(consumes="application/json", value="/change-cottage-data")
+    public ResponseEntity<HttpStatus> updateCottageData(HttpServletRequest request, @RequestBody CottageDTO cottageDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -122,50 +153,30 @@ public class CottageOwnerController  {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Set<Photo> photos = new HashSet<>();
-        for (Cottage c : cottageOwner.getCottages()){
-            if (c.getId() == cottageDTO.getId()){
-                photos = photoService.addOrDeletePhoto(c, cottageDTO);
-                break;
-            }
-        }
+        photos = photoService.changeCottagePhotos(cottageOwner, cottageDTO);
         cottageOwnerService.save(cottageOwner, cottageDTO, photos);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
-    @GetMapping(value="/all-reservations/{email}")
-    public ResponseEntity<Set<ReservationDTO>> getAllReservations(@PathVariable String email) {
+    @GetMapping(value="/all-reservations")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<Set<ReservationDTO>> getAllReservations(HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        Set<ReservationDTO> reservations = new HashSet<ReservationDTO>();
-        for (Cottage c : cottageOwner.getCottages()){
-            for (Reservation reservation : c.getReservations()){
-                ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), c.getId(),
-                        c.getName(), reservation.getStartTime(), reservation.getEndTime(),
-                        reservation.getPrice(), reservation.isAction(), reservation.isReserved());
-                reservations.add(reservationDTO);
-            }
-        }
-
-        for (ReservationDTO resDTO : reservations) {
-            for (Client client : clientService.getAllClients()) {
-                for (Reservation r : client.getReservations()) {
-                    if (resDTO.getReservationId() == r.getId()) {
-                        resDTO.setClientEmail(client.getEmail());
-                        resDTO.setClientProfilePhoto(client.getProfilePicture().getPhotoPath());
-                        resDTO.setClientFullName(client.getName() + " " + client.getSurname());
-                    }
-                }
-            }
-        }
-
+        Set<ReservationDTO> reservations = reservationService.createResDTO(cottageOwner, clientService.getAllClients());
         return new ResponseEntity<Set<ReservationDTO>>(reservations, HttpStatus.OK);
     }
 
     @PostMapping(consumes="application/json", value="/register")
-    @CrossOrigin(origins = "http://localhost:8081")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     public ResponseEntity<HttpStatus> registerUser(@RequestBody OwnerRegDTO ownerData) {
         if (!ownerData.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -188,6 +199,7 @@ public class CottageOwnerController  {
     }
 
     @GetMapping(value="/confirm-mail/{email}")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     public ResponseEntity<HttpStatus> activateAccount(@PathVariable String email){
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
@@ -200,10 +212,15 @@ public class CottageOwnerController  {
     }
 
     @GetMapping(value="/ownersSearch")
-    @CrossOrigin(origins = "http://localhost:8081")
-    public ResponseEntity<List<OwnersSearchResDTO>> search(@RequestParam String email, @RequestParam String minPrice,
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<OwnersSearchResDTO>> search(HttpServletRequest request, @RequestParam String minPrice,
                                                            @RequestParam String maxPrice, @RequestParam String location,
                                                            @RequestParam String minCapacity, @RequestParam String serviceName) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -220,6 +237,57 @@ public class CottageOwnerController  {
         }
 
         return new ResponseEntity<>(rentals, HttpStatus.OK );
+    }
+
+    @PostMapping(value = "/add-action-reservation")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addNewActionRes(HttpServletRequest request, @RequestBody ActionResDTO actionResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!actionResDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, actionResDTO.getCottageId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Reservation newRes = reservationService.addNewActionRes(actionResDTO, cottageOwner);
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId().equals(actionResDTO.getCottageId())){
+                c.getReservations().add(newRes);
+                break;
+            }
+        }
+        cottageOwnerService.save(cottageOwner);
+        notifySubscribers(cottageOwner, actionResDTO);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    private void notifySubscribers(CottageOwner cottageOwner, ActionResDTO actionResDTO) {
+        for (Subscription s : subscriptionService.getAllSubscriptions()){
+            if (s.getOwner().getId().equals(cottageOwner.getId()) && s.isActiveSubscription()){
+                try {
+                    emailService.sendMail(s.getClient().getEmail(), "New Action on the radar",
+                            "New action reservation is waiting for you! Check this great deal" +
+                                    " for rental of owner " + cottageOwner.getName() + " " + cottageOwner.getSurname() +
+                                    " now for just " + String.valueOf(actionResDTO.getPrice()) + " euros!"
+                    );
+                } catch(Exception ignored){
+                    //nikom nista
+                }
+            }
+        }
     }
 
 }

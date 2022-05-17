@@ -43,11 +43,13 @@ public class ClientController {
         return new ResponseEntity<>(new ClientProfileDTO(client), HttpStatus.OK);
     }
 
-    @GetMapping(value="/basic-profile")
+    //ovde mora email kao parametar jer nije od ulogovanog vec izabranog
+    @GetMapping(value="/basic-profile/{email}")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    public ResponseEntity<BasicClientDTO> getBasicProfileByEmail(HttpServletRequest request) {
-        String email = tokenUtils.getEmailDirectlyFromHeader(request);
-        if (email == null)
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    public ResponseEntity<BasicClientDTO> getBasicProfileByEmail(HttpServletRequest request, @PathVariable String email) {
+        String ownerEmail = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (ownerEmail == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         Client client = clientService.findByEmail(email);
