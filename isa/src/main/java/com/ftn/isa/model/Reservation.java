@@ -25,6 +25,27 @@ public class Reservation {
     @Column(name = "is_reserved", nullable = false)
     private boolean isReserved;
 
+    @Column(name = "is_unvailable", nullable = false)
+    private boolean isUnvailable;
+
+    @Column(name = "action_services", nullable = true)
+    private String actionServices;
+
+    public Reservation() {
+
+    }
+
+    public Reservation(LocalDateTime startTime, LocalDateTime endTime, boolean isAction,
+                       Double price, boolean isReserved, boolean isUnvailable, String actionServices) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isAction = isAction;
+        this.price = price;
+        this.isReserved = isReserved;
+        this.isUnvailable = isUnvailable;
+        this.actionServices = actionServices;
+    }
+
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -73,5 +94,19 @@ public class Reservation {
         this.id = id;
     }
 
+    public boolean isUnvailable() {
+        return isUnvailable;
+    }
 
+    public void setUnvailable(boolean unvailable) {
+        isUnvailable = unvailable;
+    }
+
+    public String getActionServices() {
+        return actionServices;
+    }
+
+    public void setActionServices(String actionServices) {
+        this.actionServices = actionServices;
+    }
 }

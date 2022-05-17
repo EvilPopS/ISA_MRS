@@ -24,10 +24,12 @@ public class ReservationService {
         Set<ReservationDTO> reservations = new HashSet<>();
         for (Cottage c : cottageOwner.getCottages()){
             for (Reservation reservation : c.getReservations()){
-                ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), c.getId(),
-                        c.getName(), reservation.getStartTime(), reservation.getEndTime(),
-                        reservation.getPrice(), reservation.isAction(), reservation.isReserved());
-                reservations.add(reservationDTO);
+                if (!reservation.isUnvailable()) {
+                    ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), c.getId(),
+                            c.getName(), reservation.getStartTime(), reservation.getEndTime(),
+                            reservation.getPrice(), reservation.isAction(), reservation.isReserved());
+                    reservations.add(reservationDTO);
+                }
             }
         }
 
