@@ -40,6 +40,12 @@ public class CottageOwnerController  {
     @Autowired
     private ReservationService reservationService;
 
+    @Autowired
+    private SubscriptionService subscriptionService;
+
+    @Autowired
+    private EmailService emailService;
+
     @GetMapping
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
@@ -262,8 +268,26 @@ public class CottageOwnerController  {
             }
         }
         cottageOwnerService.save(cottageOwner);
+        notifySubscribers(cottageOwner, actionResDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    private void notifySubscribers(CottageOwner cottageOwner, ActionResDTO actionResDTO) {
+        for (Subscription s : subscriptionService.getAllSubscriptions()){
+            if (s.getOwner().getId().equals(cottageOwner.getId())){
+                try {
+                    emailService.sendMail(s.getClient().getEmail(), "New Action on the radar",
+                            "New action reservation is waiting for you! Check this great deal" +
+                                    " for rental of owner " + cottageOwner.getName() + " " + cottageOwner.getSurname() +
+                                    " now for just " + String.valueOf(actionResDTO.getPrice()) + " euros!"
+                    );
+                } catch(Exception ignored){
+                    //nikom nista
+                }
+            }
+        }
     }
 
 }

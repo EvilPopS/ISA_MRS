@@ -98,6 +98,9 @@ insert into request(id, is_answered, message, sent_time, request_type, sender_id
 values (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 111111111', '02/05/2022 23:44', 1, 6),
        (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
 
+insert into subscription(owner_id, client_id, is_active_subscription)
+    values (5, 4, true);
+
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unvailable, action_services)
     values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null),
             ('1/5/2022', '11/5/2022', false, true, 30, 1, 4, false, null),
