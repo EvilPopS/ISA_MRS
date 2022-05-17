@@ -81,6 +81,12 @@
         </form>
     </div>
 
+    <RentalViewModal v-if="showRentalViewModal"
+        @close = closePopUp
+        :id = selectRentalId
+        :type = selectRentalType
+    />
+
     <ErrorPopUp v-show="errorPopUpVisible" 
         @close = closePopUp
         :mess = errMessage
@@ -88,13 +94,14 @@
 </template>
 
 <script>
-    import ErrorPopUp from "@/components/ErrorPopUp.vue"
+    import ErrorPopUp from "@/components/ErrorPopUp.vue";
+    import RentalViewModal from "@/components/RentalViewModal.vue";
     import axios from 'axios';
 
     export default {
         name: "SearchPage",
         components: {
-            ErrorPopUp
+            ErrorPopUp, RentalViewModal
         },
         data() {
             return {
@@ -111,20 +118,23 @@
                 errorPopUpVisible: false,
                 toShowNoResultsMess: false,
                 showInitSearchResMess: true,
+                showRentalViewModal: false,
 
-                searchResult: []
+                searchResult: [],
+
+                selectRentalId: null,
+                selectRentalType: null
             };
         },
         methods: {
             closePopUp() {
                 this.errorPopUpVisible = false;
+                this.showRentalViewModal = false;
             },
             entityBasicView(id, type) {
-                console.log(id, type);
-                window.sessionStorage.setItem("entityDataId", id);
-                window.sessionStorage.setItem("entityDataType", type);
-
-                this.$router.push({ name: "EntityBasicView" })
+                this.showRentalViewModal = true;
+                this. selectRentalId = id;
+                this.selectRentalType = type;
             },
             submitSearchForm() {
                 let formData = {
