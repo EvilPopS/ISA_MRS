@@ -6,9 +6,6 @@
                 <input type="text" placeholder="Search..." id="search-input" v-model="searchedReservation"/>
                 <i class="fa fa-search" id="search-icon-color" aria-hidden="true"></i>
             </span>
-            <span>
-                <button class="btn btn-success" @click="addNewReservation()">New Reservation</button>
-            </span> 
             <div class="row">
                 <div class="col-12 col-md-5 col-lg-4" v-for="reservation in filteredReservations" :key="reservation.reservationId">
                     <div class="card" style="width: 18rem; margin-top: 5%" id="card-body-id">
@@ -35,22 +32,16 @@
             @modal-closed = "basicClientProfileShow = false"
         />
     </div>
-    <div v-if="showAddNewRes">
-        <NewReservationsComponent
-            @modal-closed = "showAddNewRes = false"
-        />
-    </div>
 
 </template>
 
 <script>
 import BasicClientProfile from '../components/BasicClientProfile'
-import NewReservationsComponent from '../components/NewReservationsComponent.vue'
 
 export default {
     name: "UpcomingReservations",
     components: {
-        BasicClientProfile, NewReservationsComponent
+        BasicClientProfile
     },
     props: {
         data: Array
@@ -59,8 +50,7 @@ export default {
         return {
             searchedReservation: '',
             basicClientProfileShow: false,
-            selectedClient: '',
-            showAddNewRes: false
+            selectedClient: ''
         }
     },
     methods: {
@@ -72,9 +62,6 @@ export default {
         showClient(email) {
             this.basicClientProfileShow = true
             this.selectedClient = email
-        },
-        addNewReservation() {
-            this.showAddNewRes = true
         }
     },
     computed: {

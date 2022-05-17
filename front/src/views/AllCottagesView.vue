@@ -20,6 +20,7 @@
                                 <p class="card-text"><b>Description:</b>{{cottage.description}}</p>
                                 <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
                                 <span>
+                                    <button class="btn btn-success card-btns" @click="addNewReservation(cottage)">Calendar</button>
                                     <button class="btn btn-success card-btns" @click="showDetailCottageModal(cottage)">Details</button>
                                     <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(cottage)">Delete</button>
                                 </span>    
@@ -56,6 +57,12 @@
             @confirmed-event = "confirmDeletion"
             />
         </div>
+        <div v-else-if="showAddNewRes">
+            <NewReservationsComponent
+                @modal-closed = "showAddNewRes = false"
+                :calendarForCottage="calendarForCottage"
+            />
+        </div>
         <ErrorPopUp v-show="errorPoup" 
             @close = "errorPoup = false"
             :mess = "errMsg"
@@ -77,11 +84,12 @@
  import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
  import ErrorPopUp from '../components/ErrorPopUp.vue'
  import SuccessPopUp from '../components/SuccessPopUp.vue'
+ import NewReservationsComponent from '../components/NewReservationsComponent.vue'
 
 export default {
    name: "AllCottagesView",
    components: {
-       DetailCottageModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp
+       DetailCottageModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, NewReservationsComponent
    },
    data (){
        return {
@@ -102,7 +110,10 @@ export default {
            deletionMessage: "Are you sure about deleting this cottage?",
            deletionTitle: "Cottage deleting",
 
-           showSearch: window.localStorage.getItem("userRole") === "COTTAGE_OWNER"
+           showSearch: window.localStorage.getItem("userRole") === "COTTAGE_OWNER",
+           
+           showAddNewRes: false,
+           calendarForCottage: {}
        }
    }, 
    methods: {
@@ -127,6 +138,10 @@ export default {
         },
         closeSuccPopUp() {
             this.succPoupUp = false 
+        },
+        addNewReservation(cottage) {
+            this.showAddNewRes = true
+            this.calendarForCottage = cottage
         },
         confirmDeletion(){
             this.confirmationPopUpVisible = false

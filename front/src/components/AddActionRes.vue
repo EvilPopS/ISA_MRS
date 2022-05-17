@@ -53,13 +53,17 @@ export default {
     components: {
         SuccessPopUp, ErrorPopUp
     },
+    props: {
+        cottage: Object
+    },
     data(){
         return {
             actionData: {
                 price: 0,
                 startTime: '',
                 endTime: '',
-                actionServices: ''
+                actionServices: '',
+                cottageId: this.cottage.id
             },
 
             todaysDate: '',
@@ -70,7 +74,8 @@ export default {
 
             localSuccPopUpVisible: false,
             errorPopUpVisible: false,
-            succMessage: 'Action Reservation is successfully added!'
+            succMessage: 'Action Reservation is successfully added!',
+            errMessage: ''
         }
     },
     methods: {
@@ -117,10 +122,23 @@ export default {
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
-                    .catch(function (error) {
-                        this.errMessage = "Error happened: " + error.data
-                        this.errorPopUpVisible = true
-                    });
+                    .catch(err => {
+                            if (err.response.status === 404){
+                                this.errMessage = "Cottage owner with that email doesn't!";
+                                this.errorPopUpVisible = true;
+                            } 
+                            else if (err.response.status === 401) {
+                                this.errMessage = "You are not authorized!";
+                                this.errorPopUpVisible = true;
+                            }
+                            else if (err.response.status === 422) {
+                                this.errMessage = "Action reservation cannot overlap with other reservations! Check all input data.";
+                                this.errorPopUpVisible = true;
+                            } else {
+                                this.errMessage = "Uups! Something went wrong...";
+                                this.errorPopUpVisible = true;
+                            }
+                        });
         },
         checkInputs : function(){
             if (this.actionData.startTime <= this.todaysDate)
@@ -164,7 +182,7 @@ export default {
     }
 
     div label.check-label {
-        font-size: 9px !important;
+        font-size: 10px !important;
     }
 
     label.label-action-services {

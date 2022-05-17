@@ -22,6 +22,7 @@
                                 <Tab :isSelected="selected === 'Action'">
                                     <AddActionRes
                                         @modal-closed = "closeWindow()"
+                                        :cottage="calendarForCottage"
                                     ></AddActionRes>
                                 </Tab>
 
@@ -47,6 +48,9 @@ export default {
     name: "NewReservationsComponent",
     components: {
         Tab, TabNav, AddActionRes
+    },
+    props: {
+        calendarForCottage: Object
     },
     data(){
         return {
