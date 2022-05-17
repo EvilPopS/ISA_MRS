@@ -1,5 +1,8 @@
 package com.ftn.isa.services;
 
+import com.ftn.isa.model.Adventure;
+import com.ftn.isa.model.Boat;
+import com.ftn.isa.model.Cottage;
 import com.ftn.isa.model.RentalService;
 import com.ftn.isa.repository.AdventureRepository;
 import com.ftn.isa.repository.BoatRepository;
@@ -55,4 +58,17 @@ public class RentalServService {
         }
         throw new Exception("Type is invalid!");
     }
+
+    public Cottage getCottageById(Long id) {
+        return cottageRepository.getCottageById(id);
+    }
+
+    public Boat getBoatById(Long id) {
+        return boatRepository.getBoatById(id);
+    }
+
+    public Adventure getAdventureById(Long id) {
+        return adventureRepository.getAdventureById(id);
+    }
+
 }

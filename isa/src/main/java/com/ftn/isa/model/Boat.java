@@ -5,8 +5,6 @@ import javax.persistence.*;
 
 @Entity
 public class Boat extends RentalService{
-
-
     @Column(name = "type", nullable = false)
     private String type;
 
