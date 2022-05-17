@@ -105,4 +105,12 @@ public class CottageOwnerService {
         cottageOwner.getCottages().add(cottage);
         this.save(cottageOwner);
     }
+
+    public boolean checkIfCottageExists(CottageOwner cottageOwner, Long cottageId) {
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId().equals(cottageId))
+                return true;
+        }
+        return false;
+    }
 }

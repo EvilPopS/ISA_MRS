@@ -233,4 +233,37 @@ public class CottageOwnerController  {
         return new ResponseEntity<>(rentals, HttpStatus.OK );
     }
 
+    @PostMapping(value = "/add-action-reservation")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addNewActionRes(HttpServletRequest request, @RequestBody ActionResDTO actionResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!actionResDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, actionResDTO.getCottageId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Reservation newRes = reservationService.addNewActionRes(actionResDTO, cottageOwner);
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId().equals(actionResDTO.getCottageId())){
+                c.getReservations().add(newRes);
+                break;
+            }
+        }
+        cottageOwnerService.save(cottageOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
