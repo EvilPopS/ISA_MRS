@@ -1,9 +1,17 @@
 <template>
     <div class="popup-overlay" @click="emitClose()">
         <div class="container popup" @click.stop>
-            <div class="row modal-style" v-show="!showReservationForm && !showRentalActions">
+            <div class="row modal-style" v-show="!this.toShowReservationForm && !this.toShowRentalActions">
+                <div class="row btns-cont">
+                    <div class="col justify-content-center">
+                        <button class="btn-style" @click="showReservationForm">Reservation calendar</button>
+                    </div>
+                    <div class="col justify-content-center">
+                        <button class="btn-style">Rental actions</button>
+                    </div>
+                </div>
 
-                <div class="col col-style">
+                <div class="col">
                     <div id="info-holder">
                         <div v-if="showCottageIcon" class="d-flex justify-content-center">
                             <img class="icon-style" src="@/assets/cottage_icon.png" alt="">
@@ -90,7 +98,10 @@
 
             </div>
 
-            <RentalReservationForm
+            <RentalReservationForm v-show="toShowReservationForm"
+                :rentalId="rentalId"
+                :rentalType="rentalType"
+                @close="reopenRentalDetails"
             />
         </div>
     </div>
@@ -113,6 +124,8 @@
         },
         data() {
             return {
+                rentalId: this.id,
+                rentalType: this.type,
                 name: "",
                 description: "",
                 price: "",
@@ -150,7 +163,9 @@
 
                 showDetailedCottage: false,
                 showDetailedBoat: false,
-                showDetailedAdventure: false
+                showDetailedAdventure: false,
+                toShowReservationForm: false,
+                toShowRentalActions: false
             }
         },
         created() {
@@ -175,7 +190,6 @@
                                 this.showDetailedAdventure = true;
                                 setUpDefaultRentalInfo(this, response);
                                 setUpDetailedAdventureInfo(this, response);
-                                console.log(response.data);
                             });
                         break;
                 }
@@ -196,6 +210,13 @@
                 try{
                     return require('@/assets/' + imagePath);
                 } catch(e) {}
+            },
+            showReservationForm() {
+                this.toShowReservationForm = true;
+            },
+            reopenRentalDetails() {
+                this.toShowReservationForm = false;
+                this.toShowRentalActions = false;
             }
         }
     }
@@ -292,6 +313,30 @@
         margin-bottom: 10px;
     }
 
+    .btns-cont {
+        margin-bottom: 20px;
+        border-bottom: 1px solid black;
+        padding: 10px 0;
+        border-radius: 0 0 30px 30px;
+        background: linear-gradient(white, rgba(170, 165, 165, 0.3))
+    }
+
+    .btn-style {
+        background: rgb(51, 160, 233);
+        margin: 10px 0px;
+        font-weight: bold;
+        font-size: 15px;
+        border-radius: 20px;
+        height: 30px;
+        width: 180px;
+    }
+
+    .btn-style:hover {
+        margin: 5px 0px;
+        height: 40px;
+        width: 190px;
+    }
+
     #info-holder {
         text-align: left;
     }
@@ -309,7 +354,6 @@
     }
 
     .images-cont {
-        margin-top: 48px;
         padding-left: 20px;
         padding-right: 20px;
         min-height: 90%;
