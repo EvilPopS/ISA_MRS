@@ -194,18 +194,18 @@ export default {
                 this.data.additionalServices += this.localServices[s]
                 if (counter < this.localServices.length) this.data.additionalServices += ','
             } 
-            axios.post("api/cottage-owner/add-cottage/" + window.sessionStorage.getItem("email"), this.data)
+            axios.post("api/cottage-owner/add-cottage", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
                     .catch(function (error) {
-                        console.log(error);
-                        alert(error)
+                        this.errMessage = "Error happened: " + error.data
+                        this.errorPopUpVisible = true
                     });
 
         },
         validate : function(toTest, regex) {
-        return regex.test(toTest)
+            return regex.test(toTest)
         },
         checkInputs : function(){
             let nameReg = /^[a-zA-Z ]{2,30}$/;

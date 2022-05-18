@@ -38,7 +38,7 @@ export default {
 
 <style scoped>
 #tabNav {
-  margin: 50px 60px 30px 60px;
+  margin: 50px 0px 30px 0px;
 }
 
 a {

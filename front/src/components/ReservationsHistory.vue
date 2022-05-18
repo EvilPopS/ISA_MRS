@@ -14,11 +14,11 @@
                             <h5 class="card-title" id="heading-cottage">Reservation #{{reservation.reservationId}}</h5>
                             <p class="card-text"><b>Rental:</b> {{reservation.rentalName}}</p>
                             <p class="card-text"><b>Client:</b> {{reservation.clientFullName}}</p>
-                            <p class="card-text"><b>Start date:</b> {{reservation.startTime.split('T')[0]}}</p>
-                            <p class="card-text"><b>End date:</b> {{reservation.endTime.split('T')[0]}}</p>
+                            <p class="card-text"><b>Start:</b> {{reservation.startTime.split('T')[0]}} <b>at</b> {{(reservation.startTime.split('T')[1]).split(':')[0]}}:{{(reservation.startTime.split('T')[1]).split(':')[1]}}</p>
+                            <p class="card-text"><b>End:</b> {{reservation.endTime.split('T')[0]}} <b>at</b> {{(reservation.endTime.split('T')[1]).split(':')[0]}}:{{(reservation.endTime.split('T')[1]).split(':')[1]}}</p>
                             <p class="card-text"><b>Action:</b> {{reservation.Action ? 'Yes' : 'No'}}</p>
                             <span>
-                                <button class="btn btn-success" @click="makeReport">Make report</button>
+                                <button class="btn btn-success" @click="makeReport(reservation.reservationId, reservation.clientEmail, reservation.clientFullName)">Make report</button>
                             </span>    
                         </div>
                     </div>
@@ -35,15 +35,24 @@
             @modal-closed = "basicClientProfileShow = false"
         />
     </div>
+    <div v-if="makeReportShow">
+        <MakeReportModal
+            :clientEmail = "selectedClient"
+            :reservationId = "selectedReservation"
+            :clientFullName = "selectedClientFullName"
+            @modal-closed = "makeReportShow = false"
+        />
+    </div>
 </template>
 
 <script>
 import BasicClientProfile from '../components/BasicClientProfile'
+import MakeReportModal from '../components/MakeReportModal.vue'
 
 export default {
     name: "ReservationsHistory",
     components: {
-        BasicClientProfile
+        BasicClientProfile, MakeReportModal
     },
     props: {
         data: Array
@@ -52,7 +61,11 @@ export default {
         return {
             basicClientProfileShow: false,
             searchedReservation: '',
-            selectedClient: ''
+            selectedClient: '',
+
+            makeReportShow: false,
+            selectedReservation: '',
+            selectedClientFullName: ''
         }
     },
     methods: {
@@ -64,6 +77,12 @@ export default {
         showClient(email) {
             this.basicClientProfileShow = true
             this.selectedClient = email
+        },
+        makeReport(resId, cliEmail, cliFullName) {
+            this.selectedClient = cliEmail
+            this.selectedReservation = resId
+            this.makeReportShow = true
+            this.selectedClientFullName = cliFullName
         }
     },
     computed: {

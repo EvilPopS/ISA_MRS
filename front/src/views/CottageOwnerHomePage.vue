@@ -1,31 +1,36 @@
 <template>
-    <UserEditProfileForm
-        :type                = this.type
-        :profilePicture      = this.profilePicture
-        :points              = this.points
-        :loyalty             = this.loyalty
-        :email               = this.email
-        :password            = this.password
-        :confirmPassword     = this.confirmPassword
-        :name                = this.name
-        :surname             = this.surname
-        :phoneNumber         = this.phoneNumber
-        :country             = this.country
-        :city                = this.city
-        :street              = this.street
-        :currentProfilePic   = this.currentProfilePic
-        :currentPassword     = this.currentPassword
-        :currentName         = this.currentName
-        :currentSurname      = this.currentSurname
-        :currentCity         = this.currentCity
-        :currentCountry      = this.currentCountry
-        :currentStreet       = this.currentStreet
-        :currentPhoneNumber  = this.currentPhoneNumber
-        :succPopUpVisible    = this.succPopUpVisible
-        @handle-submit       = "handleSubmit"
-        @set-new-profile-pic = "setNewProfilePic"
-        @succ-popup-close    = "succPopUpClose"
-        />
+    <div v-if="showSearch">
+        <UserEditProfileForm
+            :type                = this.type
+            :profilePicture      = this.profilePicture
+            :points              = this.points
+            :loyalty             = this.loyalty
+            :email               = this.email
+            :password            = this.password
+            :confirmPassword     = this.confirmPassword
+            :name                = this.name
+            :surname             = this.surname
+            :phoneNumber         = this.phoneNumber
+            :country             = this.country
+            :city                = this.city
+            :street              = this.street
+            :currentProfilePic   = this.currentProfilePic
+            :currentPassword     = this.currentPassword
+            :currentName         = this.currentName
+            :currentSurname      = this.currentSurname
+            :currentCity         = this.currentCity
+            :currentCountry      = this.currentCountry
+            :currentStreet       = this.currentStreet
+            :currentPhoneNumber  = this.currentPhoneNumber
+            :succPopUpVisible    = this.succPopUpVisible
+            @handle-submit       = "handleSubmit"
+            @set-new-profile-pic = "setNewProfilePic"
+            @succ-popup-close    = "succPopUpClose"
+            />
+        </div>
+    <div v-else>
+        <h3>You don't have permission to visit this page!</h3>
+    </div>
 </template>
 
 <script>
@@ -52,6 +57,7 @@
                 type: '',
                 loyalty: '',
                 points: '',
+                showSearch: window.localStorage.getItem("userRole") === "COTTAGE_OWNER",
 
                 succPopUpVisible: false
             }
@@ -69,12 +75,11 @@
                     phoneNumber: data.phoneNumber,
                     profilePicture: data.profilePicture
                 }
-                axios.put("api/cottage-owner/data-update", requestBody)
+                axios.put("api/cottage-owner/data-update", requestBody, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(() => {
                         this.succPopUpVisible = true;
                     }).catch(function (error) {
-                        console.log(error);
-                        alert(error)
+                        alert(error.name)
                     });
             },
             setNewProfilePic(newPic) {
@@ -85,7 +90,7 @@
             }
         },
         created() {
-            axios.get("api/cottage-owner/" + window.sessionStorage.getItem("email"))
+            axios.get("api/cottage-owner", {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     let data = response.data;
 
@@ -111,7 +116,9 @@
                     this.currentStreet = data.street;
                     this.currentPhoneNumber =data.phoneNumber;
                     this.currentProfilePic =data.profilePicture;
-                })
+                }).catch(function (error) {
+                    alert(error.name)
+                });
         }
     }
 </script>

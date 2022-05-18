@@ -62,8 +62,9 @@ insert into client (id, email, password, name, surname, address_id, phone_number
 
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                            is_active, photo_id, role_id, loyalty_type, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'srdjan@gmail.com', 'srdja123@', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
-                 2, 0, 10);
+
+values (nextval('my_seq_gen_user'), 'srdjan@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
+        2, 0, 10);
 
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, additional_services, no_rooms,cottage_owner_id)
@@ -98,16 +99,19 @@ insert into request(id, is_answered, message, sent_time, request_type, sender_id
     values (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 111111111', '02/05/2022 23:44', 1, 6),
        (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
 
-insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id)
-    values ('11/4/2022 00:00', '29/4/2022 00:00', false, true, 30, 1, 4),
-            ('1/5/2022 00:00', '11/5/2022 00:00', false, true, 30, 1, 4),
-            ('17/4/2022 00:00', '3/5/2022 00:00', false, true, 25, 2, 4),
-            ('21/4/2022 00:00', '2/5/2022 00:00', false, true, 25, 2, 4),
-            ('3/4/2022 00:00', '23/4/2022 00:00', false, true, 50, 3, 4),
-            ('1/6/2022 00:00', '12/6/2022 00:00', false, true, 50, 3, 4),
-            ('21/4/2022 00:00', '2/5/2022 00:00', false, true, 50, 3, 4),
-            ('12/4/2022 00:00', '29/4/2022 00:00', false, true, 50, 4, 4),
-            ('10/6/2022 00:00', '12/6/2022 00:00', false, true, 40, 4, 4),
-            ('15/6/2022 00:00', '27/6/2022 00:00', false, true, 30, 2, 4),
-            ('18/6/2022 00:00', '21/6/2022 00:00', false, true, 40, 3, 4),
-            ('21/6/2022 00:00', '25/6/2022 00:00', false, true, 60, 4, 4)
+insert into subscription(owner_id, client_id, is_active_subscription)
+    values (5, 4, true);
+
+insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unvailable, action_services)
+    values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null),
+            ('1/5/2022', '11/5/2022', false, true, 30, 1, 4, false, null),
+            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null),
+            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null),
+            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null),
+            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null),
+            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null),
+            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null),
+            ('10/6/2022', '12/6/2022', false, true, 40, 4, 4, false, null),
+            ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null),
+            ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null),
+            ('21/6/2022', '25/6/2022', false, true, 60, 4, 4, false, null)

@@ -11,7 +11,7 @@ import java.util.List;
 public class RequestService {
 
     @Autowired
-    RequestRepository requestRepository;
+    private RequestRepository requestRepository;
 
     public List<Request> getAllRequests(){return requestRepository.getAllRequests();}
 

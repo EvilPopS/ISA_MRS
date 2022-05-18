@@ -1,12 +1,11 @@
 package com.ftn.isa.model;
 
-
 import com.ftn.isa.DTO.ReservingInfoDTO;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 
 @Entity
 public class Reservation {
@@ -37,6 +36,12 @@ public class Reservation {
     @JoinColumn(name="rental_id")
     private RentalService rental;
 
+    @Column(name = "is_unvailable", nullable = false)
+    private boolean isUnvailable;
+
+    @Column(name = "action_services", nullable = true)
+    private String actionServices;
+  
 
     public Reservation() {}
 
@@ -49,6 +54,19 @@ public class Reservation {
         this.isReserved = true;
         this.rental = rental;
         this.client = client;
+        this.isUnavailable = false;
+        this.actionServices = ""; // TO DO
+    }
+
+    public Reservation(LocalDateTime startTime, LocalDateTime endTime, boolean isAction,
+                       Double price, boolean isReserved, boolean isUnvailable, String actionServices) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isAction = isAction;
+        this.price = price;
+        this.isReserved = isReserved;
+        this.isUnvailable = isUnvailable;
+        this.actionServices = actionServices;
     }
 
     public boolean periodsAreOverlapping(LocalDateTime startDate, LocalDateTime endDate) {
@@ -57,8 +75,7 @@ public class Reservation {
                     this.startTime.isAfter(startDate) && this.startTime.isBefore(endDate) ||
                     this.endTime.isAfter(startDate) && this.endTime.isBefore(endDate) ||
                     startDate.isEqual(this.startTime) || endDate.isEqual(this.endTime);
-    }
-
+      
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -121,5 +138,19 @@ public class Reservation {
 
     public void setRental(RentalService rental) {
         this.rental = rental;
+    public boolean isUnvailable() {
+        return isUnvailable;
+    }
+
+    public void setUnvailable(boolean unvailable) {
+        isUnvailable = unvailable;
+    }
+
+    public String getActionServices() {
+        return actionServices;
+    }
+
+    public void setActionServices(String actionServices) {
+        this.actionServices = actionServices;
     }
 }
