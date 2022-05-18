@@ -6,17 +6,15 @@
         <p id="no-search-result-mess" v-show="toShowNoResultsMess">
             Search resulted in... no result, don't be so strict with that criterion!
         </p>
-        <div v-for="res in this.searchResult" :key="res.id" @click="entityBasicView(res.id, res.type);"> 
-            <div class="card"> 
-                <p class="entity-name">{{res.name}}</p>
-                <img v-if="res.type == 'Adventure'" class="card-icon" src="@/assets/adventure_icon.png">
-                <img v-else-if="res.type == 'Cottage'" class="card-icon" src="@/assets/cottage_icon.png">
-                <img v-else class="card-icon" src="@/assets/boat_icon.png">
-                <div class="entity-info-holder">
-                    <span class="information-style"><span class="attr-name-style">Location: </span>{{res.city}}</span>
-                    <span class="information-style"><span class="attr-name-style">Price: </span>{{res.price}} &euro;/day</span>
-                    <span class="information-style"><span class="attr-name-style">Rating: </span>{{res.rate}} &#9733;</span>
-                </div>
+        <div class="card" v-for="res in this.searchResult" :key="res.id" @click="entityBasicView(res.id, res.type);" > 
+            <p class="entity-name">{{res.name}}</p>
+            <img v-if="res.type == 'Adventure'" class="card-icon" src="@/assets/adventure_icon.png">
+            <img v-else-if="res.type == 'Cottage'" class="card-icon" src="@/assets/cottage_icon.png">
+            <img v-else class="card-icon" src="@/assets/boat_icon.png">
+            <div class="entity-info-holder">
+                <span class="information-style"><span class="attr-name-style">Location: </span>{{res.city}}</span>
+                <span class="information-style"><span class="attr-name-style">Price: </span>{{res.price}} &euro;/day</span>
+                <span class="information-style"><span class="attr-name-style">Rating: </span>{{res.rate}} &#9733;</span>
             </div>
         </div>
     </div>
@@ -81,6 +79,12 @@
         </form>
     </div>
 
+    <RentalViewModal v-if="showRentalViewModal"
+        @close = closePopUp
+        :id = selectRentalId
+        :type = selectRentalType
+    />
+
     <ErrorPopUp v-show="errorPopUpVisible" 
         @close = closePopUp
         :mess = errMessage
@@ -88,13 +92,14 @@
 </template>
 
 <script>
-    import ErrorPopUp from "@/components/ErrorPopUp.vue"
+    import ErrorPopUp from "@/components/ErrorPopUp.vue";
+    import RentalViewModal from "@/components/RentalViewModal.vue";
     import axios from 'axios';
 
     export default {
         name: "SearchPage",
         components: {
-            ErrorPopUp
+            ErrorPopUp, RentalViewModal
         },
         data() {
             return {
@@ -111,20 +116,23 @@
                 errorPopUpVisible: false,
                 toShowNoResultsMess: false,
                 showInitSearchResMess: true,
+                showRentalViewModal: false,
 
-                searchResult: []
+                searchResult: [],
+
+                selectRentalId: null,
+                selectRentalType: null
             };
         },
         methods: {
             closePopUp() {
                 this.errorPopUpVisible = false;
+                this.showRentalViewModal = false;
             },
             entityBasicView(id, type) {
-                console.log(id, type);
-                window.sessionStorage.setItem("entityDataId", id);
-                window.sessionStorage.setItem("entityDataType", type);
-
-                this.$router.push({ name: "EntityBasicView" })
+                this.showRentalViewModal = true;
+                this. selectRentalId = id;
+                this.selectRentalType = type;
             },
             submitSearchForm() {
                 let formData = {
@@ -243,13 +251,13 @@
     .card {
         border: 1px solid rgb(70, 68, 68);
         border-radius: 30px;
-        padding: 10px;
         margin: 20px 40px;
+        padding: 10px;
     }
+
     .card:hover {
         background: rgba(170, 167, 167, 20%);
-        margin: 20px 0px;
-        border: 1px solid rgb(34, 33, 33);
+        margin: 20px 10px;
     }
 
     .entity-name {

@@ -2,6 +2,7 @@ package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.CottageDTO;
 import com.ftn.isa.model.Cottage;
+import com.ftn.isa.model.CottageOwner;
 import com.ftn.isa.model.Photo;
 import com.ftn.isa.repository.PhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,4 +53,15 @@ public class PhotoService {
         return photos;
     }
 
+    public Set<Photo> changeCottagePhotos(CottageOwner cottageOwner, CottageDTO cottageDTO) {
+        Set<Photo> photos = new HashSet<>();
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId() == cottageDTO.getId()){
+                photos = this.addOrDeletePhoto(c, cottageDTO);
+                break;
+            }
+        }
+
+        return photos;
+    }
 }

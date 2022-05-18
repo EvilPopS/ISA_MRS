@@ -10,6 +10,9 @@ import com.ftn.isa.repository.CottageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -43,32 +46,47 @@ public class ClientService {
     }
 
     public List<ReservationHistoryDTO> getReservationHistory(String email) {
+        return getReservationsByFilter(email, true);
+    }
+
+    public List<ReservationHistoryDTO> getUpcomingReservations(String email) {
+        return getReservationsByFilter(email, false);
+    }
+
+    private List<ReservationHistoryDTO> getReservationsByFilter(String email, boolean isHistory) {
         Set<Reservation> reservations = clientRepo.findByEmail(email).getReservations();
         List<Adventure> adventures = adventureRepo.findAll();
         List<Cottage> cottages = cottageRepo.findAll();
         List<Boat> boats = boatRepo.findAll();
 
-        List<ReservationHistoryDTO> reservationHistory = new ArrayList<>();
+        List<ReservationHistoryDTO> filteredReservs = new ArrayList<>();
 
         for (Reservation res : reservations) {
             for(Adventure adv : adventures)
-                if (matchReservation(res, adv, reservationHistory))
+                if (matchReservation(res, adv, filteredReservs, isHistory))
                     break;
             for(Cottage cot : cottages)
-                if (matchReservation(res, cot, reservationHistory))
+                if (matchReservation(res, cot, filteredReservs, isHistory))
                     break;
             for(Boat boat : boats)
-                if (matchReservation(res, boat, reservationHistory))
+                if (matchReservation(res, boat, filteredReservs, isHistory))
                     break;
         }
 
-        return reservationHistory;
+        return filteredReservs;
     }
 
-    private boolean matchReservation(Reservation res, RentalService rental, List<ReservationHistoryDTO> reservationHistory) {
+    private boolean matchReservation(Reservation res, RentalService rental, List<ReservationHistoryDTO> reservationHistory, boolean areDone) {
         for (Reservation r: rental.getReservations())
             if (res.getId().equals(r.getId())) {
-                reservationHistory.add(new ReservationHistoryDTO(res, rental));
+                if (areDone) {
+                    if (res.getEndTime().isBefore(LocalDateTime.now()))
+                        reservationHistory.add(new ReservationHistoryDTO(res, rental));
+                }
+                else {
+                    if (res.getEndTime().isAfter(LocalDateTime.now()))
+                        reservationHistory.add(new ReservationHistoryDTO(res, rental));
+                }
                 return true;
             }
         return false;

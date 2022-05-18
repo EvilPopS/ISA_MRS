@@ -1,16 +1,17 @@
 package com.ftn.isa.controllers;
 
-import com.ftn.isa.DTO.BasicClientDTO;
-import com.ftn.isa.DTO.ClientProfileDTO;
-import com.ftn.isa.DTO.ReservationHistoryDTO;
-import com.ftn.isa.DTO.UserRegDTO;
+import com.ftn.isa.DTO.*;
 import com.ftn.isa.configs.ServerConfig;
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Client;
+import com.ftn.isa.model.RentalService;
+import com.ftn.isa.model.Reservation;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.ClientService;
 import com.ftn.isa.services.EmailService;
+import com.ftn.isa.services.RentalServService;
+import com.ftn.isa.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +29,10 @@ public class ClientController {
     private EmailService emailService;
     @Autowired
     private TokenUtils tokenUtils;
+    @Autowired
+    private RentalServService rentalServService;
+    @Autowired
+    private ReservationService reservationService;
 
     @GetMapping
     @PreAuthorize("hasRole('CLIENT')")
@@ -43,11 +48,13 @@ public class ClientController {
         return new ResponseEntity<>(new ClientProfileDTO(client), HttpStatus.OK);
     }
 
-    @GetMapping(value="/basic-profile")
+    //ovde mora email kao parametar jer nije od ulogovanog vec izabranog
+    @GetMapping(value="/basic-profile/{email}")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    public ResponseEntity<BasicClientDTO> getBasicProfileByEmail(HttpServletRequest request) {
-        String email = tokenUtils.getEmailDirectlyFromHeader(request);
-        if (email == null)
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    public ResponseEntity<BasicClientDTO> getBasicProfileByEmail(HttpServletRequest request, @PathVariable String email) {
+        String ownerEmail = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (ownerEmail == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         Client client = clientService.findByEmail(email);
@@ -84,4 +91,48 @@ public class ClientController {
         return new ResponseEntity<>(clientService.getReservationHistory(email), HttpStatus.OK);
     }
 
+    @GetMapping(value="/upcoming-reservations")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<ReservationHistoryDTO>> getUpcomingReservations(HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        return new ResponseEntity<>(clientService.getUpcomingReservations(email), HttpStatus.OK);
+    }
+
+    @PostMapping(value="/make-reservation")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> makeReservation (@RequestBody ReservingInfoDTO reservationData, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        if (!Validate.validateDatePeriod(reservationData.getStartDate(), reservationData.getEndDate()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        RentalService rental;
+        try {
+            rental = rentalServService.getEntityByTypeAndId(reservationData.getRentalType(), reservationData.getRentalId());
+            if (rental == null)
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (!Validate.validateIfReservationPeriodIsAvailable(rental.getReservations(), reservationData))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        reservationService.saveReservation(
+                new Reservation(
+                    reservationData,
+                    rental.getPrice(),
+                    rental,
+                    clientService.findByEmail(email)
+                )
+        );
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

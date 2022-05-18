@@ -9,7 +9,7 @@ public class Request extends Notification {
     @Column(name = "request_type", nullable = false)
     private RequestType requestType;
 
-    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private User sender;
 

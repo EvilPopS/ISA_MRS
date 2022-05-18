@@ -188,7 +188,7 @@
                 errorPopUpVisible: false,
                 succMessage: "Personal information has been changed successfully!",
 
-                userType: window.sessionStorage.getItem("userRole"),
+                userType: window.localStorage.getItem("userRole"),
 
                 showMessageModal : false,
                 deletionRequest : {
@@ -426,6 +426,11 @@
     .reset button:hover {
         background: rgba(218, 214, 214, 70%);
         color: black;
+    }
+
+    /*Ovo je h3 za don't have permision da se vidi ispod navigacije, da bude global */
+    h3 {
+        margin-top: 10%;
     }
 
 </style>

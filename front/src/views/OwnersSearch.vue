@@ -83,6 +83,7 @@
                 serviceName: '',
                 showSearh: false,
                 roleURL: '',
+                searchRole: '',
 
                 errMessage : '',
                 errorPopUpVisible: false,
@@ -112,12 +113,13 @@
                     this.errorPopUpVisible = true;
                     return;
                 }
-                axios.get("api/" + this.roleURL + "/ownersSearch?"  + "&email=" + window.sessionStorage.getItem("email")
+                axios.get("api/" + this.roleURL + "/ownersSearch?"
                                                 + "&minPrice=" + this.minPrice
                                                 + "&maxPrice=" + this.maxPrice
                                                 + "&location=" + this.location 
                                                 + "&minCapacity=" + this.capacity 
-                                                + "&serviceName=" + this.serviceName 
+                                                + "&serviceName=" + this.serviceName,
+                                                {headers: {'authorization': window.localStorage.getItem("token") }} 
                    ).then((response) => {
                         this.showInitSearchResMess = false;
                         response.data.length === 0 ? this.toShowNoResultsMess = true : this.toShowNoResultsMess = false    
@@ -130,11 +132,11 @@
             }
         },
         mounted() {
-            this.searchRole = window.sessionStorage.getItem("userRole")
-            if (this.searchRole === "cottageOwner"){
+            this.searchRole = window.localStorage.getItem("userRole")
+            if (this.searchRole === "COTTAGE_OWNER"){
                 this.roleURL = "cottage-owner"
                 this.showSearh = true
-            } else if (this.searchRole === "instructor"){
+            } else if (this.searchRole === "INSTRUCTOR"){
                 this.roleURL = "fishingInstructor"
                 this.showSearh = true
             } else {

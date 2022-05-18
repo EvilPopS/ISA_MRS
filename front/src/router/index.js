@@ -1,20 +1,20 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import CottageOwnerHomePage from '../views/CottageOwnerHomePage.vue'
-import ClientProfilePage from '../views/ClientProfilePage.vue'
-import InstructorProfilePage from '../views/InstructorProfilePage.vue'
-import AllCottagesView from '../views/AllCottagesView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import CottageOwnerHomePage from '../views/CottageOwnerHomePage.vue';
+import ClientProfilePage from '../views/ClientProfilePage.vue';
+import InstructorProfilePage from '../views/InstructorProfilePage.vue';
+import AllCottagesView from '../views/AllCottagesView.vue';
 import MainHomePage from '../views/MainHomePage.vue';
-import RegistrationPage from '../views/RegistrationPage.vue'
-import LoginPage from '../views/LoginPage.vue'
-import SearchPage from '../views/SearchPage.vue'
-import AdventuresView from '../views/AdventuresView'
-import AllReservations from '../views/AllReservations'
-import AdventureSearchView from  '../views/AdventureSearchView'
-import EntityBasicView from '../views/EntityBasicView.vue'
-import AdminProfilePage from '../views/AdminProfileView.vue'
-import AdminNotifications from '../views/AdminNotifications.vue'
-import OwnersSearch from '../views/OwnersSearch.vue'
-import ClientReservationHistory from '../views/ClientReservationHistory'
+import RegistrationPage from '../views/RegistrationPage.vue';
+import LoginPage from '../views/LoginPage.vue';
+import SearchPage from '../views/SearchPage.vue';
+import AdventuresView from '../views/AdventuresView';
+import AllReservations from '../views/AllReservations';
+import AdventureSearchView from  '../views/AdventureSearchView';
+import AdminProfilePage from '../views/AdminProfileView.vue';
+import AdminNotifications from '../views/AdminNotifications.vue';
+import OwnersSearch from '../views/OwnersSearch.vue';
+import ClientReservationHistory from '../views/ClientReservationHistory';
+import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
 
 const routes = [
   {
@@ -85,11 +85,6 @@ const routes = [
     component: AdventureSearchView
   },
   {
-    path: '/EntityBasicView',
-    name: 'EntityBasicView',
-    component: EntityBasicView
-  },
-  {
     path: '/OwnersSearch',
     name: 'OwnersSearch',
     component: OwnersSearch
@@ -98,6 +93,11 @@ const routes = [
     path: '/ClientReservationHistory',
     name: 'ClientReservationHistory',
     component: ClientReservationHistory
+  },
+  {
+    path: '/ClientUpcomingReservations',
+    name: 'ClientUpcomingReservations',
+    component: ClientUpcomingReservations
   }
 ]
 
