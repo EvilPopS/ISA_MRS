@@ -39,6 +39,7 @@
 </template>
 
 <script>
+    import axios from 'axios';
     import ErrorPopUp from "@/components/ErrorPopUp.vue";
     import SuccessPopUp from "@/components/SuccessPopUp.vue";
 
@@ -74,15 +75,18 @@
                 }
 
                 let requestBody = {
-                    startDate: this.startDate,
-                    endDate: this.endDate
+                    startDate: formatDateStr(this.startDate),
+                    endDate: formatDateStr(this.endDate),
+                    rentalId: this.rentalId,
+                    rentalType: this.rentalType
                 }
-                this.successPopUpVisible = true;
-                // axios.post("", requestBody, {headers: {'authorization': window.localStorage.getItem("token") }})
-                //     .then(response => {
-
-                //     }
-                // );
+                axios.post("api/client/make-reservation", requestBody, {headers: {'authorization': window.localStorage.getItem("token") }})
+                    .then(response => {
+                        this.successPopUpVisible = true;
+                    }).catch(err => {
+                        this.errMessage = "The reservation period you entered is already taken!";
+                        this.errorPopUpVisible = true;
+                    });
             },
             closePopUp() {
                 this.errorPopUpVisible = false;
@@ -104,6 +108,11 @@
 
         if (new Date(formData.startDate) >= new Date(formData.endDate))
             throw "How comes future is before past? Check those start and ending dates...";
+    }
+
+    function formatDateStr(dateStr) {
+        let dateComps = dateStr.split("-");
+        return dateComps[2] + "/" + dateComps[1] + "/" + dateComps[0]; 
     }
 </script>
 

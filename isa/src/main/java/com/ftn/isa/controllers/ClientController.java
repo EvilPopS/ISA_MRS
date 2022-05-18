@@ -12,7 +12,6 @@ import com.ftn.isa.services.EmailService;
 import com.ftn.isa.services.RentalServService;
 import com.ftn.isa.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
