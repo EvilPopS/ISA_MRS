@@ -2,7 +2,7 @@
     <div class="popup-overlay" @click="emitClose()">
         <div class="container popup" @click.stop>
             <div class="row modal-style" v-show="!this.toShowReservationForm && !this.toShowRentalActions">
-                <div class="row btns-cont">
+                <div class="row btns-cont" v-if="isClient">
                     <div class="col justify-content-center">
                         <button class="btn-style" @click="showReservationForm">Reservation calendar</button>
                     </div>

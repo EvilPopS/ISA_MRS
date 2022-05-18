@@ -1,9 +1,6 @@
 package com.ftn.isa.services;
 
-import com.ftn.isa.model.Adventure;
-import com.ftn.isa.model.Boat;
-import com.ftn.isa.model.Cottage;
-import com.ftn.isa.model.RentalService;
+import com.ftn.isa.model.*;
 import com.ftn.isa.repository.AdventureRepository;
 import com.ftn.isa.repository.BoatRepository;
 import com.ftn.isa.repository.CottageRepository;
@@ -71,4 +68,23 @@ public class RentalServService {
         return adventureRepository.getAdventureById(id);
     }
 
+    public void addReservationToRental(Long rentalId, String rentalType, Reservation reservation) {
+        switch (rentalType) {
+            case "Cottage":
+                Cottage cottage = cottageRepository.getCottageById(rentalId);
+                cottage.getReservations().add(reservation);
+                cottageRepository.save(cottage);
+                break;
+            case "Boat":
+                Boat boat = boatRepository.getBoatById(rentalId);
+                boat.getReservations().add(reservation);
+                boatRepository.save(boat);
+                break;
+            case "Adventure":
+                Adventure adventure = adventureRepository.getAdventureById(rentalId);
+                adventure.getReservations().add(reservation);
+                adventureRepository.save(adventure);
+                break;
+        }
+    }
 }

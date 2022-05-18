@@ -1,9 +1,15 @@
 package com.ftn.isa.helpers;
 
+import com.ftn.isa.DTO.ReservingInfoDTO;
+import com.ftn.isa.model.Reservation;
+
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class Validate {
     private static final String REG_NAME = "^[a-zA-Z\\s]+";
@@ -14,8 +20,8 @@ public class Validate {
     private static final String REG_WORDS = "^[a-zA-Z -]+$";
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    public static LocalDateTime getTodaysDate() {
-        return LocalDateTime.now();
+    public static LocalDate getTodaysDate() {
+        return LocalDate.now();
     }
 
     public static boolean validateSurName(String surName) {
@@ -70,5 +76,16 @@ public class Validate {
 
     public static boolean validateSearchEntities(String entities) {
         return entities.contains("adventures") || entities.contains("cottages") || entities.contains("boats");
+    }
+
+    public static boolean validateIfReservationPeriodIsAvailable(List<Reservation> reservations, ReservingInfoDTO reservingData) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate startTime = LocalDate.parse(reservingData.getStartDate(), format);
+        LocalDate endTime = LocalDate.parse(reservingData.getEndDate(), format);
+
+        for (Reservation res : reservations)
+            if (res.periodsAreOverlapping(startTime, endTime))
+                return false;
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package com.ftn.isa.DTO;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ReservationDTO {
@@ -10,8 +11,8 @@ public class ReservationDTO {
     private String clientFullName;
     private String clientProfilePhoto;
     private String rentalName;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate startTime;
+    private LocalDate endTime;
     private double price;
     private boolean isAction;
     private boolean isReserved;
@@ -21,8 +22,8 @@ public class ReservationDTO {
     }
 
     public ReservationDTO(Long reservationId, Long rentalId, String clientEmail,
-                          String rentalName, LocalDateTime startTime,
-                          LocalDateTime endTime, double price, boolean isAction, boolean isReserved, String clientProfilePhoto, String clientFullName) {
+                          String rentalName, LocalDate startTime,
+                          LocalDate endTime, double price, boolean isAction, boolean isReserved, String clientProfilePhoto, String clientFullName) {
         this.reservationId = reservationId;
         this.rentalId = rentalId;
         this.clientEmail = clientEmail;
@@ -37,8 +38,8 @@ public class ReservationDTO {
     }
 
     public ReservationDTO(Long reservationId, Long rentalId,
-                          String rentalName, LocalDateTime startTime,
-                          LocalDateTime endTime, double price,
+                          String rentalName, LocalDate startTime,
+                          LocalDate endTime, double price,
                           boolean isAction, boolean isReserved) {
         this.reservationId = reservationId;
         this.rentalId = rentalId;
@@ -90,19 +91,19 @@ public class ReservationDTO {
         this.rentalName = cottageName;
     }
 
-    public LocalDateTime getStartTime() {
+    public LocalDate getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(LocalDate startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public LocalDate getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(LocalDate endTime) {
         this.endTime = endTime;
     }
 

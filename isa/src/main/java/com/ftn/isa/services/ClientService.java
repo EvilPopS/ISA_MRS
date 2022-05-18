@@ -10,6 +10,8 @@ import com.ftn.isa.repository.CottageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,11 +80,11 @@ public class ClientService {
         for (Reservation r: rental.getReservations())
             if (res.getId().equals(r.getId())) {
                 if (areDone) {
-                    if (res.getEndTime().isBefore(LocalDateTime.now()))
+                    if (res.getEndTime().isBefore(LocalDate.now()))
                         reservationHistory.add(new ReservationHistoryDTO(res, rental));
                 }
                 else {
-                    if (res.getEndTime().isAfter(LocalDateTime.now()))
+                    if (res.getEndTime().isAfter(LocalDate.now()))
                         reservationHistory.add(new ReservationHistoryDTO(res, rental));
                 }
                 return true;
