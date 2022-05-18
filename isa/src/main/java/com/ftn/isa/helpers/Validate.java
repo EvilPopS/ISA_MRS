@@ -20,8 +20,8 @@ public class Validate {
     private static final String REG_WORDS = "^[a-zA-Z -]+$";
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    public static LocalDate getTodaysDate() {
-        return LocalDate.now();
+    public static LocalDateTime getTodaysDate() {
+        return LocalDateTime.now();
     }
 
     public static boolean validateSurName(String surName) {
@@ -79,9 +79,9 @@ public class Validate {
     }
 
     public static boolean validateIfReservationPeriodIsAvailable(List<Reservation> reservations, ReservingInfoDTO reservingData) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate startTime = LocalDate.parse(reservingData.getStartDate(), format);
-        LocalDate endTime = LocalDate.parse(reservingData.getEndDate(), format);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime startTime = LocalDateTime.parse(reservingData.getStartDate(), format);
+        LocalDateTime endTime = LocalDateTime.parse(reservingData.getEndDate(), format);
 
         for (Reservation res : reservations)
             if (res.periodsAreOverlapping(startTime, endTime))

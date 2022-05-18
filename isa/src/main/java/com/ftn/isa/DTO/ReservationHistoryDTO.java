@@ -3,15 +3,14 @@ package com.ftn.isa.DTO;
 import com.ftn.isa.model.RentalService;
 import com.ftn.isa.model.Reservation;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ReservationHistoryDTO {
     private Long id;
     private Long rentalId;
     private String name;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private double price;
 
     public ReservationHistoryDTO(Reservation res, RentalService rental) {
@@ -47,19 +46,19 @@ public class ReservationHistoryDTO {
         this.name = name;
     }
 
-    public LocalDate getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 

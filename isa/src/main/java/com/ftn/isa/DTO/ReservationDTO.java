@@ -1,6 +1,5 @@
 package com.ftn.isa.DTO;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ReservationDTO {
@@ -11,8 +10,8 @@ public class ReservationDTO {
     private String clientFullName;
     private String clientProfilePhoto;
     private String rentalName;
-    private LocalDate startTime;
-    private LocalDate endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private double price;
     private boolean isAction;
     private boolean isReserved;
@@ -22,8 +21,8 @@ public class ReservationDTO {
     }
 
     public ReservationDTO(Long reservationId, Long rentalId, String clientEmail,
-                          String rentalName, LocalDate startTime,
-                          LocalDate endTime, double price, boolean isAction, boolean isReserved, String clientProfilePhoto, String clientFullName) {
+                          String rentalName, LocalDateTime startTime,
+                          LocalDateTime endTime, double price, boolean isAction, boolean isReserved, String clientProfilePhoto, String clientFullName) {
         this.reservationId = reservationId;
         this.rentalId = rentalId;
         this.clientEmail = clientEmail;
@@ -38,8 +37,8 @@ public class ReservationDTO {
     }
 
     public ReservationDTO(Long reservationId, Long rentalId,
-                          String rentalName, LocalDate startTime,
-                          LocalDate endTime, double price,
+                          String rentalName, LocalDateTime startTime,
+                          LocalDateTime endTime, double price,
                           boolean isAction, boolean isReserved) {
         this.reservationId = reservationId;
         this.rentalId = rentalId;
@@ -91,19 +90,19 @@ public class ReservationDTO {
         this.rentalName = cottageName;
     }
 
-    public LocalDate getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDate startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDate getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDate endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 

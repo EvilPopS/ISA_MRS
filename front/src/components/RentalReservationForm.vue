@@ -9,13 +9,13 @@
                 <label>Start:</label>
             </div>
             <div class="col-sm-2">
-                <input type="date" v-model="startDate">
+                <input type="datetime-local" v-model="startDate">
             </div>
             <div class="col-sm-1">
                 <label>End:</label>
             </div>
             <div class="col-sm-2">
-                <input type="date" v-model="endDate">
+                <input type="datetime-local" v-model="endDate">
             </div>
             <div class="col-sm-5">
                 <button id="make-res-btn" class="btns-style" @click="makeReservation()">Make reservation</button>
@@ -80,6 +80,7 @@
                     rentalId: this.rentalId,
                     rentalType: this.rentalType
                 }
+
                 axios.post("api/client/make-reservation", requestBody, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(response => {
                         this.successPopUpVisible = true;
@@ -111,8 +112,10 @@
     }
 
     function formatDateStr(dateStr) {
-        let dateComps = dateStr.split("-");
-        return dateComps[2] + "/" + dateComps[1] + "/" + dateComps[0]; 
+        //yyyy-MM-dd'T'HH:mm
+        let dateTimeSplit = dateStr.split('T');
+        let date = dateTimeSplit[0].split("-");
+        return date.reverse().join("/") + " " + dateTimeSplit[1];
     }
 </script>
 

@@ -15,10 +15,10 @@ public class Reservation {
     private Long id;
 
     @Column(name = "start_time", nullable = false)
-    private LocalDate startTime;
+    private LocalDateTime startTime;
 
     @Column(name = "end_time", nullable = false)
-    private LocalDate endTime;
+    private LocalDateTime endTime;
 
     @Column(name = "is_action", nullable = false)
     private boolean isAction;
@@ -41,9 +41,9 @@ public class Reservation {
     public Reservation() {}
 
     public Reservation(ReservingInfoDTO reservingData, Double price, RentalService rental, Client client) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        this.startTime = LocalDate.parse(reservingData.getStartDate(), format);
-        this.endTime = LocalDate.parse(reservingData.getEndDate(), format);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        this.startTime = LocalDateTime.parse(reservingData.getStartDate(), format);
+        this.endTime = LocalDateTime.parse(reservingData.getEndDate(), format);
         this.price = price;
         this.isAction = false;
         this.isReserved = true;
@@ -51,7 +51,7 @@ public class Reservation {
         this.client = client;
     }
 
-    public boolean periodsAreOverlapping(LocalDate startDate, LocalDate endDate) {
+    public boolean periodsAreOverlapping(LocalDateTime startDate, LocalDateTime endDate) {
         return startDate.isAfter(this.startTime) && startDate.isBefore(this.endTime) ||
                     endDate.isAfter(this.startTime) && endDate.isBefore(this.endTime) ||
                     this.startTime.isAfter(startDate) && this.startTime.isBefore(endDate) ||
@@ -59,19 +59,19 @@ public class Reservation {
                     startDate.isEqual(this.startTime) || endDate.isEqual(this.endTime);
     }
 
-    public LocalDate getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDate startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDate getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDate endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 

@@ -80,11 +80,11 @@ public class ClientService {
         for (Reservation r: rental.getReservations())
             if (res.getId().equals(r.getId())) {
                 if (areDone) {
-                    if (res.getEndTime().isBefore(LocalDate.now()))
+                    if (res.getEndTime().isBefore(LocalDateTime.now()))
                         reservationHistory.add(new ReservationHistoryDTO(res, rental));
                 }
                 else {
-                    if (res.getEndTime().isAfter(LocalDate.now()))
+                    if (res.getEndTime().isAfter(LocalDateTime.now()))
                         reservationHistory.add(new ReservationHistoryDTO(res, rental));
                 }
                 return true;
