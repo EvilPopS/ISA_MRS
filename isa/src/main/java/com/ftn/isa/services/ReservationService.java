@@ -9,17 +9,18 @@ import com.ftn.isa.model.Reservation;
 import com.ftn.isa.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
 public class ReservationService {
-
     @Autowired
     private ReservationRepository reservationRepository;
 
+    public void saveReservation(Reservation r) {
+        reservationRepository.save(r);
+    }
 
     public Set<ReservationDTO> createResDTO(CottageOwner cottageOwner, List<Client> allClients) {
         Set<ReservationDTO> reservations = new HashSet<>();

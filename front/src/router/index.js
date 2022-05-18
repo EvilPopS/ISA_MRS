@@ -10,7 +10,6 @@ import SearchPage from '../views/SearchPage.vue';
 import AdventuresView from '../views/AdventuresView';
 import AllReservations from '../views/AllReservations';
 import AdventureSearchView from  '../views/AdventureSearchView';
-import EntityBasicView from '../views/EntityBasicView.vue';
 import AdminProfilePage from '../views/AdminProfileView.vue';
 import AdminNotifications from '../views/AdminNotifications.vue';
 import OwnersSearch from '../views/OwnersSearch.vue';
@@ -84,11 +83,6 @@ const routes = [
     path: '/AdventureSearch',
     name: 'AdventureSearchView',
     component: AdventureSearchView
-  },
-  {
-    path: '/EntityBasicView',
-    name: 'EntityBasicView',
-    component: EntityBasicView
   },
   {
     path: '/OwnersSearch',

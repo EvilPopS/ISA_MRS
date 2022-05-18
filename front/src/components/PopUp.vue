@@ -48,32 +48,4 @@
     cursor: pointer;
   }
 
-  .close-img {
-    width: 25px;
-  }
-
-  .check {
-    width: 150px;
-  }
-
-  h6 {
-    font-weight: 500;
-    font-size: 28px;
-    margin: 20px 0;
-  }
-
-  p {
-    font-size: 16px;
-    margin: 20px 0;
-  }
-
-  button {
-    background-color: #ac003e;
-    width: 150px;
-    height: 40px;
-    color: white;
-    font-size: 14px;
-    border-radius: 16px;
-    margin-top: 50px;
-  }
 </style>

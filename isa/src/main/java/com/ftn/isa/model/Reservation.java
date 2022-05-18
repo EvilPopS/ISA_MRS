@@ -1,8 +1,11 @@
 package com.ftn.isa.model;
 
-
+import com.ftn.isa.DTO.ReservingInfoDTO;
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @Entity
 public class Reservation {
@@ -25,14 +28,34 @@ public class Reservation {
     @Column(name = "is_reserved", nullable = false)
     private boolean isReserved;
 
+    @OneToOne
+    @JoinColumn(name="client_id")
+    private Client client;
+
+    @OneToOne
+    @JoinColumn(name="rental_id")
+    private RentalService rental;
+
     @Column(name = "is_unvailable", nullable = false)
     private boolean isUnvailable;
 
     @Column(name = "action_services", nullable = true)
     private String actionServices;
+  
 
-    public Reservation() {
+    public Reservation() {}
 
+    public Reservation(ReservingInfoDTO reservingData, Double price, RentalService rental, Client client) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        this.startTime = LocalDateTime.parse(reservingData.getStartDate(), format);
+        this.endTime = LocalDateTime.parse(reservingData.getEndDate(), format);
+        this.price = price;
+        this.isAction = false;
+        this.isReserved = true;
+        this.rental = rental;
+        this.client = client;
+        this.isUnavailable = false;
+        this.actionServices = ""; // TO DO
     }
 
     public Reservation(LocalDateTime startTime, LocalDateTime endTime, boolean isAction,
@@ -46,6 +69,13 @@ public class Reservation {
         this.actionServices = actionServices;
     }
 
+    public boolean periodsAreOverlapping(LocalDateTime startDate, LocalDateTime endDate) {
+        return startDate.isAfter(this.startTime) && startDate.isBefore(this.endTime) ||
+                    endDate.isAfter(this.startTime) && endDate.isBefore(this.endTime) ||
+                    this.startTime.isAfter(startDate) && this.startTime.isBefore(endDate) ||
+                    this.endTime.isAfter(startDate) && this.endTime.isBefore(endDate) ||
+                    startDate.isEqual(this.startTime) || endDate.isEqual(this.endTime);
+      
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -94,6 +124,20 @@ public class Reservation {
         this.id = id;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public RentalService getRental() {
+        return rental;
+    }
+
+    public void setRental(RentalService rental) {
+        this.rental = rental;
     public boolean isUnvailable() {
         return isUnvailable;
     }

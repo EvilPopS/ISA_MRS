@@ -6,8 +6,6 @@ import java.util.Set;
 
 @Entity
 public class Adventure extends RentalService {
-
-
     @Column(name = "biography", nullable = false)
     private String biography;
 
