@@ -2,7 +2,6 @@ package com.ftn.isa.model;
 
 import com.ftn.isa.DTO.ReservingInfoDTO;
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -36,8 +35,8 @@ public class Reservation {
     @JoinColumn(name="rental_id")
     private RentalService rental;
 
-    @Column(name = "is_unvailable", nullable = false)
-    private boolean isUnvailable;
+    @Column(name = "is_unavailable", nullable = false)
+    private boolean isUnavailable;
 
     @Column(name = "action_services", nullable = true)
     private String actionServices;
@@ -65,17 +64,18 @@ public class Reservation {
         this.isAction = isAction;
         this.price = price;
         this.isReserved = isReserved;
-        this.isUnvailable = isUnvailable;
+        this.isUnavailable = isUnvailable;
         this.actionServices = actionServices;
     }
 
     public boolean periodsAreOverlapping(LocalDateTime startDate, LocalDateTime endDate) {
         return startDate.isAfter(this.startTime) && startDate.isBefore(this.endTime) ||
-                    endDate.isAfter(this.startTime) && endDate.isBefore(this.endTime) ||
-                    this.startTime.isAfter(startDate) && this.startTime.isBefore(endDate) ||
-                    this.endTime.isAfter(startDate) && this.endTime.isBefore(endDate) ||
-                    startDate.isEqual(this.startTime) || endDate.isEqual(this.endTime);
-      
+                endDate.isAfter(this.startTime) && endDate.isBefore(this.endTime) ||
+                this.startTime.isAfter(startDate) && this.startTime.isBefore(endDate) ||
+                this.endTime.isAfter(startDate) && this.endTime.isBefore(endDate) ||
+                startDate.isEqual(this.startTime) || endDate.isEqual(this.endTime);
+    }
+
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -138,12 +138,14 @@ public class Reservation {
 
     public void setRental(RentalService rental) {
         this.rental = rental;
-    public boolean isUnvailable() {
-        return isUnvailable;
     }
 
-    public void setUnvailable(boolean unvailable) {
-        isUnvailable = unvailable;
+    public boolean isUnavailable() {
+        return isUnavailable;
+    }
+
+    public void setUnavailable(boolean unavailable) {
+        this.isUnavailable = unavailable;
     }
 
     public String getActionServices() {

@@ -26,7 +26,7 @@ public class ReservationService {
         Set<ReservationDTO> reservations = new HashSet<>();
         for (Cottage c : cottageOwner.getCottages()){
             for (Reservation reservation : c.getReservations()){
-                if (!reservation.isUnvailable() && reservation.isReserved()) {
+                if (!reservation.isUnavailable() && reservation.isReserved()) {
                     ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), c.getId(),
                             c.getName(), reservation.getStartTime(), reservation.getEndTime(),
                             reservation.getPrice(), reservation.isAction(), reservation.isReserved());
@@ -53,7 +53,7 @@ public class ReservationService {
     public boolean checkIfIsInUnvailable(ActionResDTO actionResDTO){
         List<Reservation> reservations = reservationRepository.getAllReservations();
         for (Reservation res : reservations){
-            if (res.isUnvailable()) {
+            if (res.isUnavailable()) {
                 //kada je unvailable period
                 if (actionResDTO.getStartTime().isAfter(res.getStartTime()) &&
                     actionResDTO.getStartTime().isBefore(res.getEndTime()) &&
