@@ -25,7 +25,7 @@
         @handle-submit       = "handleSubmit"
         @set-new-profile-pic = "setNewProfilePic"
         @succ-popup-close    = "succPopUpClose"
-        @delete-request-sent = "sendDeleteRequest"
+        @delete-request-sent ="sendDeleteRequest"
         />
 </template>
 
@@ -85,7 +85,7 @@
                     });
             },
             sendDeleteRequest(requestBody) {
-                axios.post('/api/user/' + this.type + '/sendDeleteRequest/', this.deletitonRequest, {headers: {'authorization': window.localStorage.getItem("token")}})
+                axios.post('/api/user/CLIENT/sendDeleteRequest', requestBody, {headers: {'authorization': window.localStorage.getItem("token")}})
                     .then((response) => {
 
                     });

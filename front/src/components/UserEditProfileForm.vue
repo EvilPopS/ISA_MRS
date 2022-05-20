@@ -167,24 +167,21 @@
 
                 userType: window.localStorage.getItem("userRole"),
 
-                showMessageModal : false,
-                deletitonRequest : {
-                    message : '',
-                    sentTime : '',
-                    requestType : 'ACCOUNT DELETION'
-                }
+                showMessageModal : false
             }
         },
         methods: {
             sendRequestToAdmin(reasonMessage){
                 const dtNow = new Date();
-                this.deletitonRequest.sentTime = [dtNow.getDay(), (dtNow.getMonth()+1), dtNow.getFullYear()].join("/") + 
+                
+                const deletitonRequest = {
+                    message : reasonMessage,
+                    sentTime : [dtNow.getDate(), (dtNow.getMonth()+1), dtNow.getFullYear()].join("/") + 
                                                 " " +
-                                                [dtNow.getHours(), dtNow.getMinutes()].join(":");
-                this.deletitonRequest.message = reasonMessage;
-
+                                                [dtNow.getHours(), dtNow.getMinutes()].join(":")
+                }
                 this.showMessageModal = false;
-                this.$emit('delete-request-sent', this.deletitonRequest);
+                this.$emit('delete-request-sent', deletitonRequest);
             },
 
             deleteClicked(){

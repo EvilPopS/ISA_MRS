@@ -7,8 +7,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.format.DateTimeFormatter;
 
 public class RequestDTO {
-
-
     public Long requestId;
     public Long senderId;
     public boolean isAnswered;

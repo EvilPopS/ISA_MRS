@@ -1,6 +1,8 @@
 package com.ftn.isa.model;
 
 
+import com.ftn.isa.DTO.DelReqDTO;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -28,6 +30,12 @@ public class Request extends Notification {
         this.setMessage(message);
         this.setAnswered(false);
         this.setSentTime(LocalDateTime.now());
+    }
+
+    public Request(DelReqDTO delReq) {
+        super(delReq.getMessage(), delReq.getSentTime());
+        this.requestType = RequestType.ACCOUNT_DELETION;
+        this.sender = delReq.getSender();
     }
 
     public RequestType getRequestType(){
