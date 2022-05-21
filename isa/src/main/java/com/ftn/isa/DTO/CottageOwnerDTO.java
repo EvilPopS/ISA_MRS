@@ -2,6 +2,7 @@ package com.ftn.isa.DTO;
 
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.CottageOwner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class CottageOwnerDTO {
     private String email;
@@ -16,6 +17,8 @@ public class CottageOwnerDTO {
     private String userType;
     private String loyaltyStatus;
     private int loyaltyPoints;
+
+    public CottageOwnerDTO() {}
 
     public CottageOwnerDTO(CottageOwner cottageOwner) {
         this.email = cottageOwner.getEmail();
@@ -58,8 +61,13 @@ public class CottageOwnerDTO {
         this.loyaltyPoints = loyaltyPoints;
     }
 
+    public void hashPassword() {
+        if (!this.password.equals(""))
+            this.password = new BCryptPasswordEncoder().encode(this.password);
+    }
+
     public boolean arePropsValid() {
-        return Validate.validatePassword(this.password) &&
+        return (this.password.equals("") || Validate.validatePassword(this.password)) &&
                 Validate.validateSurName(this.name) &&
                 Validate.validateSurName(this.surname) &&
                 Validate.validateWords(this.city) &&

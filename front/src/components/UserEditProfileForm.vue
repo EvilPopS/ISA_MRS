@@ -149,21 +149,19 @@
             loyalty : String,
 
             currentProfilePic: String,
-            currentPassword: String,
             currentName: String,
             currentSurname: String,
             currentCity: String,
             currentCountry: String,
             currentStreet: String,
             currentPhoneNumber: String,
-
         },
         data() {
             return {
                 picPopUpVisible: false,
                 errMessage : '',
                 errorPopUpVisible: false,
-                succMessage: "Personal information has been changed successfully!",
+                succMessage: "",
 
                 userType: window.localStorage.getItem("userRole"),
 
@@ -181,6 +179,7 @@
                                                 [dtNow.getHours(), dtNow.getMinutes()].join(":")
                 }
                 this.showMessageModal = false;
+                this.succMessage = "Request for deletion of you account has been sent successfully!";
                 this.$emit('delete-request-sent', deletitonRequest);
             },
 
@@ -219,12 +218,12 @@
                     this.errorPopUpVisible = true; 
                     return;
                 }
+                this.succMessage = "Personal information has been changed successfully!";
 
                 this.$emit('handle-submit', {
                     profilePicture: this.profilePicture,
                     email: this.email,
                     password: this.password,
-                    confirmPassword: this.confirmPassword,
                     name: this.name,
                     surname: this.surname,
                     city: this.city,
@@ -258,10 +257,10 @@
         if (!validate(formData.phoneNumber, numReg))
             throw "Make sure your entered valid phone number.";
         
-        if (!validate(formData.password, passwordReg) || formData.password != formData.confirmPassword)
+        if ( formData.password !== "" && !validate(formData.password, passwordReg) || formData.password != formData.confirmPassword)
             throw "Make sure your confirmation password is the same as the new password and they're at least 6 characters long";
 
-        if (formData.currentPassword === formData.password &&
+        if (formData.password === "" &&
                 formData.currentName === formData.name &&
                 formData.currentSurname === formData.surname &&
                 formData.currentCity === formData.city &&

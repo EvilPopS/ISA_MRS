@@ -86,8 +86,8 @@
             },
             sendDeleteRequest(requestBody) {
                 axios.post('/api/user/CLIENT/sendDeleteRequest', requestBody, {headers: {'authorization': window.localStorage.getItem("token")}})
-                    .then((response) => {
-
+                    .then(() => {
+                        this.succPopUpVisible = true;
                     });
             },
             setNewProfilePic(newPic) {
@@ -103,8 +103,6 @@
                     let data = response.data;
 
                     this.email = data.email;
-                    this.password = data.password;
-                    this.confirmPassword = data.password;
                     this.name = data.name;
                     this.surname = data.surname;
                     this.city = data.city;
