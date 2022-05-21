@@ -13,9 +13,9 @@
             <div v-for="reserv in this.reservations" :key="reserv.id" class="card-style">
                 <label>Reserved rental name:</label>
                 <p>{{reserv.name}}</p>
-                <label>Reservation started on:</label>
+                <label>Reservation start date:</label>
                 <p>{{formatDateString(reserv.startDate)}}</p>
-                <label>Reservation ended on:</label>
+                <label>Reservation end date:</label>
                 <p>{{formatDateString(reserv.endDate)}}</p>
                 <label>Reservation price per day:</label>
                 <p>{{reserv.price}}</p>

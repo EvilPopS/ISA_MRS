@@ -38,7 +38,7 @@ public class Reservation {
     @Column(name = "is_unavailable", nullable = false)
     private boolean isUnavailable;
 
-    @Column(name = "action_services", nullable = true)
+    @Column(name = "action_services")
     private String actionServices;
   
 
