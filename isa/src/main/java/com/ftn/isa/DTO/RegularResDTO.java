@@ -33,6 +33,11 @@ public class RegularResDTO {
                 && startTime.isBefore(endTime) && price > 0;
     }
 
+    public boolean checkOnlyDate() {
+        return Validate.getTodaysDate().isBefore(startTime)
+                && startTime.isBefore(endTime);
+    }
+
     public Long getCottageId() {
         return cottageId;
     }

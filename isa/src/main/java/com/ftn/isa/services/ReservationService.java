@@ -50,10 +50,10 @@ public class ReservationService {
         return reservations;
     }
 
-    public boolean checkIfIsInUnvailable(LocalDateTime startTime, LocalDateTime endTime){
+    public boolean checkIfIsInUnvailable(LocalDateTime startTime, LocalDateTime endTime, Long rentalId){
         List<Reservation> reservations = reservationRepository.getAllReservations();
         for (Reservation res : reservations){
-            if (res.isUnavailable()) {
+            if (res.isUnavailable() && res.getRental().getId().equals(rentalId)) {
                 //kada je unvailable period
                 if (startTime.isAfter(res.getStartTime()) &&
                     startTime.isBefore(res.getEndTime()) &&
@@ -101,7 +101,7 @@ public class ReservationService {
             }
         }
 
-        if (checkIfIsInUnvailable(actionResDTO.getStartTime(), actionResDTO.getEndTime()))
+        if (checkIfIsInUnvailable(actionResDTO.getStartTime(), actionResDTO.getEndTime(), actionResDTO.getCottageId()))
             return null;
 
         Reservation res = new Reservation(actionResDTO.getStartTime(), actionResDTO.getEndTime(),
@@ -111,7 +111,7 @@ public class ReservationService {
         return res;
     }
 
-    public Reservation addNewRegularRes(RegularResDTO regularResDTO, CottageOwner cottageOwner, Client client) {
+    public Reservation addNewRegularRes(RegularResDTO regularResDTO, CottageOwner cottageOwner, Client client, boolean isUnvailable) {
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId().equals(regularResDTO.getCottageId())){
                 if (checkOverlapingWithOtherRes(c.getReservations(), regularResDTO.getStartTime(), regularResDTO.getEndTime()))
@@ -119,12 +119,18 @@ public class ReservationService {
             }
         }
 
-        if (checkIfIsInUnvailable(regularResDTO.getStartTime(), regularResDTO.getEndTime()))
+        if (checkIfIsInUnvailable(regularResDTO.getStartTime(), regularResDTO.getEndTime(), regularResDTO.getCottageId()))
             return null;
 
-        Reservation res = new Reservation(regularResDTO.getStartTime(), regularResDTO.getEndTime(),
-                false, regularResDTO.getPrice(), true, false, null);
-        res.setClient(client);
+        Reservation res = null;
+        if (!isUnvailable)
+            res = new Reservation(regularResDTO.getStartTime(), regularResDTO.getEndTime(),
+                    false, regularResDTO.getPrice(), true, false, null);
+        else
+            res = new Reservation(regularResDTO.getStartTime(), regularResDTO.getEndTime(), false,
+            0.0, true, true, null);
+
+        res.setClient(client); //client ili null za slucaj da je unvailable period
         res = reservationRepository.save(res);
         return res;
 
