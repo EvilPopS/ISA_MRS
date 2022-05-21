@@ -2,6 +2,7 @@ package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.ClientProfileDTO;
 import com.ftn.isa.DTO.ReservationHistoryDTO;
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.repository.AdventureRepository;
 import com.ftn.isa.repository.BoatRepository;
@@ -92,4 +93,11 @@ public class ClientService {
         return false;
     }
 
+    public boolean checkIfCurrentResInProgress(Client client) {
+        for (Reservation res : client.getReservations()){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime()))
+                return true;
+        }
+        return false;
+    }
 }
