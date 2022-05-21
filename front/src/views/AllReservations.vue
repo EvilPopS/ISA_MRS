@@ -97,4 +97,8 @@ export default {
 
 <style scoped>
 
+h3 {
+    margin-top: 10%;
+}
+
 </style>

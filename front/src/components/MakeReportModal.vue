@@ -3,6 +3,7 @@
         <div class="modal-content">
             <button id="close_btn" @click="closeWindow" class="close">X</button>
             <div class="container">
+                proba
                 <h3>Report for client: {{clientFullName}}</h3>
                 <div class="btn-group row d-flex justify-content-start">
                     <label class="label-desc d-flex justify-content-start">Your experience with client was: </label>

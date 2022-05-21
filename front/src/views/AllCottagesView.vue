@@ -60,7 +60,7 @@
         <div v-else-if="showAddNewRes">
             <NewReservationsComponent
                 @modal-closed = "showAddNewRes = false"
-                :calendarForCottage="calendarForCottage"
+                :choosenCottage="calendarForCottage"
             />
         </div>
         <ErrorPopUp v-show="errorPoup" 

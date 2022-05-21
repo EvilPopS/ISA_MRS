@@ -16,13 +16,16 @@
                                 @selected="setSelected"
                             >
                                 <Tab :isSelected="selected === 'Regular'">
-                                    <p>Regular</p>
+                                    <AddRegularRes
+                                        @modal-closed = "closeWindow()"
+                                        :cottage="choosenCottage"
+                                    ></AddRegularRes>
                                 </Tab>
 
                                 <Tab :isSelected="selected === 'Action'">
                                     <AddActionRes
                                         @modal-closed = "closeWindow()"
-                                        :cottage="calendarForCottage"
+                                        :cottage="choosenCottage"
                                     ></AddActionRes>
                                 </Tab>
 
@@ -43,14 +46,15 @@
 import Tab from '../components/Tab'
 import TabNav from '../components/TabNav'
 import AddActionRes from '../components/AddActionRes.vue'
+import AddRegularRes from '../components/AddRegularRes.vue'
 
 export default {
     name: "NewReservationsComponent",
     components: {
-        Tab, TabNav, AddActionRes
+        Tab, TabNav, AddActionRes, AddRegularRes
     },
     props: {
-        calendarForCottage: Object
+        choosenCottage: Object
     },
     data(){
         return {
