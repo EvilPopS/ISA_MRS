@@ -69,6 +69,7 @@
                             <MapContainer
                                 :coordinates = "[cottage.lon, cottage.lat]"
                                 :map-height = "200"
+                                :mapEditable="true"
                                 @changed-location = "changedLocationFunc"
                             >
                             </MapContainer>

@@ -57,8 +57,9 @@
                         </div>
                         <div id="mapContainer">
                             <MapContainer
-                                :coordinates = "[45.249962, 19.849027]"
+                                :coordinates = "[19.83383399956332, 45.25697997579121]"
                                 :map-height = "200"
+                                :mapEditable="true"
                                 @changed-location = "changedLocationFunc"
                             >
                             </MapContainer>

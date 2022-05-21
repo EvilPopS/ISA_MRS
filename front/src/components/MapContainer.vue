@@ -26,7 +26,8 @@
     components: {},
     props: {
         coordinates: Array,
-        mapHeight: String
+        mapHeight: String,
+        mapEditable: Boolean
     },
 
     data() {
@@ -93,7 +94,8 @@
                     center: proj.transform([ this.newCordinates[0], this.newCordinates[1]], 'EPSG:4326', 'EPSG:3857'),
                 }),
             }).on('click', function(evt){
-                let lonlat = transform(evt.coordinate,'EPSG:3857', 'EPSG:4326');
+                if (vm.mapEditable) {
+                    let lonlat = transform(evt.coordinate,'EPSG:3857', 'EPSG:4326');
                 
                 vm.newCordinates = []
                 vm.newCordinates.push(lonlat[0])
@@ -117,7 +119,8 @@
                 }) */
                 vm.$emit('changed-location', lonlat[0], lonlat[1])
                 vm.initMap()
-                });
+                }
+            });
         
         }
     }
