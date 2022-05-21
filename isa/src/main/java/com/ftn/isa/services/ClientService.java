@@ -33,6 +33,7 @@ public class ClientService {
     }
 
     public void updatePersonalInfo(ClientProfileDTO clientData, Client client) {
+        clientData.hashPassword();
         client.updatePersonalInfo(clientData);
         saveOrUpdateClient(client);
     }

@@ -48,7 +48,6 @@ public class ClientController {
         return new ResponseEntity<>(new ClientProfileDTO(client), HttpStatus.OK);
     }
 
-    //ovde mora email kao parametar jer nije od ulogovanog vec izabranog
     @GetMapping(value="/basic-profile/{email}")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PreAuthorize("hasRole('COTTAGE_OWNER')")

@@ -40,7 +40,8 @@ public class Client extends User {
     public void updatePersonalInfo(ClientProfileDTO data) {
         this.setName(data.getName());
         this.setSurname(data.getSurname());
-        this.setPassword(data.getPassword());
+        if (!data.getPassword().equals(""))
+            this.setPassword(data.getPassword());
         Address address = this.getAddress();
         address.setPlaceName(data.getCity());
         address.setCountry(data.getCountry());
