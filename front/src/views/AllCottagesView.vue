@@ -6,6 +6,11 @@
                 <span id="fa-search-id">
                     <input type="text" placeholder="Search..." id="search-input" v-model="searched"/>
                     <i class="fa fa-search" id="search-icon-color" aria-hidden="true"></i>
+                    <div class="d-flex justify-content-center" id="sort-bar">
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: nameSortBtnClicked }" @click="sortByName();">&#8645; Rental Name</button>
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: rateSortBtnClicked }" @click="sortByRate();">&#8645; Rate</button>
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: priceSortBtnClicked }" @click="sortByPrice();">&#8645; Price</button>
+                    </div>
                 </span>
                 <span>
                     <button class="btn btn-success add-btn" id="btn-add" @click="showAddCottageModal()">Add cottage</button>
@@ -17,7 +22,8 @@
                             <div class="card-body">
                                 <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
                                 <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
-                                <p class="card-text"><b>Description:</b>{{cottage.description}}</p>
+                                <p class="card-text"><b>Description:</b>{{cottage.description.length < 15 ? cottage.description + "     " : cottage.description}}</p>
+                                <p class="card-text"><b>Price:</b>{{cottage.price}} &euro;</p>
                                 <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
                                 <span>
                                     <button class="btn btn-success card-btns" @click="addNewReservation(cottage)">Calendar</button>
@@ -113,7 +119,11 @@ export default {
            showSearch: window.localStorage.getItem("userRole") === "COTTAGE_OWNER",
            
            showAddNewRes: false,
-           calendarForCottage: {}
+           calendarForCottage: {},
+
+            nameSortBtnClicked: false,
+            rateSortBtnClicked: false,
+            priceSortBtnClicked: false,
        }
    }, 
    methods: {
@@ -160,6 +170,66 @@ export default {
                 this.errorPoup = true
             })
             
+        },
+        sortByName() {
+            if (this.nameSortBtnClicked)
+                this.cottages.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.nameSortBtnClicked = true;
+
+                this.cottages.sort(function(left, right) { 
+                    let lName = left.name.toUpperCase();
+                    let rName = right.name.toUpperCase();
+                    if (lName < rName) 
+                        return -1;
+                    else if (lName > rName)
+                        return 1;
+                    
+                    return 0;
+                });
+            }
+        },
+        sortByPrice() {
+            if (this.priceSortBtnClicked)
+                this.cottages.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.priceSortBtnClicked = true;
+
+                this.cottages.sort(function(left, right) { 
+                    let lPrice = left.price;
+                    let rPrice = right.price;
+                    if (lPrice < rPrice)
+                        return -1;
+                    else if (lPrice > rPrice)
+                        return 1;
+                    return 0;
+                });
+            }
+        },
+        sortByRate() {
+            if (this.rateSortBtnClicked)
+                this.cottages.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.rateSortBtnClicked = true;
+
+                this.cottages.sort(function(left, right) { 
+                    let lRate = left.averageRating;
+                    let rRate = right.averageRating;
+                    if (lRate < rRate)
+                        return -1;
+                    else if (lRate > rRate)
+                        return 1;
+                    return 0;
+                });
+            }
+        },
+        uncheckSortButtons() {
+            this.nameSortBtnClicked = false;
+            this.rateSortBtnClicked = false;
+            this.priceSortBtnClicked = false;
         }
    },
    mounted(){
@@ -180,7 +250,6 @@ export default {
             });
         }
     }
-
 }
 </script>
 
@@ -223,7 +292,6 @@ export default {
     span#fa-search-id{
         display:inline;
         margin-left: auto; 
-        margin-right: 68%;
     }
 
     #search-input {
@@ -246,6 +314,19 @@ export default {
     button.add-btn{
         margin-left: auto; 
         margin-right: 90%;
+    }
+
+    #sort-bar button {
+        margin: 0 5px;
+        border-radius: 10px;
+        font-weight: bold;
+        padding: 4px 15px;
+        border: 1px rgb(71, 69, 69) solid;
+        color: white;
+    }
+
+    #sort-bar button:hover {
+        background-color: rgb(6, 94, 40);
     }
 
 </style>
