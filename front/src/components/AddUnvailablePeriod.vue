@@ -1,13 +1,11 @@
 <template>
     <div>
-        <label for="fdx-time">Choose a start time for reservation:</label>
+        <label for="fdx-time">Choose a start time for period:</label>
         <input type="datetime-local" id="fdx-time"
             name="res-time" max="2024-01-01T00:00" v-model="regularData.startTime">
-        <label for="fdx-time">Choose a end time for reservation:</label>
+        <label for="fdx-time">Choose a end time for period:</label>
         <input type="datetime-local" id="fdx-time"
             name="res-time" max="2024-01-01T00:00" v-model="regularData.endTime">
-        <label >Client's email:</label>
-        <input  type="text" v-model="regularData.clientEmail">
         <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
             <button type="button" class="btn btn-success" @click="addRegRes()">Add</button>
             <button type="button" class="btn btn-outline-success check-label" @click="closeWindow()">Cancel</button>
@@ -44,6 +42,8 @@ export default {
                 startTime: '',
                 endTime: '',
                 cottageId: this.cottage.id,
+                clientEmail: '',
+                price: 0.0
             },
 
             todaysDate: '',
@@ -75,13 +75,13 @@ export default {
                 return;
             }
 
-            axios.post("api/" + this.roleURL + "/add-regular-reservation", this.regularData, {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.post("api/" + this.roleURL + "/add-unvailable-period", this.regularData, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
                     .catch(err => {
                             if (err.response.status === 404){
-                                this.errMessage = "Cottage owner doesn't!";
+                                this.errMessage = "Cottage owner doesn't exist!";
                                 this.errorPopUpVisible = true;
                             } 
                             else if (err.response.status === 401) {

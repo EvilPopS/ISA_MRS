@@ -30,7 +30,10 @@
                                 </Tab>
 
                                 <Tab :isSelected="selected === 'Unvailability'">
-                                    <p>Unvailable period</p>
+                                    <AddUnvailablePeriod
+                                        @modal-closed = "closeWindow()"
+                                        :cottage="choosenCottage"
+                                    ></AddUnvailablePeriod>
                                 </Tab>
 
                             </TabNav>
@@ -47,11 +50,12 @@ import Tab from '../components/Tab'
 import TabNav from '../components/TabNav'
 import AddActionRes from '../components/AddActionRes.vue'
 import AddRegularRes from '../components/AddRegularRes.vue'
+import AddUnvailablePeriod from '../components/AddUnvailablePeriod.vue'
 
 export default {
     name: "NewReservationsComponent",
     components: {
-        Tab, TabNav, AddActionRes, AddRegularRes
+        Tab, TabNav, AddActionRes, AddRegularRes, AddUnvailablePeriod
     },
     props: {
         choosenCottage: Object
