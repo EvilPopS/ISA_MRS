@@ -2,10 +2,7 @@ package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.ActionResDTO;
 import com.ftn.isa.DTO.ReservationDTO;
-import com.ftn.isa.model.Client;
-import com.ftn.isa.model.Cottage;
-import com.ftn.isa.model.CottageOwner;
-import com.ftn.isa.model.Reservation;
+import com.ftn.isa.model.*;
 import com.ftn.isa.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +17,19 @@ public class ReservationService {
 
     public void saveReservation(Reservation r) {
         reservationRepository.save(r);
+    }
+
+    public Reservation findById(Long id) {
+        return reservationRepository.findById(id).orElse(null);
+    }
+
+    public void makeActionReservation(Long resId, Client client) throws Exception {
+        Reservation res = findById(resId);
+        if (res.isReserved())
+            throw new Exception("Already reserved!");
+        res.setReserved(true);
+        res.setClient(client);
+        saveReservation(res);
     }
 
     public Set<ReservationDTO> createResDTO(CottageOwner cottageOwner, List<Client> allClients) {
@@ -50,11 +60,11 @@ public class ReservationService {
         return reservations;
     }
 
-    public boolean checkIfIsInUnvailable(ActionResDTO actionResDTO){
+    public boolean checkIfIsInUnavailable(ActionResDTO actionResDTO){
         List<Reservation> reservations = reservationRepository.getAllReservations();
         for (Reservation res : reservations){
             if (res.isUnavailable()) {
-                //kada je unvailable period
+                //kada je unavailable period
                 if (actionResDTO.getStartTime().isAfter(res.getStartTime()) &&
                     actionResDTO.getStartTime().isBefore(res.getEndTime()) &&
                     actionResDTO.getEndTime().isBefore(res.getEndTime()))
@@ -93,7 +103,7 @@ public class ReservationService {
                 }
             }
         }
-        if (checkIfIsInUnvailable(actionResDTO))
+        if (checkIfIsInUnavailable(actionResDTO))
             return null;
         Reservation res = new Reservation(actionResDTO.getStartTime(), actionResDTO.getEndTime(),
                 true, actionResDTO.getPrice(), false, false, actionResDTO.getActionServices());

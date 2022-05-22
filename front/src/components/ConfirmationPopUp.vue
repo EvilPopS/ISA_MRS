@@ -48,6 +48,8 @@ export default {
     #close_btn{
         height: 30px;
         width: 25px;
+        border-radius: 20px;
+        background: rgb(219, 45, 45);
     }
 
     .modal {
@@ -75,7 +77,7 @@ export default {
 
     /* The Close Button */
     .close {
-    color: #aaaaaa;
+    color: #ffffff;
     float: right;
     font-size: 16px;
     font-weight: bold;
