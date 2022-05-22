@@ -1,15 +1,19 @@
 <template>
     <div>
+        <div class="row justify-content-center modal-info">
+            Click on the action reservation card which you want to reserve for yourself.
+        </div>
         <div class="row justify-content-center actions-cont">
-            <div class="action-card-style" @click="makeReservation(reserv.id)" v-for="reserv in this.reservations" :key="reserv.id">
+            <p v-show="this.reservations.length === 0" id="no-reses-label">There are no action reservations to be displayed!</p>
+            <div class="action-card-style" @click="confirmationForRes(reserv.id)" v-for="reserv in this.reservations" :key="reserv.id">
                 <label>Reservation starts on:</label>
-                <p>{{reserv.startDate}}</p>
+                <p>{{formatDateStr(reserv.startDate)}}</p>
                 <label>Reservation ends on:</label>
-                <p>{{this.reserv.endDate}}</p>
+                <p>{{formatDateStr(reserv.endDate)}}</p>
                 <label>Reservation price per day:</label>
-                <p>{{this.reserv.newPrice}}€/day <s>{{this.oldPrice}}</s></p>
+                <p>{{reserv.newPrice}}€/day <s>{{this.oldPrice}}</s></p>
                 <label>Additional services:</label>
-                <p>{{this.reserv.actionServices}}</p>
+                <p>{{reserv.additionalServices}}</p>
             </div> 
         </div>
         <div id="btn-bar" class="row form-style justify-content-center">
@@ -22,33 +26,50 @@
             @close = closeSuccPopUp
             :mess = succMessage
         />
+
+        <ConfirmationPopUp v-show="confirmPopUpVisible"
+            :title="'Confirmation'"
+            :message="'Are you sure you want to make reservation for the selected action?'"
+            @modal-closed="closeConfirmationPopUp"
+            @confirmed-event="makeReservation"
+        />
     </div>
 </template>
 
 <script>
     import axios from 'axios';
     import SuccessPopUp from "@/components/SuccessPopUp.vue";
+    import ConfirmationPopUp from "@/components/ConfirmationPopUp.vue"
 
     export default {
         name: "RentalActionReservations",
         components: {
-            SuccessPopUp
+            SuccessPopUp,
+            ConfirmationPopUp
         },
         props: {
-            oldPrice: Number,
+            oldPrice: String,
             reservations: Array
         },
         data() {
             return {
                 succMessage: "The reservation was successful!",
-                successPopUpVisible: false
+                successPopUpVisible: false,
+                confirmPopUpVisible: false,
+
+                selectedResId: -1
             }
         },
         methods: {
-            makeReservation(resId) {
-                axios.put("api/client/make-action-reservation/" + resId, {headers: {'authorization': window.localStorage.getItem("token") }})
+            confirmationForRes(resId) {
+                this.selectedResId = resId;
+                this.confirmPopUpVisible = true;
+            },
+            makeReservation() {
+                axios.put("api/client/make-action-reservation/" + this.selectedResId, {}, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(() => {
                         this.successPopUpVisible = true;
+                        this.$emit('update-action-reservations', this.selectedResId);
                     }).catch(() => {});
             },
             closePopUp() {
@@ -57,17 +78,54 @@
             closeSuccPopUp() {
                 this.successPopUpVisible = false;
                 this.$emit('close');
+            },
+            formatDateStr(dateStr) {
+                //yyyy-MM-dd'T'HH:mm
+                let dateTimeSplit = dateStr.split('T');
+                let date = dateTimeSplit[0].split("-");
+                return dateTimeSplit[1] + " " + date.reverse().join("/");
+            },
+            closeConfirmationPopUp() {
+                this.confirmPopUpVisible = false;
             }
         }
     }
-
 </script>
 
 <style scoped>
+    .modal-info {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 22px;
+        letter-spacing: 2px;
+        word-spacing: 2px;
+        font-weight: 700;
+        text-decoration: none;
+        font-style: normal;
+        font-variant: small-caps;
+        text-transform: none;
+        color: rgb(16, 92, 9);
+
+        height: 5vh;
+        background: linear-gradient(rgb(236, 233, 233), white, rgb(236, 233, 233));
+        border-radius: 20px 20px 0 0;
+    }
+
     .actions-cont {
-        height: 83vh;
+        height: 78vh;
         overflow-y: auto;
         padding: 30px 0;
+    }
+
+    #no-reses-label {
+        font-family: Georgia, serif;
+        font-size: 25px;
+        letter-spacing: 2px;
+        word-spacing: 2px;
+        font-weight: 700;
+        text-decoration: none;
+        font-style: normal;
+        font-variant: small-caps;
+        text-transform: none;
     }
 
     #btn-bar {

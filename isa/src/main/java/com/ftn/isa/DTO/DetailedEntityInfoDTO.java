@@ -5,6 +5,7 @@ import com.ftn.isa.model.Photo;
 import com.ftn.isa.model.RentalService;
 import com.ftn.isa.model.Reservation;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,9 +21,9 @@ public abstract class DetailedEntityInfoDTO {
     private final Double rate;
     private final Double price;
 
-    private List<ReservationHistoryDTO> actionReservations;
+    private List<ReservationDisplayDTO> actionReservations;
 
-    private List<ReservationHistoryDTO> normalReservations;
+    private List<ReservationDisplayDTO> normalReservations;
 
     public DetailedEntityInfoDTO(RentalService rental) {
         this.name = rental.getName();
@@ -41,10 +42,12 @@ public abstract class DetailedEntityInfoDTO {
         this.actionReservations = new ArrayList<>();
         this.normalReservations = new ArrayList<>();
         for (Reservation res : rental.getReservations())
-            if (res.isAction())
-                this.actionReservations.add(new ReservationHistoryDTO(res));
-            else
-                this.normalReservations.add(new ReservationHistoryDTO(res));
+            if (res.getStartTime().isAfter(LocalDateTime.now())) {
+                if (res.isAction() && !res.isReserved())
+                    this.actionReservations.add(new ReservationDisplayDTO(res));
+                else
+                    this.normalReservations.add(new ReservationDisplayDTO(res));
+            }
     }
 
     public String getName() {
@@ -79,19 +82,19 @@ public abstract class DetailedEntityInfoDTO {
         return price;
     }
 
-    public List<ReservationHistoryDTO> getActionReservations() {
+    public List<ReservationDisplayDTO> getActionReservations() {
         return actionReservations;
     }
 
-    public void setActionReservations(List<ReservationHistoryDTO> actionReservations) {
+    public void setActionReservations(List<ReservationDisplayDTO> actionReservations) {
         this.actionReservations = actionReservations;
     }
 
-    public List<ReservationHistoryDTO> getNormalReservations() {
+    public List<ReservationDisplayDTO> getNormalReservations() {
         return normalReservations;
     }
 
-    public void setNormalReservations(List<ReservationHistoryDTO> normalReservations) {
+    public void setNormalReservations(List<ReservationDisplayDTO> normalReservations) {
         this.normalReservations = normalReservations;
     }
 }

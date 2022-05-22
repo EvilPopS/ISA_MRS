@@ -108,6 +108,7 @@
                 :oldPrice="price"
                 :reservations="actionReservations"
                 @close="reopenRentalDetails"
+                @update-action-reservations="updateActionReservs"
             />
         </div>
     </div>
@@ -231,6 +232,12 @@
             reopenRentalDetails() {
                 this.toShowReservationForm = false;
                 this.toShowRentalActions = false;
+            },
+            updateActionReservs(resId) {
+                console.log(this.actionReservations);
+                let a = this.actionReservations.splice(this.actionReservations.findIndex(res => res.id === resId), 1);
+                console.log(a);
+                console.log(this.actionReservations);
             }
         }
     }
