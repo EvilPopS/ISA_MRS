@@ -18,7 +18,7 @@
                 <div class="row">
                     <div class="col-12 col-md-5 col-lg-4" v-for="cottage in filtered" :key="cottage.name">
                         <div class="card" style="width: 18rem; margin-top: 5%" id="card-body-id">
-                            <img :src="setPicture(cottage)" id="cottage-img" class="card-img-top" alt="This is cottage picture">
+                            <img :src="setPicture(cottage)" id="cottage-img" class="card-img-top" alt="This is cottage picture" @click="showDetailModal(cottage)">
                             <div class="card-body">
                                 <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
                                 <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
@@ -26,8 +26,7 @@
                                 <p class="card-text"><b>Price:</b>{{cottage.price}} &euro;</p>
                                 <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
                                 <span>
-                                    <button class="btn btn-success card-btns" @click="addNewReservation(cottage)">Calendar</button>
-                                    <button class="btn btn-success card-btns" @click="showDetailCottageModal(cottage)">Details</button>
+                                    <button class="btn btn-success card-btns" @click="showEditCottageModal(cottage)">Change</button>
                                     <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(cottage)">Delete</button>
                                 </span>    
                             </div>
@@ -39,10 +38,16 @@
                 <h3>There is nothing to show here..</h3>
             </div>
         </div>
-        <div v-if="showDetails">
+        <div v-if="showEdit">
+            <EditCottageModal
+            :cottage = "sendCottage"
+            @modal-closed = "showEdit = false"
+            @succ-popup-close = "succPopUpClose"
+            />
+        </div>
+        <div v-else-if="showDetails">
             <DetailCottageModal
             :cottage = "sendCottage"
-            :showDetails = "showDetails"
             @modal-closed = "showDetails = false"
             @succ-popup-close = "succPopUpClose"
             />
@@ -85,45 +90,45 @@
 
 <script>
  import axios from 'axios';
- import DetailCottageModal from '../components/DetailCottageModal.vue'
+ import EditCottageModal from '../components/EditCottageModal.vue'
  import AddCottageModal from '../components/AddCottageModal.vue'
  import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
  import ErrorPopUp from '../components/ErrorPopUp.vue'
  import SuccessPopUp from '../components/SuccessPopUp.vue'
- import NewReservationsComponent from '../components/NewReservationsComponent.vue'
+ import DetailCottageModal from '../components/DetailCottageModal.vue'
 
 export default {
    name: "AllCottagesView",
    components: {
-       DetailCottageModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, NewReservationsComponent
+       EditCottageModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, DetailCottageModal
    },
    data (){
        return {
-           cottages: [],
-           sendCottage: {},
-           cottageToDelete: {},
-           searched: '',
-           errorPoup: false,
-           errMsg: "Cottage cannot be deleted due to upcoming reservations",
-           succPoupUp: false,
-           succMessage: '',
+            cottages: [],
+            sendCottage: {},
+            cottageToDelete: {},
+            searched: '',
+            errorPoup: false,
+            errMsg: "Cottage cannot be deleted due to upcoming reservations",
+            succPoupUp: false,
+            succMessage: '',
+            
+            showDetails: false,
+            showEdit: false,
+            showAddNewCottage: false,
+            showDeleteCottage: false,
+            confirmationPopUpVisible: false,
 
-           showDetails: false,
-           showAddNewCottage: false,
-           showDeleteCottage: false,
-           confirmationPopUpVisible: false,
+            deletionMessage: "Are you sure about deleting this cottage?",
+            deletionTitle: "Cottage deleting",
 
-           deletionMessage: "Are you sure about deleting this cottage?",
-           deletionTitle: "Cottage deleting",
-
-           showSearch: window.localStorage.getItem("userRole") === "COTTAGE_OWNER",
-           
-           showAddNewRes: false,
-           calendarForCottage: {},
+            showSearch: window.localStorage.getItem("userRole") === "COTTAGE_OWNER",
+            
+            calendarForCottage: {},
 
             nameSortBtnClicked: false,
             rateSortBtnClicked: false,
-            priceSortBtnClicked: false,
+            priceSortBtnClicked: false
        }
    }, 
    methods: {
@@ -132,7 +137,11 @@ export default {
                     return require('../assets/' + cottage.photos[0]);
                 } catch(e) {}
         },
-        showDetailCottageModal(cottage) {
+        showEditCottageModal(cottage) {
+            this.sendCottage = cottage
+            this.showEdit = true
+        },
+        showDetailModal(cottage) {
             this.sendCottage = cottage
             this.showDetails = true
         },
@@ -148,10 +157,6 @@ export default {
         },
         closeSuccPopUp() {
             this.succPoupUp = false 
-        },
-        addNewReservation(cottage) {
-            this.showAddNewRes = true
-            this.calendarForCottage = cottage
         },
         confirmDeletion(){
             this.confirmationPopUpVisible = false

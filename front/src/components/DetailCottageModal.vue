@@ -1,274 +1,134 @@
 <template>
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <button id="close_btn" @click="closeWindow" class="close">X</button>
+            <button id="close_btn" @click="closeWindow()" class="close">X</button>
             <div class="container">
+                <h1>{{cottage.name}}</h1>
                 <div class="row">
-                    <div class="col-4">
-                        <span>Cottage</span>
-                        <hr class="solid">
-                        <label class="label" for="name">Cottage name:</label>
-                        <input type="text" id="name" class="form-control" v-model="data.name">
-                        <label class="label" for="description">description:</label>
-                        <input type="text" id="description" class="form-control" v-model="data.description">
-                        <label class="label" for="rules">Rules:</label>
-                        <input type="text" id="rules" class="form-control" v-model="data.rules">
-                        <span>
-                            <div class="inline-inputs">
-                                <label class="label" for="price">Price/day €:</label>
-                                <input type="text" id="price" class="form-control rating" v-model="data.price">
-                            </div>
-                            <div class="inline-inputs">
-                                <label class="label" for="no-rooms">No. rooms:</label>
-                                <input type="text" id="no-rooms" class="form-control rating" v-model="data.noRooms">
-                            </div>
-                        </span>
-                        <label class="label" for="additionalServices">Additional services(press alt + , to add):</label>
-                        <input type="text" class="form-control" v-model="tempService" @keyup.alt="addService">
-                        <div v-for="service in this.localServices" :key="service" class="pill">
-                            <span  @click="deleteService(service)">{{service}}</span>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <span>Address</span>
-                        <hr class="solid">
-                        <label class="label" for="zip-code">Country:</label>
-                        <input type="text" id="zip-code" class="form-control" v-model="data.country">
-                        <label class="label" for="city">City:</label>
-                        <input type="text" id="city" class="form-control" v-model="data.city">
-                        <label class="label" for="street">Street:</label>
-                        <input type="text" id="street" class="form-control" v-model="data.street">
-                        <span>Rating</span>
-                        <hr class="solid">
-                        <span>
-                            <div class="inline-inputs">
-                                <label class="label" for="rating">Rating:</label>
-                                <input type="text" id="rating" class="form-control rating" v-model="data.averageRating" disabled>
-                            </div>
-                            <div class="inline-inputs">
-                                <label class="label" for="num-ratings">No. ratings:</label>
-                                <input type="text" id="num-ratings" class="form-control rating" v-model="data.noRatings" disabled>
-                            </div>
-                        </span>
-                    </div>
-                    <div class="col-4">
-                        <div>
-                            <span>Photos</span>
-                            <hr class="solid">
-                            <label id="popupLabel">Choose new picture: </label>
-                            <input ref="picInp" class="form-control form-control-sm" type="file" @change="newPicAdded" accept="image/*"/>
-                            <img id="imgPreview" :src="require('@/assets/' + newPicture)"/>
-                        </div>
-                        <div v-for="pic in this.localPhotos" :key="pic" class="pillPic">
-                            <span  @click="deletePic(pic)"><img class="picGallery" :src="require('@/assets/' + pic)"/></span>
+                    <div class="col-6">
+                        <div class="start-data">
+                            <h4>Basic data</h4>
+                            <p class="d-flex justify-content-left"><b>Cottage name: </b> {{cottage.name}}</p>
+                            <p class="d-flex justify-content-left"><b>Description: </b> {{cottage.description}}</p>
+                            <p class="d-flex justify-content-left"><b>Rules: </b> {{cottage.rules}}</p>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-success" @click="AddNewPhoto">Add photo</button>
+                            <div class="start-data">
+                                <h4>Additional services:</h4>
+                                <div v-for="service in additServ" :key="service" class="pill">
+                                    <span >{{service}}</span>
+                                </div>
+                             </div>
                         </div>
-                        <div id="mapContainer">
+                        <div id="photo-gallery">
+                            <carousel :items-to-show="1" autoplay="5000" wrapAround="true">
+                                <slide v-for="photo in cottage.photos" :key="photo">
+                                    <img :src="setPicture(photo)">
+                                </slide>
+                                <template #addons>
+                                    <navigation />
+                                    <pagination />
+                                </template>
+                            </carousel>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="start-data">
+                            <h4>Address</h4>
+                            <p class="d-flex justify-content-left"><b>Country: </b> {{cottage.country}}</p>
+                            <p class="d-flex justify-content-left"><b>City: </b> {{cottage.city}}</p>
+                            <p class="d-flex justify-content-left"><b>Street: </b> {{cottage.street}}</p>
+                        </div>
+                        <div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                Price: {{cottage.price}}€
+                            </div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                No rooms: {{cottage.noRooms}}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                Rate: {{cottage.averageRating}}★
+                            </div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                No ratings: {{cottage.noRatings}}
+                            </div>
+                        </div>
+                        <div id="map-container">
                             <MapContainer
                                 :coordinates = "[cottage.lon, cottage.lat]"
                                 :map-height = "200"
-                                :mapEditable="true"
+                                :mapEditable="false"
                                 @changed-location = "changedLocationFunc"
                             >
                             </MapContainer>
                         </div>
                     </div>
                 </div>
+                <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
+                    <button type="button" class="btn btn-success" @click="addNewReservation()">Calendar <img id="btn-calendar" src="../assets/icons8-calendar.png"></button>
+                    <button type="button" class="btn btn-success" @click="closeWindow">Cancel</button>
+                </div>
             </div>
-            <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
-                <button type="button" class="btn btn-secondary" @click="changeCottage">Save changes</button>
-                <button type="button" class="btn btn-outline-secondary" @click="closeWindow">Cancel</button>
+            <div v-if="showAddNewRes">
+            <NewReservationsComponent
+                @modal-closed = "showAddNewRes = false"
+                :choosenCottage="cottage"
+            />
             </div>
         </div>
-        <ErrorPopUp v-show="errorPopUpVisible" 
-            @close = closePopUp
-            :mess = errMessage
-        /> 
-    
-        <SuccessPopUp v-show="localSuccPopUpVisible"
-            @close = closeSuccPopUp
-            :mess = succMessage
-        />
     </div>
 </template>
 
 <script>
-import ErrorPopUp from "./ErrorPopUp.vue"
-import SuccessPopUp from "./SuccessPopUp.vue"
-import axios from 'axios';
+import 'vue3-carousel/dist/carousel.css';
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import MapContainer from "./MapContainer.vue"
+import NewReservationsComponent from '../components/NewReservationsComponent.vue'
 
 export default {
     name: "DetailCottageModal",
     components: {
-        ErrorPopUp, SuccessPopUp, MapContainer
+        Carousel, Slide, Pagination, Navigation, MapContainer, NewReservationsComponent
     },
     props: {
-        cottage: Object,
-        showDetails: Boolean,
+        cottage: Object
     },
     data(){
         return {
-            tempService: '',
-            newPicture: 'addPhoto.png',
+            additServ: [],
+            showAddNewRes: false,
 
-            localPhotos: [],
-            localServices: [],
-
-            changedLocation: false,
-
-            errMessage: '',
-            succMessage: 'Cottage data is changed successfully!',
-            errorPopUpVisible: false,
-            localSuccPopUpVisible: false,
-
-            data: Object
         }
     },
     methods: {
         closeWindow : function(){
             this.$emit('modal-closed');
         },
-        changedLocationFunc(lon, lat){
-            this.changedLocation = true
-            this.data.lon = lon
-            this.data.lat = lat
+        setPicture(photo) {
+                try{
+                    return require('../assets/' + photo);
+                } catch(e) {}
         },
-        closePopUp() {
-            this.errorPopUpVisible = false;
+        changedLocationFunc(){
+            //do nothing
         },
-        closeSuccPopUp() {
-                this.$emit("succ-popup-close");
-                this.$router.go(); 
-        },
-        addService(e) {
-            //uvek je ocpiono prvi parametar event
-            //key up je recimo kada se svaki put klikne nesto pojedinacno na tastaturi
-            if (e.key === ',' && this.tempService){
-                if (!this.localServices.includes(this.tempService)){
-                    this.localServices.push(this.tempService)    //zbog duplikata
-                }
-                
-                this.tempService = ''     //resetuje se trenutni
-            }
-        },
-        deleteService(service){
-            //parametar je skill koji se brise
-            //uzimamo trenutni item kad filter iterira i ako je to taj brisemo
-            this.localServices = this.localServices.filter((item) => {
-                return service !== item       //ako vratimo true isti su
-                //kad se uslov ispuni filtrira sta je stisnuto iz liste
-            })
-        },
-        newPicAdded(){
-            this.newPicture = this.$refs.picInp.value.split("\\")[2]
-        },
-        deletePic(pic) {
-            this.localPhotos = this.localPhotos.filter((item) => {
-                return pic !== item       //ako vratimo true isti su
-                //kad se uslov ispuni filtrira sta je stisnuto iz liste
-            })
-        },
-        AddNewPhoto(){
-            if (!this.localPhotos.includes(this.newPicture)){
-                    this.localPhotos.push(this.newPicture)    //zbog duplikata
-                }
-        },
-        changeCottage(){
-            try { this.checkInputs(); } 
-                catch(error) {        
-                    this.errMessage = error;
-                    this.errorPopUpVisible = true; 
-                    return;
-                }
-
-            this.data.photos = this.localPhotos
-            this.data.additionalServices = []
-            let counter = 0
-            for (let s in this.localServices){
-                counter++
-                this.data.additionalServices += this.localServices[s]
-                if (counter < this.localServices.length) this.data.additionalServices += ','
-            } 
-            axios.put("api/cottage-owner/change-cottage-data", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
-                    .then((response) => {
-                        this.localSuccPopUpVisible = true;
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        alert(error.name)
-                    });
-
-        },
-        validate : function(toTest, regex) {
-        return regex.test(toTest)
-        },
-        checkInputs : function(){
-            let nameReg = /^[a-zA-Z ]{2,30}$/;
-            let numReg = /^[0-9]+$/;
-            let streetReg = /^[a-zA-Z0-9 -.,]+$/;
-            let cityReg = /^[a-zA-Z -]{2,50}$/;
-
-            if (!this.validate(this.data.name, nameReg))
-                throw "Make sure you entered a valid name. Name cannot contain digit.";
-
-            if(!this.validate(this.data.city, cityReg))
-                throw "Make sure you entered a valid city name!";
-            
-            if (!this.validate(this.data.country, cityReg))
-                throw "Make sure you entered a valid country name.";
-            
-            if (!this.validate(this.data.street, streetReg))
-                throw "Make sure you entered a valid street name.";
-            
-            if (!this.validate(this.data.noRooms, numReg) || this.data.noRooms <= 0)
-                throw "Make sure your entered valid number of rooms.";
-            
-            if (!this.validate(this.data.capacity, numReg) || this.data.capacity <= 0)
-                throw "Capacity must be greater than 0.";
-
-            if (!this.validate(this.data.price, numReg) || this.data.price <= 0)
-                throw "Please enter a valid price.";
-
-            if (this.data.description.length < 7)
-                throw "Description must have at least 8 characters";
-            
-            if (this.data.rules.length < 7)
-                throw "Rules must have at least 8 characters";
-
-            if (this.localPhotos.length < 1)
-                throw "You must upload at least 1 photo.";
-
-            if (this.localPhotos.length > 4)
-                throw "You cannot upload more than 4 photos.";
-
-            if (this.localServices.length < 1)
-                throw "You need to add at least one local service.";
-
-            if (this.changedLocation && !(this.cottage.city !== this.data.city || this.cottage.street !== this.data.street)){
-                throw "Location on the map is changed, but you didn't change city/street in input fields.";
-            }
+        addNewReservation() {
+            this.showAddNewRes = true
         }
-        
     },
-    mounted(){
-            this.data = Object.assign({}, this.cottage)
-            try {
-                this.localServices = this.cottage.additionalServices.split(',')
-                this.localPhotos = Object.assign([], this.cottage.photos)
-            }catch (err){
-                this.localServices = this.cottage.additionalServices //ako ne uspe split znaci da ima samo jedna
-                this.localPhotos = Object.assign([], this.cottage.photos)
-            }
-   }
-
+    mounted() {
+        try {
+            this.additServ = this.cottage.additionalServices.split(',')
+        } catch (err){
+            this.additServ = this.cottage.additionalServices //ako ne uspe split znaci da ima samo jedna
+        }
+    }
 }
 </script>
 
 <style scoped>
-
     b{
         color: black;
     }
@@ -279,75 +139,91 @@ export default {
     }
 
     .modal {
-    display: block; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        display: block; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
 
     /* Modal Content */
     .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 90%;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 30px;
+        border: 1px solid #888;
+        width: 80%;
     }
 
     /* The Close Button */
     .close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 16px;
-    font-weight: bold;
+        color: #aaaaaa;
+        float: right;
+        font-size: 16px;
+        font-weight: bold;
     }
 
     .close:hover,
     .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
     }
 
-    #options-btns{
+    img {
+        width: auto;
+        height: 200px;
+        border-radius: 20px;
+    }
+
+    #photo-gallery {
+        margin: 5% 10% 10% 10%;
+    }
+
+    h1 {
         margin-top: 5%;
+        color: rgba(51, 92, 80, 0.8);
     }
 
-    #options-btns button {
-        background-color: rgba(51, 92, 80, 0.8);
-        color: white;
+    .start-data {
+        margin-top: 5%;
+        margin-bottom: 5%;
+        border-radius: 15px;
+        background-color: rgb(146, 179, 146);
+        padding-top: 2%;
+        padding-bottom: 2%;
     }
 
-    .rating {
-        width: 60px;
+    p {
+        margin: 5%;
+        font-size: 16px;
     }
 
-    .inline-ratings {
-        margin: 3%;
-    }
-
-    .inline-inputs {
-        display: inline-block;
-        margin: 0 10%;
+    div.status{
+        align-content: center;
+        text-align: center;
+        margin: 2%;
+        font-size: 18px;
+        background-color: rgb(146, 179, 146) !important;
+        color: black;
     }
 
     div .pill {
         display: inline-block;
         margin: 20px 10px 0 0;
         padding: 6px 12px;
-        background: rgba(51, 92, 80, 0.8);
+        background: white;
         border-radius: 20px;
         font-size: 12px;
         letter-spacing: 1px;
         font-weight: bold;
-        color: white;
+        color: black;
         cursor: pointer;
     }
 
@@ -359,34 +235,25 @@ export default {
         cursor: pointer;
     }
 
-    .picGallery {
-        height: 90px;
-        width: auto;
-        border-radius: 5px;
+    #map-container {
+        margin:5% 10% 10% 10%;
     }
 
-    #picGallery:hover {
-        border-radius: 10px;
-        border: rgba(51, 92, 80, 0.8) solid 3px;
+    #options-btns{
+        margin-top: 5%;
+    }
+
+    #options-btns button {
+        color: white;
+    }
+
+    #options-btns button:hover {
+        background-color: rgb(6, 94, 40);
+    }
+
+    #btn-calendar {
+        width: 30px;
+        height: 30px;
     }
     
-    #imgPreview:hover {
-        border-radius: 5px;
-        height: 150px;
-        width: auto;
-    }
-
-    #imgPreview {
-        border: solid 1px black;
-        border-radius: 20px;
-        margin-top: 5%;
-        height: 70px;
-        width: auto;
-        padding: 5px;
-    }
-
-    #mapContainer {
-        margin-top: 5%;
-    }
-
 </style>
