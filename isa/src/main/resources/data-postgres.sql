@@ -112,6 +112,6 @@ insert into reservation (start_time, end_time, is_action, is_reserved, price, re
             ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null),
             ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null),
             ('10/6/2022', '12/6/2022', true, false, 40, 4, null, false, 'klima rostilj'),
-            ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null),
+            ('24/5/2022', '26/5/2022', false, true, 30, 2, 4, false, null),
             ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null),
             ('21/6/2022', '25/6/2022', true, false, 60, 4, null, false, 'klima wifi rostilj')
