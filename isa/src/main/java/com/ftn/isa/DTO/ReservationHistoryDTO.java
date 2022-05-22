@@ -22,6 +22,15 @@ public class ReservationHistoryDTO {
         this.price = res.getPrice();
     }
 
+    public ReservationHistoryDTO(Reservation res) {
+        this.id = res.getId();
+        this.rentalId = null;
+        this.name = null;
+        this.startDate = res.getStartTime();
+        this.endDate = res.getEndTime();
+        this.price = res.getPrice();
+    }
+
     public Long getId() {
         return id;
     }

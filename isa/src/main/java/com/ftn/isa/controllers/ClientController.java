@@ -134,4 +134,21 @@ public class ClientController {
         );
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping(value="/make-action-reservation/{resId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> makeActionReservation (@PathVariable Long resId, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        try {
+            reservationService.makeActionReservation(resId, clientService.findByEmail(email));
+        } catch(Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
