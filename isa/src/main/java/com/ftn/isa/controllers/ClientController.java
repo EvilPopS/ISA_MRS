@@ -124,12 +124,16 @@ public class ClientController {
         if (!Validate.validateIfReservationPeriodIsAvailable(rental.getReservations(), reservationData))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+        Client client = clientService.findByEmail(email);
+        if (!Validate.validateIfResPeriodWasCanceled(client.getReservations(), reservationData))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         reservationService.saveReservation(
                 new Reservation(
                     reservationData,
                     rental.getPrice(),
                     rental,
-                    clientService.findByEmail(email)
+                    client
                 )
         );
         return new ResponseEntity<>(HttpStatus.OK);
@@ -148,6 +152,14 @@ public class ClientController {
         } catch(Exception ignored) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value="/cancel-reservation/{resId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> cancelReservation (@PathVariable Long resId) {
+        reservationService.cancelReservation(resId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
