@@ -83,7 +83,7 @@ public class ClientService {
                         reservationHistory.add(new ReservationDisplayDTO(res, rental));
                 }
                 else {
-                    if (res.getEndTime().isAfter(LocalDateTime.now()))
+                    if (!res.isCanceled() && res.getEndTime().isAfter(LocalDateTime.now()))
                         reservationHistory.add(new ReservationDisplayDTO(res, rental));
                 }
                 return true;

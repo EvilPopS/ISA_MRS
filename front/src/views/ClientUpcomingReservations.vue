@@ -2,7 +2,7 @@
     <ReservationsGallery 
         :reservations="this.reservations"
         :isHistoryRes="false"
-        @cancel-reservations="cancelReservation"
+        @cancel-reservation="cancelReservation"
     />
 
     <SuccessPopUp v-show="succPopUpVisible"
@@ -32,7 +32,7 @@
         },
         methods: {
             cancelReservation(resId) {
-                axios.put("api/client/cancel-reservation/" + resId, {headers: {'authorization': window.localStorage.getItem("token") }})
+                axios.put("api/client/cancel-reservation/" + resId, {}, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(() => {
                         this.succPopUpVisible = true;
                     });
