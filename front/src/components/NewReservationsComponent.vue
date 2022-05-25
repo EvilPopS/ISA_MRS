@@ -16,18 +16,24 @@
                                 @selected="setSelected"
                             >
                                 <Tab :isSelected="selected === 'Regular'">
-                                    <p>Regular</p>
+                                    <AddRegularRes
+                                        @modal-closed = "closeWindow()"
+                                        :cottage="choosenCottage"
+                                    ></AddRegularRes>
                                 </Tab>
 
                                 <Tab :isSelected="selected === 'Action'">
                                     <AddActionRes
                                         @modal-closed = "closeWindow()"
-                                        :cottage="calendarForCottage"
+                                        :cottage="choosenCottage"
                                     ></AddActionRes>
                                 </Tab>
 
                                 <Tab :isSelected="selected === 'Unvailability'">
-                                    <p>Unvailable period</p>
+                                    <AddUnvailablePeriod
+                                        @modal-closed = "closeWindow()"
+                                        :cottage="choosenCottage"
+                                    ></AddUnvailablePeriod>
                                 </Tab>
 
                             </TabNav>
@@ -43,14 +49,16 @@
 import Tab from '../components/Tab'
 import TabNav from '../components/TabNav'
 import AddActionRes from '../components/AddActionRes.vue'
+import AddRegularRes from '../components/AddRegularRes.vue'
+import AddUnvailablePeriod from '../components/AddUnvailablePeriod.vue'
 
 export default {
     name: "NewReservationsComponent",
     components: {
-        Tab, TabNav, AddActionRes
+        Tab, TabNav, AddActionRes, AddRegularRes, AddUnvailablePeriod
     },
     props: {
-        calendarForCottage: Object
+        choosenCottage: Object
     },
     data(){
         return {

@@ -91,4 +91,11 @@ public class ClientService {
         return false;
     }
 
+    public boolean checkIfCurrentResInProgress(Client client) {
+        for (Reservation res : client.getReservations()){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime()))
+                return true;
+        }
+        return false;
+    }
 }

@@ -83,6 +83,7 @@
                         <MapContainer
                             :mapHeight="'200'"
                             :coordinates="[lon, lat]"
+                            :mapEditable="false"
                         />
                     </div>
                 </div>
