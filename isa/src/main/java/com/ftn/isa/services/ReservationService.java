@@ -23,6 +23,13 @@ public class ReservationService {
         return reservationRepository.findById(id).orElse(null);
     }
 
+
+    public void cancelReservation(Long resId) {
+        Reservation res = findById(resId);
+        res.setCanceled(true);
+        reservationRepository.save(res);
+    }
+
     public void makeActionReservation(Long resId, Client client) throws Exception {
         Reservation res = findById(resId);
         if (res.isReserved())
