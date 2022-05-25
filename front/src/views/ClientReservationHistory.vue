@@ -1,5 +1,8 @@
 <template>
-    <ReservationsGallery :reservations="this.reservations"/>
+    <ReservationsGallery 
+        :reservations="this.reservations"
+        :isHistoryRes="true"
+    />
 </template>
 
 <script>

@@ -13,12 +13,14 @@
             <div v-for="reserv in this.reservations" :key="reserv.id" class="card-style">
                 <label>Reserved rental name:</label>
                 <p>{{reserv.name}}</p>
-                <label>Reservation started on:</label>
+                <label>Reservation start date:</label>
                 <p>{{formatDateString(reserv.startDate)}}</p>
-                <label>Reservation ended on:</label>
+                <label>Reservation end date:</label>
                 <p>{{formatDateString(reserv.endDate)}}</p>
                 <label>Reservation price per day:</label>
-                <p>{{reserv.price}}</p>
+                <p>€{{reserv.price}}</p>
+                <button v-if="!this.isHistoryRes && checkIfCancelable(reserv.startDate)" @click="emitCancel(reserv.id)" class="cancel-btn active-cancel-btn">Cancel</button>
+                <button v-else-if="!this.isHistoryRes && !checkIfCancelable(reserv.startDate)" class="cancel-btn disabled-cancel-btn"><s>Cancel</s></button>
             </div>
         </div>
     </div>
@@ -28,7 +30,8 @@
     export default {
         name: "ReservationsGallery",
         props: {
-            reservations: Array
+            reservations: Array,
+            isHistoryRes: Boolean
         },
         data() {
             return {
@@ -39,6 +42,14 @@
             };
         },
         methods: {
+            emitCancel(resId) {
+                this.$emit("cancel-reservation", resId);
+            },
+            checkIfCancelable(dat) {
+                let dNow = new Date(dat);
+                dNow.setDate(dNow.getDate()-3)
+                return dNow.toISOString() > new Date().toISOString();
+            },
             formatDateString(date) {
                 return date.split("T")[0].split("-").reverse().join("/");
             },
@@ -170,7 +181,7 @@
         border: 1px solid black;
         border-radius: 20px;
         width: 300px;
-        height: 300px;
+        height: 315px;
         padding-top: 20px;
         margin: 20px;
     }
@@ -178,7 +189,7 @@
     .card-style:hover {
         margin: 12px 12px;
         width: 316px;
-        height: 316px;
+        height: 331px;
         background-color: rgba(245, 238, 238, 0.8);
     }
 
@@ -191,5 +202,18 @@
 
     .card-style p {
         font-weight: bold;
+    }
+
+    .cancel-btn {
+        border-radius: 20px;
+        font-weight: bold;
+    }
+
+    .active-cancel-btn {
+        background-color: rgb(32, 204, 32);
+    }
+
+    .disabled-cancel-btn {
+        background-color: rgb(226, 38, 38);
     }
 </style>

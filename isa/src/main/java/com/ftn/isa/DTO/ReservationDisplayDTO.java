@@ -5,21 +5,33 @@ import com.ftn.isa.model.Reservation;
 
 import java.time.LocalDateTime;
 
-public class ReservationHistoryDTO {
+public class ReservationDisplayDTO {
     private Long id;
     private Long rentalId;
     private String name;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private double price;
+    private String additionalServices;
 
-    public ReservationHistoryDTO(Reservation res, RentalService rental) {
+    public ReservationDisplayDTO(Reservation res, RentalService rental) {
         this.id = res.getId();
         this.rentalId = rental.getId();
         this.name = rental.getName();
         this.startDate = res.getStartTime();
         this.endDate = res.getEndTime();
         this.price = res.getPrice();
+        this.additionalServices = res.getActionServices();
+    }
+
+    public ReservationDisplayDTO(Reservation res) {
+        this.id = res.getId();
+        this.rentalId = null;
+        this.name = null;
+        this.startDate = res.getStartTime();
+        this.endDate = res.getEndTime();
+        this.price = res.getPrice();
+        this.additionalServices = res.getActionServices();
     }
 
     public Long getId() {
@@ -68,5 +80,13 @@ public class ReservationHistoryDTO {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getAdditionalServices() {
+        return additionalServices;
+    }
+
+    public void setAdditionalServices(String additionalServices) {
+        this.additionalServices = additionalServices;
     }
 }

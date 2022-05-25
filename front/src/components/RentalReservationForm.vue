@@ -85,7 +85,7 @@
                     .then(response => {
                         this.successPopUpVisible = true;
                     }).catch(err => {
-                        this.errMessage = "The reservation period you entered is already taken!";
+                        this.errMessage = "The reservation period you entered is already taken or you are trying to make a reservation for the period you previously canceled!";
                         this.errorPopUpVisible = true;
                     });
             },

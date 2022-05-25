@@ -26,6 +26,7 @@ public class CottageOwnerService {
     }
 
     public boolean save(CottageOwnerDTO cottageOwnerData, CottageOwner co) {
+        cottageOwnerData.hashPassword();
         co.updatePersonalInfo(cottageOwnerData);
         cottageOwnerRepository.save(co);
         return true;

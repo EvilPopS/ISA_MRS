@@ -7,7 +7,7 @@
                         <button class="btn-style" @click="showReservationForm">Reservation calendar</button>
                     </div>
                     <div class="col justify-content-center">
-                        <button class="btn-style">Rental actions</button>
+                        <button class="btn-style" @click="showActionResevations">Rental actions</button>
                     </div>
                 </div>
 
@@ -104,6 +104,13 @@
                 :rentalType="rentalType"
                 @close="reopenRentalDetails"
             />
+
+            <RentalActionReservations v-if="toShowRentalActions"
+                :oldPrice="price"
+                :reservations="actionReservations"
+                @close="reopenRentalDetails"
+                @update-action-reservations="updateActionReservs"
+            />
         </div>
     </div>
 </template>
@@ -112,12 +119,14 @@
     import axios from 'axios';
     import MapContainer from "@/components/MapContainer.vue";
     import RentalReservationForm from "@/components/RentalReservationForm.vue";
+    import RentalActionReservations from "@/components/RentalActionReservations.vue";
 
     export default {
         name: "RentalViewModal",
         components: {
             MapContainer,
-            RentalReservationForm
+            RentalReservationForm,
+            RentalActionReservations
         },
         props: {
             id: Number,
@@ -127,6 +136,9 @@
             return {
                 rentalId: this.id,
                 rentalType: this.type,
+
+                normalReservations: [],
+                actionReservations: [],
                 name: "",
                 description: "",
                 price: "",
@@ -215,9 +227,18 @@
             showReservationForm() {
                 this.toShowReservationForm = true;
             },
+            showActionResevations() {
+                this.toShowRentalActions = true;
+            },
             reopenRentalDetails() {
                 this.toShowReservationForm = false;
                 this.toShowRentalActions = false;
+            },
+            updateActionReservs(resId) {
+                console.log(this.actionReservations);
+                let a = this.actionReservations.splice(this.actionReservations.findIndex(res => res.id === resId), 1);
+                console.log(a);
+                console.log(this.actionReservations);
             }
         }
     }
@@ -234,13 +255,14 @@
         
         params.name = rental.name;
         params.description = rental.description;
-        params.price = rental.price + "€/day";
+        params.price = rental.price + " €/day";
         params.rate = rental.rate + " ★";
         let adr = rental.address;
         params.address = adr.street + ", " + adr.placeName + ", " + adr.country;
         params.lon = adr.lon;
         params.lat = adr.lat;
         params.images = rental.photos;
+        params.actionReservations = rental.actionReservations;
     }
 
     function setUpDetailedCottageInfo(params, response) {

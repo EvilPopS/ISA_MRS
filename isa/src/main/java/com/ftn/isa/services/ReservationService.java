@@ -22,6 +22,26 @@ public class ReservationService {
         reservationRepository.save(r);
     }
 
+    public Reservation findById(Long id) {
+        return reservationRepository.findById(id).orElse(null);
+    }
+
+
+    public void cancelReservation(Long resId) {
+        Reservation res = findById(resId);
+        res.setCanceled(true);
+        reservationRepository.save(res);
+    }
+
+    public void makeActionReservation(Long resId, Client client) throws Exception {
+        Reservation res = findById(resId);
+        if (res.isReserved())
+            throw new Exception("Already reserved!");
+        res.setReserved(true);
+        res.setClient(client);
+        saveReservation(res);
+    }
+
     public Set<ReservationDTO> createResDTO(CottageOwner cottageOwner, List<Client> allClients) {
         Set<ReservationDTO> reservations = new HashSet<>();
         for (Cottage c : cottageOwner.getCottages()){
@@ -100,7 +120,7 @@ public class ReservationService {
                     return null;
             }
         }
-
+      
         if (checkIfIsInUnvailable(actionResDTO.getStartTime(), actionResDTO.getEndTime(), actionResDTO.getCottageId()))
             return null;
 

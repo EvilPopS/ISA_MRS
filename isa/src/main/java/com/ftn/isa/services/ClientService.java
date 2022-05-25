@@ -1,8 +1,7 @@
 package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.ClientProfileDTO;
-import com.ftn.isa.DTO.ReservationHistoryDTO;
-import com.ftn.isa.helpers.Validate;
+import com.ftn.isa.DTO.ReservationDisplayDTO;
 import com.ftn.isa.model.*;
 import com.ftn.isa.repository.AdventureRepository;
 import com.ftn.isa.repository.BoatRepository;
@@ -11,8 +10,6 @@ import com.ftn.isa.repository.CottageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +31,7 @@ public class ClientService {
     }
 
     public void updatePersonalInfo(ClientProfileDTO clientData, Client client) {
+        clientData.hashPassword();
         client.updatePersonalInfo(clientData);
         saveOrUpdateClient(client);
     }
@@ -46,21 +44,21 @@ public class ClientService {
         clientRepo.save(client);
     }
 
-    public List<ReservationHistoryDTO> getReservationHistory(String email) {
+    public List<ReservationDisplayDTO> getReservationHistory(String email) {
         return getReservationsByFilter(email, true);
     }
 
-    public List<ReservationHistoryDTO> getUpcomingReservations(String email) {
+    public List<ReservationDisplayDTO> getUpcomingReservations(String email) {
         return getReservationsByFilter(email, false);
     }
 
-    private List<ReservationHistoryDTO> getReservationsByFilter(String email, boolean isHistory) {
+    private List<ReservationDisplayDTO> getReservationsByFilter(String email, boolean isHistory) {
         Set<Reservation> reservations = clientRepo.findByEmail(email).getReservations();
         List<Adventure> adventures = adventureRepo.findAll();
         List<Cottage> cottages = cottageRepo.findAll();
         List<Boat> boats = boatRepo.findAll();
 
-        List<ReservationHistoryDTO> filteredReservs = new ArrayList<>();
+        List<ReservationDisplayDTO> filteredReservs = new ArrayList<>();
 
         for (Reservation res : reservations) {
             for(Adventure adv : adventures)
@@ -77,16 +75,16 @@ public class ClientService {
         return filteredReservs;
     }
 
-    private boolean matchReservation(Reservation res, RentalService rental, List<ReservationHistoryDTO> reservationHistory, boolean areDone) {
+    private boolean matchReservation(Reservation res, RentalService rental, List<ReservationDisplayDTO> reservationHistory, boolean areDone) {
         for (Reservation r: rental.getReservations())
             if (res.getId().equals(r.getId())) {
                 if (areDone) {
                     if (res.getEndTime().isBefore(LocalDateTime.now()))
-                        reservationHistory.add(new ReservationHistoryDTO(res, rental));
+                        reservationHistory.add(new ReservationDisplayDTO(res, rental));
                 }
                 else {
-                    if (res.getEndTime().isAfter(LocalDateTime.now()))
-                        reservationHistory.add(new ReservationHistoryDTO(res, rental));
+                    if (!res.isCanceled() && res.getEndTime().isAfter(LocalDateTime.now()))
+                        reservationHistory.add(new ReservationDisplayDTO(res, rental));
                 }
                 return true;
             }

@@ -27,7 +27,10 @@ public class Reservation {
     @Column(name = "is_reserved", nullable = false)
     private boolean isReserved;
 
-    @OneToOne
+    @Column(name = "is_canceled", nullable = false)
+    private boolean isCanceled;
+
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="client_id")
     private Client client;
 
@@ -38,7 +41,7 @@ public class Reservation {
     @Column(name = "is_unavailable", nullable = false)
     private boolean isUnavailable;
 
-    @Column(name = "action_services", nullable = true)
+    @Column(name = "action_services")
     private String actionServices;
   
 
@@ -54,18 +57,19 @@ public class Reservation {
         this.rental = rental;
         this.client = client;
         this.isUnavailable = false;
-        this.actionServices = ""; // TO DO
+        this.isCanceled = false;
     }
 
     public Reservation(LocalDateTime startTime, LocalDateTime endTime, boolean isAction,
-                       Double price, boolean isReserved, boolean isUnvailable, String actionServices) {
+                       Double price, boolean isReserved, boolean isUnavailable, String actionServices) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.isAction = isAction;
         this.price = price;
         this.isReserved = isReserved;
-        this.isUnavailable = isUnvailable;
+        this.isUnavailable = isUnavailable;
         this.actionServices = actionServices;
+        this.isCanceled = false;
     }
 
     public boolean periodsAreOverlapping(LocalDateTime startDate, LocalDateTime endDate) {
@@ -154,5 +158,13 @@ public class Reservation {
 
     public void setActionServices(String actionServices) {
         this.actionServices = actionServices;
+    }
+
+    public boolean isCanceled() {
+        return isCanceled;
+    }
+
+    public void setCanceled(boolean canceled) {
+        isCanceled = canceled;
     }
 }
