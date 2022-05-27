@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class Validate {
     private static final String REG_NAME = "^[a-zA-Z\\s]+";
@@ -85,6 +86,17 @@ public class Validate {
 
         for (Reservation res : reservations)
             if (res.periodsAreOverlapping(startTime, endTime))
+                return false;
+        return true;
+    }
+
+    public static boolean validateIfResPeriodWasCanceled(Set<Reservation> reservations, ReservingInfoDTO reservingData) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime startTime = LocalDateTime.parse(reservingData.getStartDate(), format);
+        LocalDateTime endTime = LocalDateTime.parse(reservingData.getEndDate(), format);
+
+        for (Reservation res : reservations)
+            if (res.isCanceled() && res.periodsAreOverlapping(startTime, endTime))
                 return false;
         return true;
     }

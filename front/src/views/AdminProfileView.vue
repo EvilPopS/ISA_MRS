@@ -84,7 +84,7 @@
             }
         },
         created() {
-            axios.get("api/admin/" + window.sessionStorage.getItem("email"))
+            axios.get("api/admin", {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     let data = response.data;
 

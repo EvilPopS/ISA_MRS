@@ -29,6 +29,7 @@
         <div v-else-if="userRole === 'INSTRUCTOR'">
             <a @click="instructorProfilePageRedirect()" class="homeNav">Profile</a>
             <a @click="adventuresRedirect()" class="homeNav">Adventures</a>
+            <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
         </div>
     </div>
     

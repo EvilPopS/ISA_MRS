@@ -48,7 +48,6 @@ public class ClientController {
         return new ResponseEntity<>(new ClientProfileDTO(client), HttpStatus.OK);
     }
 
-    //ovde mora email kao parametar jer nije od ulogovanog vec izabranog
     @GetMapping(value="/basic-profile/{email}")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
@@ -83,7 +82,7 @@ public class ClientController {
     @GetMapping(value="/reservation-history")
     @PreAuthorize("hasRole('CLIENT')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    public ResponseEntity<List<ReservationHistoryDTO>> getReservationHistory(HttpServletRequest request) {
+    public ResponseEntity<List<ReservationDisplayDTO>> getReservationHistory(HttpServletRequest request) {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -94,7 +93,7 @@ public class ClientController {
     @GetMapping(value="/upcoming-reservations")
     @PreAuthorize("hasRole('CLIENT')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    public ResponseEntity<List<ReservationHistoryDTO>> getUpcomingReservations(HttpServletRequest request) {
+    public ResponseEntity<List<ReservationDisplayDTO>> getUpcomingReservations(HttpServletRequest request) {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -125,14 +124,43 @@ public class ClientController {
         if (!Validate.validateIfReservationPeriodIsAvailable(rental.getReservations(), reservationData))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+        Client client = clientService.findByEmail(email);
+        if (!Validate.validateIfResPeriodWasCanceled(client.getReservations(), reservationData))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         reservationService.saveReservation(
                 new Reservation(
                     reservationData,
                     rental.getPrice(),
                     rental,
-                    clientService.findByEmail(email)
+                    client
                 )
         );
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping(value="/make-action-reservation/{resId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> makeActionReservation (@PathVariable Long resId, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        try {
+            reservationService.makeActionReservation(resId, clientService.findByEmail(email));
+        } catch(Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value="/cancel-reservation/{resId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> cancelReservation (@PathVariable Long resId) {
+        reservationService.cancelReservation(resId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

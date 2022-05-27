@@ -290,4 +290,76 @@ public class CottageOwnerController  {
         }
     }
 
+    @PostMapping(value = "/add-regular-reservation")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addRegularRes(HttpServletRequest request, @RequestBody RegularResDTO regularResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Client client = clientService.findByEmail(regularResDTO.getClientEmail());
+        if (client == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!regularResDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getCottageId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!clientService.checkIfCurrentResInProgress(client))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, client, false);
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId().equals(regularResDTO.getCottageId())){
+                c.getReservations().add(newRes);
+                break;
+            }
+        }
+        cottageOwnerService.save(cottageOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/add-unvailable-period")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addUnvailablePeriod(HttpServletRequest request, @RequestBody RegularResDTO regularResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!regularResDTO.checkOnlyDate())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getCottageId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, null, true);
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId().equals(regularResDTO.getCottageId())){
+                c.getReservations().add(newRes);
+                break;
+            }
+        }
+        cottageOwnerService.save(cottageOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

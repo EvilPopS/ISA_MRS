@@ -2,7 +2,6 @@ package com.ftn.isa.model;
 
 import com.ftn.isa.DTO.ReservingInfoDTO;
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -28,7 +27,10 @@ public class Reservation {
     @Column(name = "is_reserved", nullable = false)
     private boolean isReserved;
 
-    @OneToOne
+    @Column(name = "is_canceled", nullable = false)
+    private boolean isCanceled;
+
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="client_id")
     private Client client;
 
@@ -36,10 +38,10 @@ public class Reservation {
     @JoinColumn(name="rental_id")
     private RentalService rental;
 
-    @Column(name = "is_unvailable", nullable = false)
-    private boolean isUnvailable;
+    @Column(name = "is_unavailable", nullable = false)
+    private boolean isUnavailable;
 
-    @Column(name = "action_services", nullable = true)
+    @Column(name = "action_services")
     private String actionServices;
   
 
@@ -55,27 +57,29 @@ public class Reservation {
         this.rental = rental;
         this.client = client;
         this.isUnavailable = false;
-        this.actionServices = ""; // TO DO
+        this.isCanceled = false;
     }
 
     public Reservation(LocalDateTime startTime, LocalDateTime endTime, boolean isAction,
-                       Double price, boolean isReserved, boolean isUnvailable, String actionServices) {
+                       Double price, boolean isReserved, boolean isUnavailable, String actionServices) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.isAction = isAction;
         this.price = price;
         this.isReserved = isReserved;
-        this.isUnvailable = isUnvailable;
+        this.isUnavailable = isUnavailable;
         this.actionServices = actionServices;
+        this.isCanceled = false;
     }
 
     public boolean periodsAreOverlapping(LocalDateTime startDate, LocalDateTime endDate) {
         return startDate.isAfter(this.startTime) && startDate.isBefore(this.endTime) ||
-                    endDate.isAfter(this.startTime) && endDate.isBefore(this.endTime) ||
-                    this.startTime.isAfter(startDate) && this.startTime.isBefore(endDate) ||
-                    this.endTime.isAfter(startDate) && this.endTime.isBefore(endDate) ||
-                    startDate.isEqual(this.startTime) || endDate.isEqual(this.endTime);
-      
+                endDate.isAfter(this.startTime) && endDate.isBefore(this.endTime) ||
+                this.startTime.isAfter(startDate) && this.startTime.isBefore(endDate) ||
+                this.endTime.isAfter(startDate) && this.endTime.isBefore(endDate) ||
+                startDate.isEqual(this.startTime) || endDate.isEqual(this.endTime);
+    }
+
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -138,12 +142,14 @@ public class Reservation {
 
     public void setRental(RentalService rental) {
         this.rental = rental;
-    public boolean isUnvailable() {
-        return isUnvailable;
     }
 
-    public void setUnvailable(boolean unvailable) {
-        isUnvailable = unvailable;
+    public boolean isUnavailable() {
+        return isUnavailable;
+    }
+
+    public void setUnavailable(boolean unavailable) {
+        this.isUnavailable = unavailable;
     }
 
     public String getActionServices() {
@@ -152,5 +158,13 @@ public class Reservation {
 
     public void setActionServices(String actionServices) {
         this.actionServices = actionServices;
+    }
+
+    public boolean isCanceled() {
+        return isCanceled;
+    }
+
+    public void setCanceled(boolean canceled) {
+        isCanceled = canceled;
     }
 }

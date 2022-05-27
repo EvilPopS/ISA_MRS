@@ -1,5 +1,5 @@
 <template>
-  <div id="myModal" class="modal">
+    <div id="myModal" class="modal">
         <div class="modal-content">
             <button id="close_btn" @click="closeWindow" class="close">X</button>
             <div class="container">
@@ -19,13 +19,13 @@
                                 <input type="text" id="price" class="form-control rating" v-model="data.price">
                             </div>
                             <div class="inline-inputs">
-                                <label class="label" for="noRooms">No. rooms:</label>
-                                <input type="text" id="noRooms" class="form-control rating" v-model="data.noRooms">
+                                <label class="label" for="no-rooms">No. rooms:</label>
+                                <input type="text" id="no-rooms" class="form-control rating" v-model="data.noRooms">
                             </div>
                         </span>
                         <label class="label" for="additionalServices">Additional services(press alt + , to add):</label>
                         <input type="text" class="form-control" v-model="tempService" @keyup.alt="addService">
-                        <div v-for="service in localServices" :key="service" class="pill">
+                        <div v-for="service in this.localServices" :key="service" class="pill">
                             <span  @click="deleteService(service)">{{service}}</span>
                         </div>
                     </div>
@@ -38,8 +38,18 @@
                         <input type="text" id="city" class="form-control" v-model="data.city">
                         <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" v-model="data.street">
-                        <label class="label" for="capacity">Capacity:</label>
-                        <input type="text" id="capacity" class="form-control" v-model="data.capacity">
+                        <span>Rating</span>
+                        <hr class="solid">
+                        <span>
+                            <div class="inline-inputs">
+                                <label class="label" for="rating">Rating:</label>
+                                <input type="text" id="rating" class="form-control rating" v-model="data.averageRating" disabled>
+                            </div>
+                            <div class="inline-inputs">
+                                <label class="label" for="num-ratings">No. ratings:</label>
+                                <input type="text" id="num-ratings" class="form-control rating" v-model="data.noRatings" disabled>
+                            </div>
+                        </span>
                     </div>
                     <div class="col-4">
                         <div>
@@ -50,14 +60,14 @@
                             <img id="imgPreview" :src="require('@/assets/' + newPicture)"/>
                         </div>
                         <div v-for="pic in this.localPhotos" :key="pic" class="pillPic">
-                            <span  @click="deletePic(pic)"><img id="picGallery" :src="require('@/assets/' + pic)"/></span>
+                            <span  @click="deletePic(pic)"><img class="picGallery" :src="require('@/assets/' + pic)"/></span>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-success btn-added" @click="AddNewPhoto">Add photo</button>
+                            <button type="button" class="btn btn-success" @click="AddNewPhoto">Add photo</button>
                         </div>
                         <div id="mapContainer">
                             <MapContainer
-                                :coordinates = "[19.83383399956332, 45.25697997579121]"
+                                :coordinates = "[cottage.lon, cottage.lat]"
                                 :map-height = "200"
                                 :mapEditable="true"
                                 @changed-location = "changedLocationFunc"
@@ -68,13 +78,13 @@
                 </div>
             </div>
             <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
-                <button type="button" class="btn btn-secondary" @click="saveNewCottage">Save changes</button>
+                <button type="button" class="btn btn-secondary" @click="changeCottage">Save changes</button>
                 <button type="button" class="btn btn-outline-secondary" @click="closeWindow">Cancel</button>
             </div>
         </div>
         <ErrorPopUp v-show="errorPopUpVisible" 
-        @close = closePopUp
-        :mess = errMessage
+            @close = closePopUp
+            :mess = errMessage
         /> 
     
         <SuccessPopUp v-show="localSuccPopUpVisible"
@@ -91,45 +101,29 @@ import axios from 'axios';
 import MapContainer from "./MapContainer.vue"
 
 export default {
-    name: "AddCottageModal",
+    name: "EditCottageModal",
     components: {
         ErrorPopUp, SuccessPopUp, MapContainer
     },
     props: {
-        showAddNewCottage: Boolean,
-        succPopUpVisible: Boolean
+        cottage: Object
     },
     data(){
         return {
-            localSuccPopUpVisible: this.succPopUpVisible, 
             tempService: '',
             newPicture: 'addPhoto.png',
 
             localPhotos: [],
             localServices: [],
+
             changedLocation: false,
 
             errMessage: '',
-            succMessage: 'New cottage is added successfully!',
+            succMessage: 'Cottage data is changed successfully!',
             errorPopUpVisible: false,
+            localSuccPopUpVisible: false,
 
-            data: {
-                name: '',
-                description: '',
-                rules: '',
-                price: '',
-                noRooms: 0,
-                additionalServices: '',
-                city: '',
-                street: '',
-                country: '',
-                averageRating: 0,
-                noRatings: 0,
-                capacity: 0,
-                photos: [],
-                lon: '',
-                lat: ''
-            }
+            data: Object
         }
     },
     methods: {
@@ -167,7 +161,7 @@ export default {
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
             })
         },
-        newPicAdded() {
+        newPicAdded(){
             this.newPicture = this.$refs.picInp.value.split("\\")[2]
         },
         deletePic(pic) {
@@ -175,12 +169,13 @@ export default {
                 return pic !== item       //ako vratimo true isti su
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
             })
-            this.newPicture = "addPhoto.png"
         },
         AddNewPhoto(){
-            this.localPhotos.push(this.newPicture)
+            if (!this.localPhotos.includes(this.newPicture)){
+                    this.localPhotos.push(this.newPicture)    //zbog duplikata
+                }
         },
-        saveNewCottage() {
+        changeCottage(){
             try { this.checkInputs(); } 
                 catch(error) {        
                     this.errMessage = error;
@@ -189,31 +184,31 @@ export default {
                 }
 
             this.data.photos = this.localPhotos
+            this.data.additionalServices = []
             let counter = 0
             for (let s in this.localServices){
                 counter++
                 this.data.additionalServices += this.localServices[s]
                 if (counter < this.localServices.length) this.data.additionalServices += ','
             } 
-            axios.post("api/cottage-owner/add-cottage", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.put("api/cottage-owner/change-cottage-data", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
                     .catch(function (error) {
-                        this.errMessage = "Error happened: " + error.data
-                        this.errorPopUpVisible = true
+                        console.log(error);
+                        alert(error.name)
                     });
 
         },
         validate : function(toTest, regex) {
-            return regex.test(toTest)
+        return regex.test(toTest)
         },
         checkInputs : function(){
             let nameReg = /^[a-zA-Z ]{2,30}$/;
             let numReg = /^[0-9]+$/;
             let streetReg = /^[a-zA-Z0-9 -.,]+$/;
             let cityReg = /^[a-zA-Z -]{2,50}$/;
-            let doubleReg = /(\d+)?\.(\d+)?/;
 
             if (!this.validate(this.data.name, nameReg))
                 throw "Make sure you entered a valid name. Name cannot contain digit.";
@@ -251,15 +246,26 @@ export default {
             if (this.localServices.length < 1)
                 throw "You need to add at least one local service.";
 
-            if (!this.changedLocation)
-                throw "You need to change location on the map";
-
+            if (this.changedLocation && !(this.cottage.city !== this.data.city || this.cottage.street !== this.data.street)){
+                throw "Location on the map is changed, but you didn't change city/street in input fields.";
+            }
         }
         
-    }
+    },
+    mounted(){
+            this.data = Object.assign({}, this.cottage)
+            try {
+                this.localServices = this.cottage.additionalServices.split(',')
+                this.localPhotos = Object.assign([], this.cottage.photos)
+            }catch (err){
+                this.localServices = this.cottage.additionalServices //ako ne uspe split znaci da ima samo jedna
+                this.localPhotos = Object.assign([], this.cottage.photos)
+            }
+   }
+
 }
 </script>
-    
+
 <style scoped>
 
     b{
@@ -291,7 +297,7 @@ export default {
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 90%;
     }
 
     /* The Close Button */
@@ -344,12 +350,6 @@ export default {
         cursor: pointer;
     }
 
-    .btn-added{
-        width: 100px; 
-        margin: 10px auto;
-        display: block;
-    }
-
     .pillPic {
         display: inline-block;
         margin: 20px 10px 0 0;
@@ -358,7 +358,7 @@ export default {
         cursor: pointer;
     }
 
-    #picGallery {
+    .picGallery {
         height: 90px;
         width: auto;
         border-radius: 5px;

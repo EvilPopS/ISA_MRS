@@ -3,15 +3,18 @@ package com.ftn.isa.controllers;
 import com.ftn.isa.DTO.AdventureDTO;
 import com.ftn.isa.DTO.FishingInstructorDTO;
 import com.ftn.isa.DTO.OwnerRegDTO;
+import com.ftn.isa.DTO.ReservationDTO;
+import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.model.*;
-import com.ftn.isa.services.AdventureService;
-import com.ftn.isa.services.FishingInstructorService;
-import com.ftn.isa.services.RequestService;
+import com.ftn.isa.security.auth.TokenUtils;
+import com.ftn.isa.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +34,18 @@ public class FishingInstructorController {
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    private TokenUtils tokenUtils;
+
+    @Autowired
+    private ReservationService reservationService;
+
+    @Autowired
+    private ClientService clientService;
+
+
     @GetMapping(value = "/{email}/searchAdventure")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<List<AdventureDTO>> searchAdventureByName(@RequestParam String adventureName, @PathVariable String email){
         FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
         List<Adventure> adventures = adventureService.searchAdventureByName(adventureName, fishingInstructor.getId());
@@ -45,6 +59,7 @@ public class FishingInstructorController {
 
 
     @GetMapping(value="/{email}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<FishingInstructorDTO> getByEmail(@PathVariable String email) {
         FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
         if (fishingInstructor == null)
@@ -53,6 +68,7 @@ public class FishingInstructorController {
     }
 
     @GetMapping(value="/{email}/adventures")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<Set<AdventureDTO>> getAllAdventures(@PathVariable String email){
         FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
         if (fishingInstructor == null){
@@ -68,6 +84,7 @@ public class FishingInstructorController {
     }
 
     @PostMapping(value="/{email}/adventures/addAdventure")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<HttpStatus> addAdventure(@PathVariable String email, @RequestBody AdventureDTO adventureDTO){
         FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
         if (fishingInstructor == null){
@@ -98,6 +115,7 @@ public class FishingInstructorController {
     }
 
     @PutMapping(value="/{email}/adventureUpdate/{id}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<HttpStatus> updateAdventure(@RequestBody AdventureDTO adventureData, @PathVariable String email, @PathVariable String id){
         FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
 
@@ -115,6 +133,7 @@ public class FishingInstructorController {
     }
 
     @DeleteMapping(value="/{email}/deleteAdventure/{id}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<HttpStatus> deleteAdventure(@PathVariable String email, @PathVariable String id){
         FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
         if (fishingInstructor == null)
@@ -126,6 +145,7 @@ public class FishingInstructorController {
     }
 
     @PutMapping(consumes="application/json", value="/data-update")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<FishingInstructorDTO> updatePersonalData(@RequestBody FishingInstructorDTO fishingInstructorData) {
         FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(fishingInstructorData.getEmail());
 
@@ -140,7 +160,8 @@ public class FishingInstructorController {
     }
 
     @PostMapping(consumes="application/json", value="/register")
-    @CrossOrigin(origins = "http://localhost:8081")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<HttpStatus> registerUser(@RequestBody OwnerRegDTO ownerData) {
         if (!ownerData.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -163,6 +184,7 @@ public class FishingInstructorController {
     }
 
     @GetMapping(value="/confirm-mail/{email}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<HttpStatus> activateAccount(@PathVariable String email){
         FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
         if (fishingInstructor == null)
@@ -173,5 +195,22 @@ public class FishingInstructorController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping(value="/all-reservations")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<Set<ReservationDTO>> getAllReservations(HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Set<ReservationDTO> reservations = reservationService.createResDTO(fishingInstructor, clientService.getAllClients());
+        return new ResponseEntity<Set<ReservationDTO>>(reservations, HttpStatus.OK);
+    }
+
 
 }

@@ -1,107 +1,90 @@
 <template>
-  <form @submit.prevent="emitSubmit()">
-      <div class="container">
+  <form @submit.prevent="">
+      <div class="acc-info-cont">
             <div class="row">
-                <div class="col-4">
-                    <hr class="solid">
-                    <div class="row justify-content-center">
-                        <img id="profilePic" @click="changeProfilePhoto()"  :src="setProfPic()" alt="Client profile picture should be here...">
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col">
-                            <div class= "badge bg-success text-wrap rounded-pill status">
-                                {{email}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col">
-                            <div class= "badge bg-success text-wrap rounded-pill status">
-                                {{type}}
-                            </div>
-                        </div>
-                    </div>
-                
-                        
 
-                </div>
-                <div class="col-8">
-                    <hr class="solid">
-                    <div v-show="userType !== 'admin'">
+                <div id="left-col" class="col">
+                    <div class="inline-inputs">
+                        <label style="display: block">Email: </label>
+                        <input disabled type="text" class= "form-control" v-model="email">
+                    </div>
+                    
+                    <div v-if="userType !== 'admin'">
                         <div class="inline-inputs">
-                            <label style="display: block">NO. accumulated loyalty points: </label>
+                            <label style="display: block">Loyalty points: </label>
                             <input disabled type="text" class= "form-control" v-model="points">
                         </div>
+                    </div>
 
+                    <div class="inline-inputs">
+                        <label>Name: </label>
+                        <input type="text" class= "form-control" v-model="name">        
+                    </div>
+
+                    <div class="inline-inputs">
+                        <label>Surname: </label>
+                        <input type="text" class= "form-control" v-model="surname">
+                    </div>     
+
+                    <div class="inline-inputs">
+                        <label>Phone number: </label>
+                        <input type="text" class= "form-control" v-model="phoneNumber">
+                    </div>          
+                </div>
+
+                <div class="col">
+                    <div class="row">
+                        <div class="d-flex justify-content-center">
+                            <img id="profilePic" @click="changeProfilePhoto()" :src="setProfPic()" alt="Client profile picture should be here...">
+                        </div>    
+                    </div>
+
+                    <div class="inline-inputs">
+                        <label>Password: </label>
+                        <input type="password" class= "form-control" v-model="password">
+                    </div>
+
+                    <div class="inline-inputs">
+                        <label>Confirm Password: </label>
+                        <input type="password" class= "form-control" v-model="confirmPassword">
+                    </div>
+    
+                    <div class="submit">                    
+                        <button id="sub-btn" @click="emitSubmit()">Update personal data</button>
+                    </div>
+                    <button id="del-btn" class="btn btn-danger" @click="deleteClicked()">Delete my account</button>      
+                </div>
+
+                <div id="right-col" class="col">
+                    <div class="inline-inputs">
+                        <label style="display: block">Type: </label>
+                        <input disabled type="text" class= "form-control" v-model="type">
+                    </div>
+
+                    <div v-show="userType !== 'admin'">
                         <div class="inline-inputs">
                             <label>Loyalty program status: </label>
                             <input disabled type="text" class= "form-control" v-model="loyalty">
                         </div>
                     </div>
 
-                    <div>
-                        <div class="inline-inputs">
-                            <label>Name: </label>
-                            <input type="text" class= "form-control" v-model="name">        
-                        </div>
-
-                        <div class="inline-inputs">
-                            <label>Surname: </label>
-                            <input type="text" class= "form-control" v-model="surname">
-                        </div>
+                    <div class="inline-inputs">
+                        <label>Country: </label>
+                        <input type="text" class= "form-control" v-model="country">
                     </div>
 
-                    <div>
-                        <div class="inline-inputs">
-                            <label>Country: </label>
-                            <input type="text" class= "form-control" v-model="country">
-                        </div>
-
-                        <div class="inline-inputs">
-                            <label>City: </label>
-                            <input type="text" class= "form-control" v-model="city">
-                        </div>
+                    <div class="inline-inputs">
+                        <label>City: </label>
+                        <input type="text" class= "form-control" v-model="city">
                     </div>
-
-                    <div>
-                        <div class="inline-inputs">
-                            <label>Street: </label>
-                            <input type="text" class= "form-control" v-model="street">
-
-                        </div>
-
-                        <div class="inline-inputs">
-                            <label>Phone number: </label>
-                            <input type="text" class= "form-control" v-model="phoneNumber">
-                        </div>
-                    </div>                           
-
-                    <div>
-                        <div class="inline-inputs">
-                            <label>Password: </label>
-                            <input type="password" class= "form-control" v-model="password">
-                        </div>
-
-                        <div class="inline-inputs">
-                            <label>Confirm Password: </label>
-                            <input type="password" class= "form-control" v-model="confirmPassword">
-                        </div>
-                    </div>      
-                    <div class="submit">
-                        <button id="subBtn">Update personal data</button>
+                    <div class="inline-inputs">
+                        <label>Street: </label>
+                        <input type="text" class= "form-control" v-model="street">
                     </div>
                 </div>
             </div>
       </div>
     </form>
-    <div class="row">
-        <div class="col-5"></div>
-            <div class="col-2">
-                <button class="btn btn-danger" @click="deleteClicked()">Delete my account</button>
-            </div>
-        <div class="col-5"></div>
-        
-    </div>
     
     <PopUp v-show="picPopUpVisible" @close="closePopUp();">
         <div id="popupCont">
@@ -125,23 +108,17 @@
         @close = closeSuccPopUp
         :mess = succMessage
     />
+
     <MessageInputModal  v-if="showMessageModal" 
-    
-            @message-modal-closed="showMessageModal = false"
-            @delete-request-sent="sendRequestToAdmin"
-            />
-
-
-    
-
+        @message-modal-closed="showMessageModal = false"
+        @delete-request-sent="sendRequestToAdmin"
+    />
 </template>
 
 <script>
-    import axios from 'axios'
     import PopUp from "@/components/PopUp.vue"
     import ErrorPopUp from "@/components/ErrorPopUp.vue"
     import SuccessPopUp from "@/components/SuccessPopUp.vue"
-    // import {useModal} from "jenesius-vue-modal"
     import MessageInputModal from '@/components/MessageInputModal.vue'
 
     export default {
@@ -172,44 +149,38 @@
             loyalty : String,
 
             currentProfilePic: String,
-            currentPassword: String,
             currentName: String,
             currentSurname: String,
             currentCity: String,
             currentCountry: String,
             currentStreet: String,
             currentPhoneNumber: String,
-
         },
         data() {
             return {
                 picPopUpVisible: false,
                 errMessage : '',
                 errorPopUpVisible: false,
-                succMessage: "Personal information has been changed successfully!",
+                succMessage: "",
 
                 userType: window.localStorage.getItem("userRole"),
 
-                showMessageModal : false,
-                deletionRequest : {
-                    senderId : '',
-                    isAnswered : false,
-                    message : '',
-                    sentTime : '',
-                    requestType : 'ACCOUNT DELETION'
-                }
+                showMessageModal : false
             }
         },
         methods: {
-
             sendRequestToAdmin(reasonMessage){
-                this.deletionRequest.sentTime = '11/05/2022 08:10';
-                this.deletionRequest.message = reasonMessage;
+                const dtNow = new Date();
                 
-                axios.post('/api/admin/sendDeleteRequest/' + this.email + '/' + this.type, this.deletionRequest ).then((response) => {
-
-                })
+                const deletitonRequest = {
+                    message : reasonMessage,
+                    sentTime : [dtNow.getDate(), (dtNow.getMonth()+1), dtNow.getFullYear()].join("/") + 
+                                                " " +
+                                                [dtNow.getHours(), dtNow.getMinutes()].join(":")
+                }
                 this.showMessageModal = false;
+                this.succMessage = "Request for deletion of you account has been sent successfully!";
+                this.$emit('delete-request-sent', deletitonRequest);
             },
 
             deleteClicked(){
@@ -247,12 +218,12 @@
                     this.errorPopUpVisible = true; 
                     return;
                 }
+                this.succMessage = "Personal information has been changed successfully!";
 
                 this.$emit('handle-submit', {
                     profilePicture: this.profilePicture,
                     email: this.email,
                     password: this.password,
-                    confirmPassword: this.confirmPassword,
                     name: this.name,
                     surname: this.surname,
                     city: this.city,
@@ -286,10 +257,10 @@
         if (!validate(formData.phoneNumber, numReg))
             throw "Make sure your entered valid phone number.";
         
-        if (!validate(formData.password, passwordReg) || formData.password != formData.confirmPassword)
+        if ( formData.password !== "" && !validate(formData.password, passwordReg) || formData.password != formData.confirmPassword)
             throw "Make sure your confirmation password is the same as the new password and they're at least 6 characters long";
 
-        if (formData.currentPassword === formData.password &&
+        if (formData.password === "" &&
                 formData.currentName === formData.name &&
                 formData.currentSurname === formData.surname &&
                 formData.currentCity === formData.city &&
@@ -306,6 +277,14 @@
 </script>
 
 <style>
+    .acc-info-cont {
+        margin: 0 50px;
+    }
+
+    .upper-line {
+        margin-bottom: 0;
+    }
+
     #form-style {
         max-width: 420px;
         margin: 30px auto;
@@ -334,16 +313,18 @@
 
     #imgPreview:hover {
         border-radius: 5px;
-        width: 35%;
-        height: 35%;
+        width: 170px;
+        height: 170px;
+        margin-bottom: 0px;
     }
 
     #imgPreview {
         border: solid 1px black;
         border-radius: 50px;
         margin-top: 5%;
-        width: 30%;
-        height: 30%;
+        margin-bottom: 20px;
+        width: 150px;
+        height: 150px;
         padding: 5px;
     }
 
@@ -373,11 +354,20 @@
         background: linear-gradient(rgb(255, 253, 253), rgb(241, 239, 239));
     }
 
-    #subBtn:hover {
+    #sub-btn {
+        margin-top: 35px;
+    }
+
+    #sub-btn:hover {
         color: #fff;
         background-color: #0a7706;
         border-color: #d6d30a;
         font-weight: bold;
+    }
+
+    #del-btn {
+        border-radius: 30px;
+        margin-top: 35px;
     }
 
     label {
@@ -388,13 +378,13 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         font-weight: bold;
+        font-size: 14px;
     }
 
     .submit button {
         background: rgb(3, 94, 30);
         border: 0;
         padding: 10px 20px;
-        margin-top: 20px;
         color: white;
         border-radius: 20px;
         margin-bottom: 5%;
@@ -451,11 +441,13 @@
 
     .inline-inputs {
         display: inline-block;
-        margin: 0 5%;
     }
 
-    div.inline-inputs input {
-        size: 100px;
+    #right-col {
+        margin-right: 320px;
     }
 
+    #left-col {
+        margin-left: 320px;
+    }
 </style>

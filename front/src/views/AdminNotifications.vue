@@ -1,43 +1,48 @@
 <template>
-        <div class="container" style="margin-top: 5%">
-            <div class="row" v-for="request in requests" :key="request.sender"> 
-                <div v-if="!request.isAnswered" class="card mb-3" style="max-width: 740px;">
-                    <div class="row no-gutters">
-                        <div class="col-md-4">
-                            <img :src="setPicture(request)" style="height : 100px;" alt="...">
-                        </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title badge bg-success text-wrap rounded-pill status">Request type: {{request.requestType}}</h5>
-                            <p class="card-text"> Request message: {{request.message}}</p>
-                            <p class="card-text"><small class="text-muted">{{request.sendTime}}</small></p>
-                            <span>
-                                <button class="btn btn-success" @click="showConfirmAllowingDialog(request)">Allow</button>
-                                <button class="btn btn-danger"  @click="showConfirmRejectionDialog(request)">Reject</button>
-                            </span> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="optionsBar" class="card flex-card">
+            <TabNav
+                :tabs="['Account deletion/registration', 'Rental reviews']"
+                :selected="selected"
+                @selected="setSelected"
+            >
+            <Tab :isSelected="selected === 'Account deletion/registration'">
+                <DeletionRegistrationNotifications :data="requests"
+                @show-confirm-rejection-dialog = "showConfirmRejectionDialog"
+                @show-confirm-allowing-dialog  = "showConfirmAllowingDialog"
+                
+                ></DeletionRegistrationNotifications>
+            </Tab>
+
+            <Tab :isSelected="selected === 'Rental reviews'">
+                <RentalReviews :data="reviews"
+                @show-confirm-rejection-dialog = "confirmReviewRejectingDialog"
+                @show-confirm-allowing-dialog  = "confirmReviewAllowingDialog"
+                
+                ></RentalReviews>
+            </Tab>
+
+
+            </TabNav>
+    </div>
+
         <div v-if="confirmationPopUpVisible">
         <ConfirmationPopUp
         :title="rejectionTitle"
         :message="rejectionMessage"
         @modal-closed = "confirmationPopUpVisible = false"
-        @confirmed-event = "rejectRequest"
+        @confirmed-event = "rejectRequest" 
         />
-    </div>
-    <SuccessPopUp v-show="succPopUpVisible"
-        @close = "succPopUpVisible = false"
-        :mess = succMessage
-    />
-    <ErrorPopUp v-show="errorPopUpVisible" 
-        @close = closeErrorPopUp
-        :mess = errMessage
-    /> 
+        </div>
+        <SuccessPopUp v-show="succPopUpVisible"
+            @close = "succPopUpVisible = false"
+            :mess = succMessage
+        />
+        <ErrorPopUp v-show="errorPopUpVisible" 
+            @close = closeErrorPopUp
+            :mess = errMessage
+        /> 
 
-    </div>
+    
     
         
 </template>
@@ -47,19 +52,30 @@ import axios from 'axios'
 import SuccessPopUp from '../components/SuccessPopUp.vue'
 import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
 import ErrorPopUp from '../components/ErrorPopUp.vue'
+import TabNav from '../components/TabNav.vue'
+import Tab from '../components/Tab.vue'
+import DeletionRegistrationNotifications from '../components/DeletionRegistrationNotifications.vue'
+import RentalReviews from '../components/RentalReviews.vue'
+
 export default {
     name : 'AdminNotifications',
     components : {
         SuccessPopUp,
         ConfirmationPopUp,
-        ErrorPopUp
+        ErrorPopUp,
+        TabNav,
+        Tab, 
+        DeletionRegistrationNotifications,
+        RentalReviews
     },
     data () {
         return {
             requests : [],
+            reviews : [],
             confirmationPopUpVisible : false,
             succPopUpVisible : false,
             errorPopUpVisible : false,
+            selected : '',
 
             rejectionMessage : '',
             rejectionTitle : '',
@@ -67,7 +83,9 @@ export default {
             errMessage : '',
 
             requestToBeAllowed : Object,
-            requestToBeRejected : Object
+            requestToBeRejected : Object,
+            reviewToBeAllowed : Object,
+            reviewToBeRejected : Object
 
         }
     },
@@ -78,17 +96,20 @@ export default {
                     return require('../assets/' + 'logo.png'); // ovde promeniti da ucita sliku koju stvarno treba da ucita
                 } catch(e) {}
         },
+            setSelected(tab) {
+                this.selected = tab;
+        },
 
         closeErrorPopUP()  {
             this.errorPopUpVisible = true;
         },
 
-        showConfirmAllowingDialog(request){
+        showConfirmAllowingDialog: function(request){
             this.requestToBeAllowed = request;
             this.allowRequest();
 
         },
-        showConfirmRejectionDialog(request){
+        showConfirmRejectionDialog : function(request){
             this.requestToBeRejected = request
             this.rejectionTitle = 'Are you sure?';
             this.rejectionMessage = 'Request is going to be rejected.'
@@ -96,12 +117,44 @@ export default {
 
         },
 
+        confirmReviewAllowingDialog: function(review){
+            this.reviewToBeAllowed = review;
+            this.allowReview();
+
+        },
+        confirmReviewRejectingDialog : function(review){
+            this.reviewToBeRejected = review
+            this.rejectionTitle = 'Are you sure?';
+            this.rejectionMessage = 'Request is going to be rejected.';
+            this.confirmationPopUpVisible = true;
+
+        },
+
+        allowReview(){
+            console.log("Allowing revieeeeeeeeeeeew.....");
+
+            axios.post('api/rental/gradeUpdate', this.reviewToBeAllowed, {headers: {'authorization': window.localStorage.getItem("token")}}).then((response) => {
+                
+                this.reviews = this.reviews.filter(item => item != this.reviewToBeAllowed);
+                this.succPopUpVisible = true;
+                this.succMessage = 'Review is successfully allowed.';
+                this.reviews.push();
+
+            }).catch((e) => {
+                this.errMessage = e ;
+                this.errorPopUpVisible = true;
+            }) 
+
+        },
+
+
 
         allowRequest(){
             console.log("Allowing request...");
             this.confirmationPopUpVisible = false;
             // obrisi sendera i stavi isAnswered na true
-            axios.delete('api/admin/deleteUser/' + this.requestToBeAllowed.senderId + '/allow').then((response) => {
+            if (this.requestToBeAllowed.requestType === 'ACCOUNT DELETION'){
+                axios.delete('api/admin/deleteUser/' + this.requestToBeAllowed.senderId + '/allow', {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
                 this.requests = this.requests.filter(item => item != this.requestToBeAllowed);
                 this.succPopUpVisible = true;
                 this.succMessage = 'Request is successfully allowed.';
@@ -110,11 +163,15 @@ export default {
                 this.errMessage = e ;
                 this.errorPopUpVisible = true;
             })
+            } else if (this.requestToBeAllowed.requestType === "RENTAL SERVICE RATE"){
+
+            }
+
             
         },
         rejectRequest(){
             this.confirmationPopUpVisible = false;
-            axios.delete('api/admin/deleteUser/' + this.requestToBeRejected.senderId + '/reject').then((response) => {
+            axios.delete('api/admin/deleteUser/' + this.requestToBeRejected.senderId + '/reject', {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
                 this.requests = this.requests.filter(item => item != this.requestToBeRejected);
                 this.succPopUpVisible = true;
                 this.succMessage = 'Request is successfully rejected.';
@@ -131,9 +188,15 @@ export default {
 
     created () {
 
-        axios.get('api/admin/requests').then((response) => {
+        axios.get('api/admin/requests', {headers: {'authorization': window.localStorage.getItem("token") }} ).then((response) => {
             this.requests = response.data;
         })
+
+        axios.get('api/admin/reviews', {headers: {'authorization': window.localStorage.getItem("token") }} ).then((response) => {
+            this.reviews = response.data;
+        })
+
+
 
     }
 }
@@ -145,6 +208,20 @@ export default {
 
 <style scoped>
     
+
+
+    #tabNav {
+    margin: 50px 0px 30px 0px;
+    }
+
+    a {
+    color: rgba(15, 95, 72, 0.95);
+    }
+
+    li {
+    background-color: rgba(214, 218, 216, 0.7);
+    }
+
     #notification-img {
         margin-top: 10px !important;
         height: 100px;

@@ -2,6 +2,7 @@ package com.ftn.isa.DTO;
 
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.FishingInstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class FishingInstructorDTO {
 
@@ -43,8 +44,13 @@ public class FishingInstructorDTO {
         this.loyaltyPoints = instructor.getLoyaltyPoints();
     }
 
+    public void hashPassword() {
+        if (!this.password.equals(""))
+            this.password = new BCryptPasswordEncoder().encode(this.password);
+    }
+
     public boolean arePropsValid() {
-        return Validate.validatePassword(this.password) &&
+        return (this.password.equals("") || Validate.validatePassword(this.password)) &&
                 Validate.validateSurName(this.name) &&
                 Validate.validateSurName(this.surname) &&
                 Validate.validateWords(this.city) &&
