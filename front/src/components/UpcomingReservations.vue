@@ -5,6 +5,12 @@
             <span id="fa-search-id">
                 <input type="text" placeholder="Search..." id="search-input" v-model="searchedReservation"/>
                 <i class="fa fa-search" id="search-icon-color" aria-hidden="true"></i>
+                <div class="d-flex justify-content-center" id="sort-bar">
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: rentalNameSortBtnClicked }" @click="sortByRentalName();">&#8645; Rental Name</button>
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: clientNameSortBtnClicked }" @click="sortByClientName();">&#8645; Client Name</button>
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: startDateSortBtnClicked }" @click="sortByStartDate();">&#8645; Start date</button>
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: endDateSortBtnClicked }" @click="sortByEndDate();">&#8645; End date</button>
+                </div>
             </span>
             <div class="row">
                 <div class="col-12 col-md-5 col-lg-4" v-for="reservation in filteredReservations" :key="reservation.reservationId">
@@ -14,8 +20,8 @@
                             <h5 class="card-title" id="heading-cottage">Reservation #{{reservation.reservationId}}</h5>
                             <p class="card-text"><b>Rental:</b> {{reservation.rentalName}}</p>
                             <p class="card-text"><b>Client:</b> {{reservation.clientFullName}}</p>
-                            <p class="card-text"><b>Start date:</b> {{reservation.startTime.split('T')[0]}}</p>
-                            <p class="card-text"><b>End date:</b> {{reservation.endTime.split('T')[0]}}</p>
+                            <p class="card-text"><b>Start:</b> {{reservation.startTime.split('T')[0]}} <b>at</b> {{(reservation.startTime.split('T')[1]).split(':')[0]}}:{{(reservation.startTime.split('T')[1]).split(':')[1]}}</p>
+                            <p class="card-text"><b>End:</b> {{reservation.endTime.split('T')[0]}} <b>at</b> {{(reservation.endTime.split('T')[1]).split(':')[0]}}:{{(reservation.endTime.split('T')[1]).split(':')[1]}}</p>
                             <p class="card-text"><b>Action:</b> {{reservation.Action ? 'Yes' : 'No'}}</p>   
                         </div>
                     </div>
@@ -50,7 +56,12 @@ export default {
         return {
             searchedReservation: '',
             basicClientProfileShow: false,
-            selectedClient: ''
+            selectedClient: '',
+
+            rentalNameSortBtnClicked: false,
+            clientNameSortBtnClicked: false,
+            startDateSortBtnClicked: false,
+            endDateSortBtnClicked: false
         }
     },
     methods: {
@@ -62,6 +73,88 @@ export default {
         showClient(email) {
             this.basicClientProfileShow = true
             this.selectedClient = email
+        },
+        sortByRentalName() {
+            if (this.rentalNameSortBtnClicked)
+                this.data.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.rentalNameSortBtnClicked = true;
+
+                this.data.sort(function(left, right) { 
+                    let lName = left.rentalName.toUpperCase();
+                    let rName = right.rentalName.toUpperCase();
+                    if (lName < rName) 
+                        return -1;
+                    else if (lName > rName)
+                        return 1;
+                    
+                    return 0;
+                });
+            }
+        },
+        sortByClientName() {
+            if (this.clientNameSortBtnClicked)
+                this.data.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.clientNameSortBtnClicked = true;
+
+                this.data.sort(function(left, right) { 
+                    let lName = left.clientFullName.toUpperCase();
+                    let rName = right.clientFullName.toUpperCase();
+                    if (lName < rName) 
+                        return -1;
+                    else if (lName > rName)
+                        return 1;
+                    
+                    return 0;
+                });
+            }
+        },
+        sortByStartDate() {
+            if (this.startDateSortBtnClicked)
+                this.data.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.startDateSortBtnClicked = true;
+
+                this.data.sort(function(left, right) {
+                    let lDate = new Date(left.startTime).toISOString();
+                    let rDate = new Date(right.startTime).toISOString();
+                    if (lDate < rDate) 
+                        return -1;
+                    else if (lDate > rDate)
+                        return 1;
+
+                    return 0;
+                });
+            }
+        },
+        sortByEndDate() {
+            if (this.endDateSortBtnClicked)
+                this.data.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.endDateSortBtnClicked = true;
+
+                this.data.sort(function(left, right) { 
+                    let lDate = new Date(left.endTime).toISOString();
+                    let rDate = new Date(right.endTime).toISOString();
+                    if (lDate < rDate) 
+                        return -1;
+                    else if (lDate > rDate)
+                        return 1;
+
+                    return 0;
+                });
+            }
+        },
+        uncheckSortButtons() {
+            this.rentalNameSortBtnClicked = false
+            this.clientNameSortBtnClicked = false
+            this.startDateSortBtnClicked = false
+            this.endDateSortBtnClicked = false
         }
     },
     computed: {
@@ -134,6 +227,19 @@ export default {
     button.btn-success{
         margin-left: auto; 
         margin-right: 85%;
+    }
+
+     #sort-bar button {
+        margin: 0 5px;
+        border-radius: 10px;
+        font-weight: bold;
+        padding: 4px 15px;
+        border: 1px rgb(71, 69, 69) solid;
+        color: white;
+    }
+
+    #sort-bar button:hover {
+        background-color: rgb(6, 94, 40);
     }
 
 </style>

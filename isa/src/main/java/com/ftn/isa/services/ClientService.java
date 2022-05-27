@@ -83,7 +83,7 @@ public class ClientService {
                         reservationHistory.add(new ReservationDisplayDTO(res, rental));
                 }
                 else {
-                    if (res.getEndTime().isAfter(LocalDateTime.now()))
+                    if (!res.isCanceled() && res.getEndTime().isAfter(LocalDateTime.now()))
                         reservationHistory.add(new ReservationDisplayDTO(res, rental));
                 }
                 return true;
@@ -91,4 +91,11 @@ public class ClientService {
         return false;
     }
 
+    public boolean checkIfCurrentResInProgress(Client client) {
+        for (Reservation res : client.getReservations()){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime()))
+                return true;
+        }
+        return false;
+    }
 }

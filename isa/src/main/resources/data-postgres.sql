@@ -103,20 +103,20 @@ insert into review (id, is_answered, message, sent_time, grade, reciever_id, ren
     values (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jako, ali klima ne radi.', '24/05/2022 20:33', 4.7, 2, 7, 4),
            (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jakoooooooooo, ali klima ne radi.', '24/05/2022 02:33', 4.3, 2, 7, 4);
 
-
 insert into subscription(owner_id, client_id, is_active_subscription)
     values (5, 4, true);
 
-insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services)
-    values ('11/4/2022', '29/4/2022', false, true, 30, 7, 4, false, null),
-            ('1/5/2022', '11/5/2022', false, true, 30, 8, 4, false, null),
-            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null),
-            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null),
-            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null),
-            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null),
-            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null),
-            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null),
-            ('10/6/2022', '12/6/2022', true, false, 40, 4, null, false, 'klima rostilj'),
-            ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null),
-            ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null),
-            ('21/6/2022', '25/6/2022', true, false, 60, 4, null, false, 'klima wifi rostilj')
+insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
+    values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null, false),
+            ('1/5/2022', '11/5/2022', false, true, 30, 1, 4, false, null, false),
+            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null, false),
+            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null, false),
+            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null, false),
+            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null, false),
+            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null, false),
+            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null, false),
+            ('10/6/2022', '12/6/2022', true, false, 40, 4, null, false, 'klima rostilj', false),
+            ('24/5/2022', '26/5/2022', false, true, 30, 2, 4, false, null, false),
+            ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null, false),
+            ('21/6/2022', '25/6/2022', true, false, 60, 4, null, false, 'klima wifi rostilj', false)
+
