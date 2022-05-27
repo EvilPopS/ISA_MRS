@@ -70,6 +70,36 @@ public class ReservationService {
         return reservations;
     }
 
+    public Set<ReservationDTO> createResDTO(FishingInstructor fishingInstructor, List<Client> allClients) {
+        Set<ReservationDTO> reservations = new HashSet<>();
+        for (Adventure a : fishingInstructor.getAdventures()){
+            for (Reservation reservation : a.getReservations()){
+                if (!reservation.isUnavailable() && reservation.isReserved()) {
+                    ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), a.getId(),
+                            a.getName(), reservation.getStartTime(), reservation.getEndTime(),
+                            reservation.getPrice(), reservation.isAction(), reservation.isReserved());
+                    reservations.add(reservationDTO);
+                }
+            }
+        }
+
+        for (ReservationDTO resDTO : reservations) {
+            for (Client client : allClients) {
+                for (Reservation r : client.getReservations()) {
+                    if (resDTO.getReservationId() == r.getId()) {
+                        resDTO.setClientEmail(client.getEmail());
+                        resDTO.setClientProfilePhoto(client.getProfilePicture().getPhotoPath());
+                        resDTO.setClientFullName(client.getName() + " " + client.getSurname());
+                    }
+                }
+            }
+        }
+
+        return reservations;
+    }
+
+
+
     public boolean checkIfIsInUnvailable(LocalDateTime startTime, LocalDateTime endTime, Long rentalId){
         List<Reservation> reservations = reservationRepository.getAllReservations();
         for (Reservation res : reservations){

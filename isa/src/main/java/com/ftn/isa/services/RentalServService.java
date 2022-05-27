@@ -87,4 +87,50 @@ public class RentalServService {
                 break;
         }
     }
+
+    public void updateRentalGrade(Long rentalId, String rentalType, Double grade) {
+        Double currentGradeSum = 0.0;
+        switch (rentalType) {
+            case "Cottage":
+                Cottage cottage = cottageRepository.getCottageById(rentalId);
+                if (cottage.getNoRatings() == 0){
+                    currentGradeSum = cottage.getAverageRate();
+                } else {
+                    currentGradeSum = cottage.getAverageRate() * cottage.getNoRatings();
+                }
+
+                currentGradeSum += grade;
+                cottage.setNoRatings(cottage.getNoRatings() + 1);
+
+                cottage.setAverageRate(currentGradeSum / cottage.getNoRatings());
+                cottageRepository.save(cottage);
+                break;
+            case "Boat":
+                Boat boat = boatRepository.getBoatById(rentalId);
+                if (boat.getNoRatings() == 0){
+                    currentGradeSum = boat.getAverageRate();
+                } else {
+                    currentGradeSum = boat.getAverageRate() * boat.getNoRatings();
+                }
+                currentGradeSum += grade;
+                boat.setNoRatings(boat.getNoRatings() + 1);
+
+                boat.setAverageRate(currentGradeSum / boat.getNoRatings());
+                boatRepository.save(boat);
+                break;
+            case "Adventure":
+                Adventure adventure = adventureRepository.getAdventureById(rentalId);
+                if (adventure.getNoRatings() == 0){
+                    currentGradeSum = adventure.getAverageRate();
+                } else {
+                    currentGradeSum = adventure.getAverageRate() * adventure.getNoRatings();
+                }
+                currentGradeSum += grade;
+                adventure.setNoRatings(adventure.getNoRatings() + 1);
+
+                adventure.setAverageRate(currentGradeSum / adventure.getNoRatings());
+                adventureRepository.save(adventure);
+                break;
+        }
+    }
 }
