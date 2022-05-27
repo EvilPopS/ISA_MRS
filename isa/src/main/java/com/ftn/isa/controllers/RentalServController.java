@@ -3,10 +3,7 @@ package com.ftn.isa.controllers;
 import com.ftn.isa.DTO.*;
 import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.helpers.Validate;
-import com.ftn.isa.model.Adventure;
-import com.ftn.isa.model.Boat;
-import com.ftn.isa.model.Cottage;
-import com.ftn.isa.model.RentalService;
+import com.ftn.isa.model.*;
 import com.ftn.isa.services.RentalServService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,6 +90,24 @@ public class RentalServController {
         if (adventure == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(new DetailedAdventureInfoDTO(adventure), HttpStatus.OK);
+    }
+
+    @PostMapping(value="/gradeUpdate")
+    @PreAuthorize("hasRole('ADMIN')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> updateRentalServiceRate(@RequestBody ReviewDTO gradedReview) throws Exception {
+
+        String rentalTypeString = RentalType.values()[gradedReview.getRentalServiceType()].name().toLowerCase();
+        rentalTypeString = rentalTypeString.substring(0, 1).toUpperCase() + rentalTypeString.substring(1).toLowerCase();
+
+
+
+        rentalServService.updateRentalGrade(gradedReview.getRentalServiceId(), rentalTypeString, gradedReview.getGrade());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+
+
     }
 
 }

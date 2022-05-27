@@ -1,3 +1,4 @@
+set datestyle to European;
 INSERT INTO role (name) VALUES ('ROLE_CLIENT'),
                                 ('ROLE_COTTAGE_OWNER'),
                                 ('ROLE_BOAT_OWNER'),
@@ -31,9 +32,9 @@ insert into photo (photo_path, rental_id)
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted, loyalty_points,
                         is_active, photo_id, role_id, loyalty_type)
-    values (nextval('my_seq_gen_user'), 'admin1@gmail.com', 'admin123', 'Miroslav', 'Ilic', 2, '0614264444', false, 100,
+    values (nextval('my_seq_gen_user'), 'admin1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Miroslav', 'Ilic', 2, '0614264444', false, 100,
                 true, 2, 5, 0),
-           (nextval('my_seq_gen_user'), 'admin2@gmail.com', 'admin123', 'Saban', 'Saulic', 3, '0614283764', false,100,
+           (nextval('my_seq_gen_user'), 'admin2@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Saban', 'Saulic', 3, '0614283764', false,100,
                 true, 2, 5, 0);
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
@@ -83,7 +84,7 @@ insert into loyalty_program (discount, increase, loyalty_type)
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
                                 role_id, address_id, photo_id, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', 'sifra123', '0613222126',
+    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
                 'Instric', 4, 5, 1, 0),
            (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Instro2', 'sifra1223', '0619990009',
         'Instriiiic', 4, 3, 1, 0);
@@ -98,13 +99,17 @@ insert into adventure (id, name, description, capacity, rules, is_deleted, addre
 insert into request(id, is_answered, message, sent_time, request_type, sender_id)
     values (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 111111111', '02/05/2022 23:44', 1, 6),
        (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
+insert into review (id, is_answered, message, sent_time, grade, reciever_id, rental_service_id, sender_id)
+    values (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jako, ali klima ne radi.', '24/05/2022 20:33', 4.7, 2, 7, 4),
+           (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jakoooooooooo, ali klima ne radi.', '24/05/2022 02:33', 4.3, 2, 7, 4);
+
 
 insert into subscription(owner_id, client_id, is_active_subscription)
     values (5, 4, true);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services)
-    values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null),
-            ('1/5/2022', '11/5/2022', false, true, 30, 1, 4, false, null),
+    values ('11/4/2022', '29/4/2022', false, true, 30, 7, 4, false, null),
+            ('1/5/2022', '11/5/2022', false, true, 30, 8, 4, false, null),
             ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null),
             ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null),
             ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null),
