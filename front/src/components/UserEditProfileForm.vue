@@ -444,10 +444,10 @@
     }
 
     #right-col {
-        margin-right: 320px;
+        margin-right: 100px;
     }
 
     #left-col {
-        margin-left: 320px;
+        margin-left: 100px;
     }
 </style>
