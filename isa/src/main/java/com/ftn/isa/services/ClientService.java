@@ -2,6 +2,7 @@ package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.ClientProfileDTO;
 import com.ftn.isa.DTO.ReservationDisplayDTO;
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.repository.AdventureRepository;
 import com.ftn.isa.repository.BoatRepository;
