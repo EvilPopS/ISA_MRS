@@ -46,6 +46,9 @@ public class CottageOwnerController  {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private LoyaltyProgramService loyaltyProgramService;
+
     @GetMapping
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
@@ -360,6 +363,23 @@ public class CottageOwnerController  {
         cottageOwnerService.save(cottageOwner);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get-chart-data/{selectedGraph}/{selectedPeriod}")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<List<String>>> getChartData(@PathVariable String selectedGraph, @PathVariable String selectedPeriod, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<List<String>> data = cottageOwnerService.getChartData(cottageOwner, selectedGraph, selectedPeriod, loyaltyProgramService.getAllLoyaltyPrograms());
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
 }
