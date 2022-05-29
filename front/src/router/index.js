@@ -15,6 +15,7 @@ import AdminNotifications from '../views/AdminNotifications.vue';
 import OwnersSearch from '../views/OwnersSearch.vue';
 import ClientReservationHistory from '../views/ClientReservationHistory';
 import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
+import OwnersReportPage from '@/views/OwnersReportPage';
 
 const routes = [
   {
@@ -98,6 +99,11 @@ const routes = [
     path: '/ClientUpcomingReservations',
     name: 'ClientUpcomingReservations',
     component: ClientUpcomingReservations
+  },
+  {
+    path: '/OwnersReportPage',
+    name: 'OwnersReportPage',
+    component: OwnersReportPage
   }
 ]
 
