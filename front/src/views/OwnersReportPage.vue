@@ -26,14 +26,6 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <div class="chart-div" v-if="showPieChart()">
-                        <GChart
-                            type="PieChart"
-                            :settings="{ packages: ['corechart'] }"
-                            :data="chartData"
-                            :options="chartOptionsPie.chart"
-                        />
-                    </div>
                     <div class="chart-div" v-if="showBarChart()">
                         <GChart
                             type="ColumnChart"
@@ -42,6 +34,9 @@
                         />
                     </div>
                 </div>
+            </div>
+            <div id="note-div">
+                <label>*Note: Chart can include predictions for revenue and occupancy due to reservations that are upcoming.</label>
             </div>
         </div>
     </div>
@@ -57,6 +52,7 @@
 <script>
 import { GChart } from "vue-google-charts";
 import ErrorPopUp from '../components/ErrorPopUp.vue'
+import axios from 'axios'
 
 export default {
     name: "OwnersReportPage",
@@ -78,24 +74,11 @@ export default {
             errMsg: '',
 
             showClicked: false,
-            chartData: [
-                ["Task", "Hours per Day"],
-                ["Work", 11],
-                ["Eat", 2],
-                ["Commute", 2],
-                ["Watch TV", 2],
-                ["Sleep", 7]
-            ],
-            chartOptionsPie: {
-                chart: {
-                    title: "My Daily Activities",
-                    pieHole: 0.4
-                }
-            },
+            chartData: [],
             chartOptionsBar: {
                 chart: {
-                    title: "Company Performance",
-                    subtitle: "Sales, Expenses, and Profit: 2014-2017"
+                    title: "",
+                    subtitle: ""
                 }
             }
         };
@@ -110,24 +93,64 @@ export default {
             this.selectedPeriod = event.target.value;
         },
         show() {
-            this.showClicked = true
             if ((this.selectedGraph === "-Select graph type-") || (this.selectedPeriod === "-Select period of time-")) {
                 this.errorPoup = true 
                 this.errMsg = 'You need to select valid graph and period'
             }
+            this.setChartDataForBar()
 
-        },
-        showPieChart(){
-            if ((this.selectedGraph === 'Occupancy' || this.selectedGraph === 'Revenue')
-             && (this.selectedPeriod === 'Weekly' || this.selectedPeriod === 'Monthly') && this.showClicked)
-                return true;
-            else return false;
+            axios.get("api/" + this.roleURL + "/get-chart-data/" + this.selectedGraph + "/" + this.selectedPeriod, {headers: {'authorization': window.localStorage.getItem("token") }})
+                    .then((response) => {
+                        for (let i = 1; i < response.data.length; i++) {
+                            response.data[i][1] = parseInt(response.data[i][1]);
+                        }
+                        this.chartData = response.data
+                        this.showClicked = true
+                    })
+                    .catch(err => {
+                            if (err.response.status === 404){
+                                this.errMessage = "Owner with that email doesn't!";
+                                this.errorPopUpVisible = true;
+                            } 
+                            else if (err.response.status === 401) {
+                                this.errMessage = "You are not authorized!";
+                                this.errorPopUpVisible = true;
+                            }
+                            else if (err.response.status === 422) {
+                                this.errMessage = "Data is wrong or missing.";
+                                this.errorPopUpVisible = true;
+                            } else {
+                                this.errMessage = "Uups! Something went wrong...";
+                                this.errorPopUpVisible = true;
+                            }
+            });
+            
         },
         showBarChart(){
             if ((this.selectedGraph === 'Occupancy' || this.selectedGraph === 'Revenue')
-             && (this.selectedPeriod === 'Yearly') && this.showClicked)
+             && (this.selectedPeriod === 'Yearly' || this.selectedPeriod === 'Weekly' || this.selectedPeriod === 'Monthly') && this.showClicked)
                 return true;
             else return false;
+        },
+        setChartDataForBar() {
+            if (this.selectedGraph === 'Occupancy' && this.selectedPeriod === 'Weekly')
+                this.chartOptionsBar.chart.title = "Weekly occupancy of your bussines(in days) for current week(monday-sunday)."
+            else if (this.selectedGraph === 'Occupancy' && this.selectedPeriod === 'Monthly')
+                this.chartOptionsBar.chart.title = "Monthly occupancy of your bussines(in days) for current month."
+            else if (this.selectedGraph === 'Revenue' && this.selectedPeriod === 'Weekly')
+                this.chartOptionsBar.chart.title = "Weekly revenue of your bussines(in euros) for current week(monday-sunday)."
+            else if (this.selectedGraph === 'Revenue' && this.selectedPeriod === 'Monthly')
+                this.chartOptionsBar.chart.title = "Monthly revenue of your bussines(in euros) for current month."
+            else if (this.selectedGraph === 'Occupancy')
+            {
+                this.chartOptionsBar.chart.title = "Yearly occupancy of your bussines(in days) for current year."
+                this.chartOptionsBar.chart.subtitle = "Occupancy of your rentals"
+            } 
+            else 
+            {
+                this.chartOptionsBar.chart.title = "Yearly revenue of your bussines(in euros) for current year."
+                this.chartOptionsBar.chart.subtitle = "Revenue of your rentals"
+            }
         }
     },
     mounted() {
@@ -191,6 +214,12 @@ export default {
 
     .chart-div {
         margin-top: 10%;
+    }
+
+    #note-div label {
+        margin-top: 25%;
+        color: red;
+        font-size: 8px !important;
     }
 
 </style>
