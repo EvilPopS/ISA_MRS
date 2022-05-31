@@ -10,8 +10,9 @@
                         <p class="card-text"><b>Description:</b>{{adventure.description}}</p>
                         <p class="card-text"><b>Rate:</b> {{adventure.averageRating}}</p>
                         <span>
-                            <button class="btn btn-success" @click="showAdventureDetail(adventure)">Details</button>
-                            <button class="btn btn-danger"  @click="showConfirmDeletionDialog(adventure)" >Delete</button>
+                            <button class="btn btn-success card-btns" @click="showAdventureDetail(adventure)">Details</button>
+                            <button class="btn btn-success card-btns" @click="addNewReservation(adventure)">Calendar</button>
+                            <button class="btn btn-danger card-btns"  @click="showConfirmDeletionDialog(adventure)" >Delete</button>
                         </span>    
                     </div>
                 </div>
@@ -44,6 +45,16 @@
         @confirmed-event = "deleteAdventure"
         />
     </div>
+    <div v-else-if="showAddNewRes">
+        <NewReservationsComponent
+            @modal-closed = "showAddNewRes = false"
+            :calendarForRental="calendarForCottage"
+        />
+    </div>
+    <ErrorPopUp v-show="errorPopUpVisible" 
+    @close = "errorPopUpVisible = false"
+    :mess = "errorMessage"
+    /> 
     <SuccessPopUp v-show="succPopUpVisible"
         @close = "succPopUpVisible = false"
         :mess = succMessage
@@ -59,6 +70,7 @@
  import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
  import ErrorPopUp from '../components/ErrorPopUp.vue'
  import SuccessPopUp from '../components/SuccessPopUp.vue'
+ import NewReservationsComponent from '../components/NewReservationsComponent.vue'
 
 
 export default {
@@ -66,7 +78,7 @@ export default {
    components: {
      AdventureDetail, AddAdventure,
      ConfirmationPopUp, ErrorPopUp, 
-     SuccessPopUp
+     SuccessPopUp, NewReservationsComponent
    },
    data (){
        return {
@@ -81,12 +93,15 @@ export default {
            succPopUpVisible: false,
            confirmationPopUpVisible : false,
            errorPopUpVisible : false,
+           showAddNewRes : false,
 
            
            errorMessage : '',
            succMessage : '',
            deletionTitle : '',
            deletionMessage : '',
+
+           calendarForAdventure : {},
 
        }
    }, 
@@ -119,17 +134,21 @@ export default {
         succPopUpClose() {
             this.succPopUpVisible = false;
         },
+        addNewReservation(cottage) {
+            this.showAddNewRes = true
+            this.calendarForCottage = cottage
+        },
         deleteAdventure(){
             this.confirmationPopUpVisible = false;
 
 
-            axios.delete('api/fishingInstructor/' + 'instructor@gmail.com' + '/deleteAdventure/' + this.adventureToDelete.id).then((response) => {
+            axios.delete('api/fishingInstructor/delete-adventure/' + this.adventureToDelete.id, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
                 this.succPopUpVisible = true;
                 this.adventures = this.adventures.filter(item => item != this.adventureToDelete);
                 this.succMessage = "Adventure is successfully deleted!";
 
             }).catch((e) => {
-                this.errorMessage = e;
+                this.errorMessage = "Adventure cannot be deleted due to upcoming reservations";
                 this.errorPopUpVisible = true;
                 });
             
@@ -139,7 +158,7 @@ export default {
    },
    created(){
        if (!this.searchMode) {
-            axios.get('api/fishingInstructor/' + 'instructor@gmail.com' + '/adventures' ).then((response) => {
+            axios.get('api/fishingInstructor/adventures', {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
             this.adventures = response.data
         }).catch((error) => {
             console.log('Error happened: ' + error.name);
@@ -198,5 +217,8 @@ export default {
     #btn-add:hover{
         border-radius: 10px;
         background: rgb(25, 117, 7);
+    }
+    span button.card-btns {
+        margin: 10px 10px;
     }
 </style>

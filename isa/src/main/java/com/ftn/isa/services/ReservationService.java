@@ -116,8 +116,37 @@ public class ReservationService {
     public Reservation addNewActionRes(ActionResDTO actionResDTO, CottageOwner cottageOwner) {
 
         for (Cottage c : cottageOwner.getCottages()) {
-            if (c.getId().equals(actionResDTO.getCottageId())) {
+            if (c.getId().equals(actionResDTO.getRentalId())) {
                 for (Reservation reservation : c.getReservations()) {
+                    if (actionResDTO.getStartTime().isAfter(reservation.getStartTime()) &&
+                            actionResDTO.getStartTime().isBefore(reservation.getEndTime()) &&
+                            actionResDTO.getEndTime().isBefore(reservation.getEndTime()))
+                        return null;
+                    else if (actionResDTO.getStartTime().isBefore(reservation.getStartTime()) &&
+                            actionResDTO.getStartTime().isBefore(reservation.getEndTime()) &&
+                            actionResDTO.getEndTime().isAfter(reservation.getEndTime()))
+                        return null;
+                    else if (actionResDTO.getStartTime().isAfter(reservation.getStartTime()) &&
+                            actionResDTO.getStartTime().isBefore(reservation.getEndTime()) &&
+                            actionResDTO.getEndTime().isAfter(reservation.getEndTime()))
+                        return null;
+                }
+            }
+        }
+        if (checkIfIsInUnavailable(actionResDTO))
+            return null;
+        Reservation res = new Reservation(actionResDTO.getStartTime(), actionResDTO.getEndTime(),
+                true, actionResDTO.getPrice(), false, false, actionResDTO.getActionServices());
+
+        res = reservationRepository.save(res);
+        return res;
+    }
+
+    public Reservation addNewActionResAdventure(ActionResDTO actionResDTO, FishingInstructor fishingInstructor) {
+
+        for (Adventure a : fishingInstructor.getAdventures()) {
+            if (a.getId().equals(actionResDTO.getRentalId())) {
+                for (Reservation reservation : a.getReservations()) {
                     if (actionResDTO.getStartTime().isAfter(reservation.getStartTime()) &&
                             actionResDTO.getStartTime().isBefore(reservation.getEndTime()) &&
                             actionResDTO.getEndTime().isBefore(reservation.getEndTime()))

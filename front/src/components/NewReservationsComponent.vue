@@ -22,7 +22,7 @@
                                 <Tab :isSelected="selected === 'Action'">
                                     <AddActionRes
                                         @modal-closed = "closeWindow()"
-                                        :cottage="calendarForCottage"
+                                        :rental="calendarForRental"
                                     ></AddActionRes>
                                 </Tab>
 
@@ -50,7 +50,7 @@ export default {
         Tab, TabNav, AddActionRes
     },
     props: {
-        calendarForCottage: Object
+        calendarForRental: Object
     },
     data(){
         return {

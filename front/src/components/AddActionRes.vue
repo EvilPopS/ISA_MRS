@@ -54,7 +54,7 @@ export default {
         SuccessPopUp, ErrorPopUp
     },
     props: {
-        cottage: Object
+        rental: Object
     },
     data(){
         return {
@@ -63,7 +63,7 @@ export default {
                 startTime: '',
                 endTime: '',
                 actionServices: '',
-                cottageId: this.cottage.id
+                rentalId: this.rental.id
             },
 
             todaysDate: '',

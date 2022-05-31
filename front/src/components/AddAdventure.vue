@@ -175,13 +175,13 @@ export default {
                 this.data.fishingEquipment += this.localFishingEquipment[s]
                 if (counter < this.localFishingEquipment.length) this.data.fishingEquipment += ','
             } 
-            axios.post("api/fishingInstructor/" + window.sessionStorage.getItem("email") + "/adventures/addAdventure/", this.data)
+            axios.post("api/fishingInstructor/adventures/add-adventure", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
                     .catch(function (error) {
-                        console.log(error);
-                        alert(error)
+                        this.errMessage = "Error happened: " + error.data
+                        this.errorPopUpVisible = true
                     });
 
         },

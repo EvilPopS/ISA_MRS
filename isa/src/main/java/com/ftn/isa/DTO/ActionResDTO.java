@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class ActionResDTO {
 
-    private Long cottageId;
+    private Long rentalId;
 
     private LocalDateTime startTime;
 
@@ -25,7 +25,7 @@ public class ActionResDTO {
         this.endTime = endTime;
         this.price = price;
         this.actionServices = actionServices;
-        this.cottageId = cottageId;
+        this.rentalId = cottageId;
     }
 
     public boolean arePropsValidAdding() {
@@ -65,11 +65,11 @@ public class ActionResDTO {
         this.actionServices = actionServices;
     }
 
-    public Long getCottageId() {
-        return cottageId;
+    public Long getRentalId() {
+        return rentalId;
     }
 
-    public void setCottageId(Long cottageId) {
-        this.cottageId = cottageId;
+    public void setRentalId(Long cottageId) {
+        this.rentalId = cottageId;
     }
 }

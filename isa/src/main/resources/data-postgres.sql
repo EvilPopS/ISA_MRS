@@ -25,8 +25,8 @@ insert into photo (photo_path, rental_id)
            ('cottage-inside.jpg', 4),
            ('cottage1.jpg', 5),
            ('cottage1.jpg', 6),
-           ('home-page-pic-instructor.jpg', 1),
-           ('home-page-pic-instructor.jpg', 2),
+           ('fishing_adventure1.jpg', 7),
+           ('fishing_adventure2.jpg', 8),
            ('home-page-pic-boat.jpg', 1),
            ('home-page-pic-boat.jpg', 2);
 
