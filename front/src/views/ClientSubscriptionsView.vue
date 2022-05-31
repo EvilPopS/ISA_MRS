@@ -28,11 +28,13 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: "ClientSubscriptionsView",
         data() {
             return {
-                subscriptions
+                subscriptions: []
             }
         },
         methods: {},
