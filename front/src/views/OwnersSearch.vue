@@ -284,4 +284,9 @@
     h3 {
         margin-top: 10%;
     }
+
+    button {
+        margin-top: 5%;
+    }
+
 </style>
