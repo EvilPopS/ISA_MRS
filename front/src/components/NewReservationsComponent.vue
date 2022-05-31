@@ -11,7 +11,7 @@
                     <div class="col-4">
                         <div id="optionsBar" class="card flex-card">
                             <TabNav
-                                :tabs="['Regular', 'Action', 'Unvailability']"
+                                :tabs="['Regular', 'Action', 'Unavailability']"
                                 :selected="selected"
                                 @selected="setSelected"
                             >
@@ -29,7 +29,7 @@
                                     ></AddActionRes>
                                 </Tab>
 
-                                <Tab :isSelected="selected === 'Unvailability'">
+                                <Tab :isSelected="selected === 'Unavailability'">
                                     <AddUnvailablePeriod
                                         @modal-closed = "closeWindow()"
                                         :cottage="choosenCottage"

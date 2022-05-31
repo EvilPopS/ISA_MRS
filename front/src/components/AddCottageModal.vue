@@ -388,4 +388,8 @@ export default {
         margin-top: 5%;
     }
 
+    label {
+        font-size: 12px;
+    }
+
 </style>

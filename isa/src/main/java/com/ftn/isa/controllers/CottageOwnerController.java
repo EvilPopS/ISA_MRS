@@ -104,6 +104,30 @@ public class CottageOwnerController  {
         return new ResponseEntity<Set<CottageDTO>>(cottagesSet, HttpStatus.OK);
     }
 
+    @GetMapping(value="/find-one-rental/{id}")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<CottageDTO> getAllCottages(@PathVariable Long id, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Set<Cottage> cottages = cottageOwner.getCottages();
+        CottageDTO returnCottage = null;
+        for (Cottage c : cottages) {
+            if (!c.isDeleted() && c.getId().equals(id)) returnCottage = new CottageDTO(c);
+        }
+
+        if (returnCottage == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<CottageDTO>(returnCottage, HttpStatus.OK);
+    }
+
     @PostMapping(value = "/add-cottage")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)

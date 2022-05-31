@@ -3,6 +3,7 @@ package com.ftn.isa.DTO;
 import com.ftn.isa.model.RentalService;
 
 public class OwnersSearchResDTO {
+    private Long id;
     private String name;
     private String type;
     private double capacity;
@@ -24,10 +25,19 @@ public class OwnersSearchResDTO {
             default:
                 this.type = "Adventure";
         }
+        this.id = rental.getId();
         this.capacity = rental.getCapacity();
         this.price = rental.getPrice();
         this.city = rental.getAddress().getPlaceName();
         this.street = rental.getAddress().getStreet();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public double getCapacity() {
