@@ -15,14 +15,14 @@
             <div class="row">
                 <div class="col-12 col-md-5 col-lg-4" v-for="reservation in filteredReservations" :key="reservation.reservationId">
                     <div class="card" style="width: 18rem; margin-top: 5%" id="card-body-id">
-                        <img :src="setPicture(reservation.clientProfilePhoto)" id="cottage-img" class="card-img-top" alt="This is a reservation picture." @click="showClient(reservation.clientEmail)">
+                        <img :src="setPicture(reservation.clientProfilePhoto)" id="cottage-img" class="card-img-top" alt="This is a reservation picture." @click="showClient(reservation.clientEmail, reservation)">
                         <div class="card-body">
                             <h5 class="card-title" id="heading-cottage">Reservation #{{reservation.reservationId}}</h5>
                             <p class="card-text"><b>Rental:</b> {{reservation.rentalName}}</p>
                             <p class="card-text"><b>Client:</b> {{reservation.clientFullName}}</p>
                             <p class="card-text"><b>Start:</b> {{reservation.startTime.split('T')[0]}} <b>at</b> {{(reservation.startTime.split('T')[1]).split(':')[0]}}:{{(reservation.startTime.split('T')[1]).split(':')[1]}}</p>
                             <p class="card-text"><b>End:</b> {{reservation.endTime.split('T')[0]}} <b>at</b> {{(reservation.endTime.split('T')[1]).split(':')[0]}}:{{(reservation.endTime.split('T')[1]).split(':')[1]}}</p>
-                            <p class="card-text"><b>Action:</b> {{reservation.Action ? 'Yes' : 'No'}}</p>   
+                            <p class="card-text"><b>Action:</b> {{reservation.action ? 'Yes' : 'No'}}</p>   
                         </div>
                     </div>
                 </div>
@@ -35,6 +35,7 @@
     <div v-if="basicClientProfileShow">
         <BasicClientProfile
             :clientEmail = "selectedClient"
+            :reservation = "sendResObj"
             @modal-closed = "basicClientProfileShow = false"
         />
     </div>
@@ -61,7 +62,8 @@ export default {
             rentalNameSortBtnClicked: false,
             clientNameSortBtnClicked: false,
             startDateSortBtnClicked: false,
-            endDateSortBtnClicked: false
+            endDateSortBtnClicked: false,
+            sendResObj: {}
         }
     },
     methods: {
@@ -70,9 +72,10 @@ export default {
                     return require('../assets/' + picture);
                 } catch(e) {console.log(e)}
         },
-        showClient(email) {
+        showClient(email, reservation) {
             this.basicClientProfileShow = true
             this.selectedClient = email
+            this.sendResObj = reservation
         },
         sortByRentalName() {
             if (this.rentalNameSortBtnClicked)

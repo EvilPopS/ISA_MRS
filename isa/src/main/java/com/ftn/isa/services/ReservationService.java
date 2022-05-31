@@ -49,7 +49,7 @@ public class ReservationService {
                 if (!reservation.isUnavailable() && reservation.isReserved() && !reservation.isCanceled()) {
                     ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), c.getId(),
                             c.getName(), reservation.getStartTime(), reservation.getEndTime(),
-                            reservation.getPrice(), reservation.isAction(), reservation.isReserved());
+                            reservation.getPrice(), reservation.isAction(), reservation.isReserved(), reservation.getActionServices());
                     reservations.add(reservationDTO);
                 }
             }
@@ -77,7 +77,7 @@ public class ReservationService {
                 if (!reservation.isUnavailable() && reservation.isReserved()) {
                     ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), a.getId(),
                             a.getName(), reservation.getStartTime(), reservation.getEndTime(),
-                            reservation.getPrice(), reservation.isAction(), reservation.isReserved());
+                            reservation.getPrice(), reservation.isAction(), reservation.isReserved(), reservation.getActionServices());
                     reservations.add(reservationDTO);
                 }
             }
