@@ -5,7 +5,9 @@ import com.ftn.isa.DTO.ClientProfileDTO;
 import com.ftn.isa.DTO.UserRegDTO;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,6 +18,11 @@ public class Client extends User {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Set<Reservation> reservations;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    private List<Subscription> subscriptions;
+
 
     public Client() {
     }
@@ -35,6 +42,7 @@ public class Client extends User {
             this.setLoyaltyType(LoyaltyType.REGULAR);
             this.noPenalties = 0;
             this.reservations = new HashSet<>();
+            this.subscriptions = new ArrayList<>();
     }
 
     public void updatePersonalInfo(ClientProfileDTO data) {
@@ -64,5 +72,13 @@ public class Client extends User {
 
     public void setReservations(Set<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(List<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 }

@@ -53,7 +53,7 @@ insert into boat (id, name, description, capacity, rules, is_deleted, address_id
 
 insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                             is_active, photo_id, role_id, loyalty_type, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', 'boat123', 'Bojan', 'Bojanic', 7, '06222332323', false, true, null,
+    values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', 'boat123', 'Bojan', 'Bojanic', 7, '06222332323', false, true, 1,
                 3, 0, 10);
 
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted,
@@ -104,7 +104,9 @@ insert into review (id, is_answered, message, sent_time, grade, reciever_id, ren
            (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jakoooooooooo, ali klima ne radi.', '24/05/2022 02:33', 4.3, 2, 7, 4);
 
 insert into subscription(owner_id, client_id, is_active_subscription)
-    values (5, 4, true);
+    values (5, 4, true),
+            (3, 4, true),
+            (6, 4, true);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
     values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null, false),

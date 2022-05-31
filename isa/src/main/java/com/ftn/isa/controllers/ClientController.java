@@ -6,6 +6,7 @@ import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Client;
 import com.ftn.isa.model.RentalService;
 import com.ftn.isa.model.Reservation;
+import com.ftn.isa.model.Subscription;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.ClientService;
 import com.ftn.isa.services.EmailService;
@@ -18,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -161,6 +163,23 @@ public class ClientController {
     public ResponseEntity<HttpStatus> cancelReservation (@PathVariable Long resId) {
         reservationService.cancelReservation(resId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @GetMapping(value="/subscriptions")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<SubClientPreview>> fetchSubscriptions (HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        List<SubClientPreview> subs = new ArrayList<>();
+        for (Subscription sub : clientService.findByEmail(email).getSubscriptions())
+            if (sub.isActiveSubscription())
+                subs.add(new SubClientPreview(sub));
+
+        return new ResponseEntity<>(subs, HttpStatus.OK);
     }
 
 }
