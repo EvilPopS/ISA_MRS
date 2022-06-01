@@ -49,6 +49,10 @@
             }
         },
         methods: {
+            
+            AdminReportsRedirect : function() {
+                pushView(this, "AdminReports");
+            },
 
             adminProfileRedirect : function () {
                 pushView(this, "AdminProfilePage");

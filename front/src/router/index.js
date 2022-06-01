@@ -15,12 +15,18 @@ import AdminNotifications from '../views/AdminNotifications.vue';
 import OwnersSearch from '../views/OwnersSearch.vue';
 import ClientReservationHistory from '../views/ClientReservationHistory';
 import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
+import AdminReports from '../views/AdminReports'
 
 const routes = [
   {
     path: '/CottageOwnerHomePage',
     name: 'CottageOwnerHomePage',
     component: CottageOwnerHomePage
+  },
+  {
+    path: '/AdminReports',
+    name: 'AdminReports',
+    component: AdminReports
   },
   {
     path : '/adminNotifications',
