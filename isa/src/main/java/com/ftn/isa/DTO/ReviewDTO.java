@@ -16,6 +16,9 @@ public class ReviewDTO {
     public Long rentalServiceId;
     public int rentalServiceType;
     public Long senderId;
+    public String senderProfilePhoto;
+    public String senderName;
+
 
 
     public ReviewDTO (){
@@ -31,10 +34,12 @@ public class ReviewDTO {
         this.rentalServiceName = review.getRentalService().getName();
         this.rentalServiceType = review.getRentalService().getRentalType().ordinal();
         this.senderId = review.getSender().getId();
+        this.senderProfilePhoto = review.getSender().getProfilePicture().getPhotoPath();
+        this.senderName = review.getSender().getName() + " " + review.getSender().getSurname();
 
     }
 
-    public ReviewDTO(boolean isAnswered, String message, String sentTime, String rentalServiceName, Double grade, Long recieverId, Long rentalServiceId, int rentalServiceType, Long senderId) {
+    public ReviewDTO(boolean isAnswered, String message, String sentTime, String rentalServiceName, Double grade, Long recieverId, Long rentalServiceId, int rentalServiceType, Long senderId, String photo, String senderName) {
         this.isAnswered = isAnswered;
         this.message = message;
         this.sentTime = sentTime;
@@ -44,6 +49,16 @@ public class ReviewDTO {
         this.rentalServiceId = rentalServiceId;
         this.rentalServiceType = rentalServiceType;
         this.senderId = senderId;
+        this.senderProfilePhoto = photo;
+        this.senderName = senderName;
+    }
+
+    public String getSenderProfilePhoto() {
+        return senderProfilePhoto;
+    }
+
+    public void setSenderProfilePhoto(String senderProfilePhoto) {
+        this.senderProfilePhoto = senderProfilePhoto;
     }
 
     public int getRentalServiceType() {

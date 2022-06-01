@@ -10,6 +10,7 @@
         <div v-else-if="userRole === 'ADMIN'">
             <a @click="adminProfileRedirect()" class="homeNav">Profile</a>
             <a @click="AdminNotificationsRedirect()" class="homeNav">Notifications</a>
+            <a @click="AdminReportsRedirect()" class="homeNav">Reports</a>
         </div>
 
         <div v-else-if="userRole === 'CLIENT'">
