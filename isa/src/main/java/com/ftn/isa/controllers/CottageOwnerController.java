@@ -389,10 +389,10 @@ public class CottageOwnerController  {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/get-chart-data/{selectedGraph}/{selectedPeriod}")
+    @GetMapping(value = "/get-chart-data/{selectedGraph}/{selectedPeriod}/{selectedMonth}")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    public ResponseEntity<List<List<String>>> getChartData(@PathVariable String selectedGraph, @PathVariable String selectedPeriod, HttpServletRequest request) {
+    public ResponseEntity<List<List<String>>> getChartData(@PathVariable String selectedGraph, @PathVariable String selectedPeriod, @PathVariable String selectedMonth, HttpServletRequest request) {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -401,7 +401,7 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        List<List<String>> data = cottageOwnerService.getChartData(cottageOwner, selectedGraph, selectedPeriod, loyaltyProgramService.getAllLoyaltyPrograms());
+        List<List<String>> data = cottageOwnerService.getChartData(cottageOwner, selectedGraph, selectedPeriod, selectedMonth, loyaltyProgramService.getAllLoyaltyPrograms());
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }

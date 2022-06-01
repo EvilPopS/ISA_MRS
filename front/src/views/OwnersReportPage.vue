@@ -6,19 +6,25 @@
                 <img src="../assets/icons8-chart-64.png">
             </span>
             <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                     <label>Report kind</label>
                     <select class="form-select mycombo" aria-label="Default select example" @change="graphSelected">
                         <option v-for="kind in graphKinds" :key="kind" :value="kind">{{kind}}</option>
                     </select>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <label>Period</label>
                     <select class="form-select mycombo" aria-label="Default select example" @change="periodSelected">
                         <option v-for="period in timePeriods" :key="period" :value="period">{{period}}</option>
                     </select>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
+                    <label>Month if monthly</label>
+                    <select class="form-select mycombo" aria-label="Default select example" @change="monthSelected">
+                        <option v-for="month in allMonths" :key="month" :value="month">{{month}}</option>
+                    </select>
+                </div>
+                <div class="col-3">
                     <div class="my-btn-div">
                         <button type="button" id="show-btn" class="btn btn-success" @click="show()">Show</button>
                     </div>
@@ -66,9 +72,11 @@ export default {
             searchRole: '',
             selectedPeriod: '',
             selectedGraph: '',
+            selectedMonth: 'January',
 
             graphKinds: ['-Select graph type-', 'Occupancy', 'Revenue'],
             timePeriods: ['-Select period of time-', 'Weekly', 'Monthly', 'Yearly'],
+            allMonths: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 
             errorPoup: false,
             errMsg: '',
@@ -92,6 +100,10 @@ export default {
             this.showClicked = false
             this.selectedPeriod = event.target.value;
         },
+        monthSelected(event){
+            this.showClicked = false
+            this.selectedMonth = event.target.value;
+        },
         show() {
             if ((this.selectedGraph === "-Select graph type-") || (this.selectedPeriod === "-Select period of time-")) {
                 this.errorPoup = true 
@@ -99,10 +111,10 @@ export default {
             }
             this.setChartDataForBar()
 
-            axios.get("api/" + this.roleURL + "/get-chart-data/" + this.selectedGraph + "/" + this.selectedPeriod, {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.get("api/" + this.roleURL + "/get-chart-data/" + this.selectedGraph + "/" + this.selectedPeriod + "/" + this.selectedMonth, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         for (let i = 1; i < response.data.length; i++) {
-                            response.data[i][1] = parseInt(response.data[i][1]);
+                            response.data[i][1] = parseFloat(response.data[i][1]);
                         }
                         this.chartData = response.data
                         this.showClicked = true
@@ -136,11 +148,11 @@ export default {
             if (this.selectedGraph === 'Occupancy' && this.selectedPeriod === 'Weekly')
                 this.chartOptionsBar.chart.title = "Weekly occupancy of your bussines(in days) for current week(monday-sunday)."
             else if (this.selectedGraph === 'Occupancy' && this.selectedPeriod === 'Monthly')
-                this.chartOptionsBar.chart.title = "Monthly occupancy of your bussines(in days) for current month."
+                this.chartOptionsBar.chart.title = "Monthly occupancy of your bussines(in days) for " + this.selectedMonth + "."
             else if (this.selectedGraph === 'Revenue' && this.selectedPeriod === 'Weekly')
                 this.chartOptionsBar.chart.title = "Weekly revenue of your bussines(in euros) for current week(monday-sunday)."
             else if (this.selectedGraph === 'Revenue' && this.selectedPeriod === 'Monthly')
-                this.chartOptionsBar.chart.title = "Monthly revenue of your bussines(in euros) for current month."
+                this.chartOptionsBar.chart.title = "Monthly revenue of your bussines(in euros) for " + this.selectedMonth + "."
             else if (this.selectedGraph === 'Occupancy')
             {
                 this.chartOptionsBar.chart.title = "Yearly occupancy of your bussines(in days) for current year."

@@ -9,10 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Validate {
     private static final String REG_NAME = "^[a-zA-Z\\s]+";
@@ -56,6 +53,44 @@ public class Validate {
 
     public static LocalDateTime getCurrentMonthEnd() {
         return LocalDateTime.now().plusMonths(1).withDayOfMonth(1).minusDays(1);
+    }
+
+    public static LocalDateTime getSelectedMonthStart(String selectedMonth) {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = getSelectedMonth(selectedMonth);
+        int day = 1;
+        c.set(year, month, day);
+        return LocalDateTime.ofInstant(c.toInstant(), c.getTimeZone().toZoneId()).toLocalDate().atTime(00,00);
+    }
+
+    public static LocalDateTime getSelectedMonthEnd(String selectedMonth) {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = getSelectedMonth(selectedMonth);
+        int day = 1;
+        c.set(year, month, day);
+        int numOfDaysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+        c.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth-1);
+        return LocalDateTime.ofInstant(c.toInstant(), c.getTimeZone().toZoneId()).toLocalDate().atTime(00,00);
+    }
+
+    public static int getSelectedMonth(String month) {
+        switch (month.toUpperCase()){
+            case "JANUARY": return Calendar.JANUARY;
+            case "FEBRUARY": return Calendar.FEBRUARY;
+            case "MARCH": return Calendar.MARCH;
+            case "APRIL": return Calendar.APRIL;
+            case "MAY": return Calendar.MAY;
+            case "JUNE": return Calendar.JUNE;
+            case "JULY": return Calendar.JULY;
+            case "AUGUST": return Calendar.AUGUST;
+            case "SEPTEMBER": return Calendar.SEPTEMBER;
+            case "OCTOBER": return Calendar.OCTOBER;
+            case "NOVEMBER": return Calendar.NOVEMBER;
+            case "DECEMBER": return Calendar.DECEMBER;
+        }
+        return Calendar.JANUARY;
     }
 
     public static LocalDateTime getStartOfYear() {
