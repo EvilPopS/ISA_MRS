@@ -116,9 +116,9 @@
             />
 
             <RentalOwnerProfileView v-if="toShowOwnerProfile"
+                :ownerInfo="ownerInfo"
                 @close="reopenRentalDetails"
             />
-                <!-- :ownerId="ownerId" -->
         </div>
     </div>
 </template>
@@ -146,6 +146,8 @@
             return {
                 rentalId: this.id,
                 rentalType: this.type,
+
+                ownerInfo: {},
 
                 normalReservations: [],
                 actionReservations: [],
@@ -265,6 +267,8 @@
 
         let rental = response.data;
         
+        params.ownerInfo = rental.owner;
+
         params.name = rental.name;
         params.description = rental.description;
         params.price = rental.price + " €/day";

@@ -99,4 +99,12 @@ public class ClientService {
         }
         return false;
     }
+
+    public boolean checkIfSubscribed(String clientEmail, Long ownerId) {
+        Client client = clientRepo.findByEmail(clientEmail);
+        for (Subscription sub : client.getSubscriptions())
+            if (sub.getOwner().getId().equals(ownerId))
+                return true;
+        return false;
+    }
 }

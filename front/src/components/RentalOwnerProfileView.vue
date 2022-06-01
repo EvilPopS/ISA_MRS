@@ -3,24 +3,24 @@
         <div class="row">
             <div class="col">
                 <label>Name:</label>
-                <input type="text" class= "form-control" v-model="name" disabled>
+                <input type="text" class= "form-control" v-model="ownerInfo.name" disabled>
                 <label>Surname:</label>
-                <input type="text" class= "form-control" v-model="surname" disabled>
+                <input type="text" class= "form-control" v-model="ownerInfo.surname" disabled>
                 <label>Contact number:</label>
-                <input type="text" class= "form-control" v-model="phoneNum" disabled>
+                <input type="text" class= "form-control" v-model="ownerInfo.phoneNum" disabled>
             </div>
             <div class="col">
                 <div class="d-flex justify-content-center">
-                    <img id="accPic" src="@/assets/default.jpg" alt="">
+                    <img id="accPic" :src="setOwnerProfilePic(ownerInfo.profilePic)" >
                 </div>
             </div>
             <div class="col">
                 <label>Country:</label>
-                <input type="text" class= "form-control" v-model="country" disabled>
+                <input type="text" class= "form-control" v-model="ownerInfo.country" disabled>
                 <label>City:</label>
-                <input type="text" class= "form-control" v-model="city" disabled>
+                <input type="text" class= "form-control" v-model="ownerInfo.city" disabled>
                 <label>Street:</label>
-                <input type="text" class= "form-control" v-model="street" disabled>
+                <input type="text" class= "form-control" v-model="ownerInfo.street" disabled>
             </div>
         </div>
 
@@ -41,28 +41,27 @@
         name : "RentalOwnerProfileView",
         data() {
             return {
-                name: "",
-                surname: "",
-                phoneNum: "",
-                country: "",
-                city: "",
-                street: "",
-
                 showSubBtn: true
             }
         },
         props: {
-            rentalId: Number,
-            type: String
+            ownerInfo: Object
         },
         methods: {
-
+            setOwnerProfilePic(ownerProfilePic) {
+                try{
+                    return require('@/assets/' + ownerProfilePic);
+                } catch(e) {}
+            }
         },
         created() {
-            // axios.get("api/custom za limited user info" + this.rentalId, {headers: {'authorization': window.localStorage.getItem("token") }})
-            //     .then((response) => {
-
-            //     });
+            axios.get("api/client/check-if-subscribed/" + this.ownerInfo.id, {headers: {'authorization': window.localStorage.getItem("token") }})
+                .then(() => {
+                    this.showSubBtn = true;
+                }).catch((error) => {
+                    if (error.response.status == "404")
+                        this.showSubBtn = false;
+                });
         }
     }
 </script>

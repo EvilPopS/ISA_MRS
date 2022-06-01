@@ -182,4 +182,20 @@ public class ClientController {
         return new ResponseEntity<>(subs, HttpStatus.OK);
     }
 
+
+    @GetMapping(value="/check-if-subscribed/{ownerId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> checkIfSubscribed(@PathVariable Long ownerId, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        if (!clientService.checkIfSubscribed(email, ownerId))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    
 }
