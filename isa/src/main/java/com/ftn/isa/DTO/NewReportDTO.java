@@ -39,8 +39,8 @@ public class NewReportDTO {
         return isNegative;
     }
 
-    public void setNegative(boolean negative) {
-        isNegative = negative;
+    public void setNegative(boolean negativeP) {
+        isNegative = negativeP;
     }
 
     public boolean isHasShowedUp() {

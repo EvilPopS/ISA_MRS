@@ -117,14 +117,14 @@ public class CottageOwnerService {
         return false;
     }
 
-    public List<List<String>> getChartData(CottageOwner cottageOwner, String selectedGraph, String selectedPeriod, List<LoyaltyProgram> loyaltyPrograms) {
+    public List<List<String>> getChartData(CottageOwner cottageOwner, String selectedGraph, String selectedPeriod, String selectedMonth, List<LoyaltyProgram> loyaltyPrograms) {
         List<List<String>> data = null;
-        data = this.makeBarChart(cottageOwner, selectedGraph, selectedPeriod, loyaltyPrograms);
+        data = this.makeBarChart(cottageOwner, selectedGraph, selectedPeriod, selectedMonth, loyaltyPrograms);
 
         return data;
     }
 
-    public List<List<String>> populateBarChart(CottageOwner cottageOwner, LocalDateTime start, LocalDateTime end, String graph, Double increaseRev){
+    public List<List<String>> populateBarChart(CottageOwner cottageOwner, LocalDateTime start, LocalDateTime end, String graph){
         List<List<String>> data = new ArrayList<>();
         List<String> tempInner = new ArrayList<>();
         tempInner.add("Rental");
@@ -142,13 +142,13 @@ public class CottageOwnerService {
                     if (DAYS.between(res.getStartTime(), res.getEndTime()) == 0) counter += 1;
                     else counter += DAYS.between(res.getStartTime(), res.getEndTime());
                 } else if ((!res.isCanceled() && !res.isUnavailable() && res.isReserved()) &&
-                        ((res.getStartTime().isBefore(start) && (res.getEndTime().isBefore(end) || res.getEndTime().equals(end))))) {
+                        ((res.getStartTime().isBefore(start) && (res.getEndTime().isAfter(start)) && (res.getEndTime().isBefore(end) || res.getEndTime().equals(end))))) {
                     if (DAYS.between(start, res.getEndTime()) == 0) counter += 1;
                     else counter += DAYS.between(start, res.getEndTime());
                 } else if ((!res.isCanceled() && !res.isUnavailable() && res.isReserved()) &&
-                        (((res.getStartTime().isAfter(start) || res.getStartTime().equals(start)) && (res.getEndTime().isAfter(end) || res.getEndTime().equals(end))))) {
-                    if (DAYS.between(res.getStartTime(), end) == 0) counter += 1;
-                    else counter += DAYS.between(res.getStartTime(), end);
+                        (((res.getStartTime().isAfter(start) || res.getStartTime().equals(start)) && (res.getStartTime().isBefore(end)) && (res.getEndTime().isAfter(end) || res.getEndTime().equals(end))))) {
+                    if (DAYS.between(res.getStartTime(), end) == 0 && counter <= 0) counter += 1;
+                    else if (counter <= 0) counter += DAYS.between(res.getStartTime(), end);
                 }
             }
             if (counter < 0) counter = 0;
@@ -171,14 +171,9 @@ public class CottageOwnerService {
             List<String> innerList = new ArrayList<>();
             innerList.add(c.getName());
             for (Reservation res : c.getReservations()){
-                if ((!res.isCanceled() && !res.isUnavailable() && res.isReserved()) && (res.getStartTime().isAfter(start) && res.getEndTime().isBefore(end))){
-                    if (graph.equalsIgnoreCase("Occupancy")){
-                        if (DAYS.between(res.getStartTime(), res.getEndTime()) == 0) counter += 1;
-                        else counter += DAYS.between(res.getStartTime(), res.getEndTime());
-                    } else {
-                        counter += res.getPrice() + res.getPrice() * increaseRev/100;
-                    }
-                }
+                if ((!res.isCanceled() && !res.isUnavailable() && res.isReserved()) && (res.getStartTime().isAfter(start) && res.getStartTime().isBefore(end))){
+                    counter += res.getPrice() + res.getPrice() * increaseRev/100;
+                }   //za revenue je uzeto da mesec/nedelja u kome pocinje za nju se doda revenue
             }
             if (counter < 0) counter = 0;
             innerList.add(String.valueOf(counter));
@@ -187,7 +182,7 @@ public class CottageOwnerService {
         return data;
     }
 
-    private List<List<String>> makeBarChart(CottageOwner cottageOwner, String selectedGraph, String selectedPeriod, List<LoyaltyProgram> loyaltyPrograms) {
+    private List<List<String>> makeBarChart(CottageOwner cottageOwner, String selectedGraph, String selectedPeriod, String selectedMonth, List<LoyaltyProgram> loyaltyPrograms) {
         List<List<String>> data = new ArrayList<>();
         LocalDateTime start = null;
         LocalDateTime end = null;
@@ -202,17 +197,17 @@ public class CottageOwnerService {
             if (selectedPeriod.equalsIgnoreCase("Weekly")){
                 start = Validate.getCurrentWeekMonday();
                 end = Validate.getCurrentWeekSunday();
-                data = this.populateBarChart(cottageOwner, start, end, selectedGraph, increaseRevenue);
+                data = this.populateBarChart(cottageOwner, start, end, selectedGraph);
             } else if (selectedPeriod.equalsIgnoreCase("Monthly")) {
                 //monthly
-                start = Validate.getCurrentMonthBegining();
-                end = Validate.getCurrentMonthEnd();
-                data = this.populateBarChart(cottageOwner, start, end, selectedGraph, increaseRevenue);
+                start = Validate.getSelectedMonthStart(selectedMonth);
+                end = Validate.getSelectedMonthEnd(selectedMonth);
+                data = this.populateBarChart(cottageOwner, start, end, selectedGraph);
             } else {
                 //yearly
                 start = Validate.getStartOfYear();
                 end = Validate.getEndOfYear();
-                data = this.populateBarChartRevenue(cottageOwner, start, end, selectedGraph, increaseRevenue);
+                data = this.populateBarChart(cottageOwner, start, end, selectedGraph);
             }
         }
         else
@@ -224,8 +219,8 @@ public class CottageOwnerService {
                 data = this.populateBarChartRevenue(cottageOwner, start, end, selectedGraph, increaseRevenue);
             } else if (selectedPeriod.equalsIgnoreCase("Monthly")) {
                 //monthly
-                start = Validate.getCurrentMonthBegining();
-                end = Validate.getCurrentMonthEnd();
+                start = Validate.getSelectedMonthStart(selectedMonth);
+                end = Validate.getSelectedMonthEnd(selectedMonth);
                 data = this.populateBarChartRevenue(cottageOwner, start, end, selectedGraph, increaseRevenue);
             } else {
                 //yearly
