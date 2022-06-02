@@ -100,9 +100,10 @@ insert into adventure (id, name, description, capacity, rules, is_deleted, addre
 insert into request(id, is_answered, message, sent_time, request_type, sender_id)
     values (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 111111111', '02/05/2022 23:44', 1, 6),
        (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
-insert into review (id, is_answered, message, sent_time, grade, reciever_id, rental_service_id, sender_id)
-    values (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jako, ali klima ne radi.', '24/05/2022 20:33', 4.7, 2, 7, 4),
-           (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jakoooooooooo, ali klima ne radi.', '24/05/2022 02:33', 4.3, 2, 7, 4);
+
+insert into review (id, is_answered, message, sent_time, grade, receiver_id, rental_id, sender_id)
+    values (nextval('my_seq_gen_notification'), true, 'Svidelo mi se jako, ali klima ne radi.', '24/05/2022 20:33', 4.7, 2, 5, 4),
+           (nextval('my_seq_gen_notification'), true, 'Svidelo mi se jakoooooooooo, ali klima ne radi.', '24/05/2022 02:33', 4.3, 2, 5, 4);
 
 insert into subscription(owner_id, client_id, is_active_subscription)
     values (5, 4, true),

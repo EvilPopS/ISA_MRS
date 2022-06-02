@@ -9,19 +9,18 @@ public class Review extends Notification{
     @Column(name = "grade", nullable = false)
     private Double grade;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "receiver_id", referencedColumnName = "id")
+    private User receiver;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "reciever_id", referencedColumnName = "id")
-    private User reciever;
-
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "rentalService_id", referencedColumnName = "id")
+    @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private RentalService rentalService;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private Client sender;
+
 
     public Review(String message, boolean isAnswered, String localDateTime) {
         super(message, isAnswered, localDateTime);
@@ -39,12 +38,12 @@ public class Review extends Notification{
         this.grade = grade;
     }
 
-    public User getReciever() {
-        return reciever;
+    public User getReceiver() {
+        return receiver;
     }
 
-    public void setReciever(User reciever) {
-        this.reciever = reciever;
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
     }
 
     public RentalService getRentalService() {

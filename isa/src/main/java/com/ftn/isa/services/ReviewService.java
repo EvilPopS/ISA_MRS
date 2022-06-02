@@ -14,4 +14,8 @@ public class ReviewService {
     ReviewRepository reviewRepository;
 
     public List<Review> getAllReviews(){return reviewRepository.getAllRequests();}
+
+    public List<Review> getReviewsForRental(Long rentalId) {
+        return reviewRepository.getReviewsForRental(rentalId);
+    }
 }
