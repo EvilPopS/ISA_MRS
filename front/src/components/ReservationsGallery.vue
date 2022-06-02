@@ -10,17 +10,24 @@
 
     <div id="res-container" class="row justify-content-center">
         <div id="cards-cont" class="row justify-content-center">
-            <div v-for="reserv in this.reservations" :key="reserv.id" class="card-style">
-                <label>Reserved rental name:</label>
-                <p>{{reserv.name}}</p>
-                <label>Reservation start date:</label>
-                <p>{{formatDateString(reserv.startDate)}}</p>
-                <label>Reservation end date:</label>
-                <p>{{formatDateString(reserv.endDate)}}</p>
-                <label>Reservation price per day:</label>
-                <p>€{{reserv.price}}</p>
-                <button v-if="!this.isHistoryRes && checkIfCancelable(reserv.startDate)" @click="emitCancel(reserv.id)" class="cancel-btn active-cancel-btn">Cancel</button>
-                <button v-else-if="!this.isHistoryRes && !checkIfCancelable(reserv.startDate)" class="cancel-btn disabled-cancel-btn"><s>Cancel</s></button>
+            <div v-for="reserv in this.reservations" :key="reserv.id" class="card-style row">
+                <div class="col">
+                    <img :src="setRentalPic(reserv.rentalPic)" class="rent-image">
+                </div>
+                <div class="col">
+                    <label>Reserved rental name:</label>
+                    <p>{{reserv.name}}</p>
+                    <label>Reservation start date:</label>
+                    <p>{{formatDateString(reserv.startDate)}}</p>
+                    <label>Reservation end date:</label>
+                    <p>{{formatDateString(reserv.endDate)}}</p>
+                    <label>Reservation price per day:</label>
+                    <p>€{{reserv.price}}</p>
+                </div>
+                <div>
+                    <button v-if="!this.isHistoryRes && checkIfCancelable(reserv.startDate)" @click="emitCancel(reserv.id)" class="cancel-btn active-cancel-btn">Cancel</button>
+                    <button v-else-if="!this.isHistoryRes && !checkIfCancelable(reserv.startDate)" class="cancel-btn disabled-cancel-btn"><s>Cancel</s></button>
+                </div>
             </div>
         </div>
     </div>
@@ -42,6 +49,11 @@
             };
         },
         methods: {
+            setRentalPic(rentalPic) {
+                try{
+                    return require('@/assets/' + rentalPic);
+                } catch(e) {}
+            },
             emitCancel(resId) {
                 this.$emit("cancel-reservation", resId);
             },
@@ -163,7 +175,7 @@
     }
 
     #cards-cont {
-        width: 70%;
+        width: 80%;
         min-height: 80vh;
         border-left: 1px solid rgb(103, 104, 101);
         border-right: 1px solid rgb(104, 101, 101);
@@ -180,16 +192,16 @@
     .card-style {
         border: 1px solid black;
         border-radius: 20px;
-        width: 300px;
-        height: 315px;
+        width: 535px;
+        height: 335px;
         padding-top: 20px;
         margin: 20px;
     }
 
     .card-style:hover {
         margin: 12px 12px;
-        width: 316px;
-        height: 331px;
+        width: 551px;
+        height: 351px;
         background-color: rgba(245, 238, 238, 0.8);
     }
 
@@ -207,6 +219,14 @@
     .cancel-btn {
         border-radius: 20px;
         font-weight: bold;
+        width: 150px;
+        margin-bottom: 5px;
+    }
+
+    .rent-image {
+        height: 250px;
+        width: 250px;
+        border-radius: 30px 10px 30px 10px;
     }
 
     .active-cancel-btn {

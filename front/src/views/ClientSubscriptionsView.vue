@@ -1,7 +1,7 @@
 <template>
     <div id="subs-cont">
 
-        <div class="card-style d-flex align-items-center" v-for="sub in this.subscriptions" :key="sub.id">
+        <div class="card-style d-flex align-items-center" v-for="sub in this.subscriptions" :key="sub.ownerId">
             <div class="col-2">
                 <img class="acc-img" src="@/assets/logo.png">
             </div>
@@ -20,26 +20,50 @@
                 </div>
             </div>
             <div class="col-2">
-                <button class="unsub-btn">Unsubscribe</button>
+                <button class="unsub-btn" @click="unsubscribe(sub.ownerId)">Unsubscribe</button>
             </div>  
         </div> 
-              
+
+        <SuccessPopUp v-show="successPopUpVisible"
+            @close = closeSuccPopUp
+            :mess = succMessage
+        />   
     </div>
 </template>
 
 <script>
-    import axios from 'axios';
+    import axios from 'axios';  
+    import SuccessPopUp from "@/components/SuccessPopUp.vue";
 
     export default {
         name: "ClientSubscriptionsView",
+        components: {
+            SuccessPopUp
+        },
         data() {
             return {
-                subscriptions: []
+                subscriptions: [],
+
+                successPopUpVisible: false,
+                succMessage: "You successfully unsubscribed!"
             }
         },
-        methods: {},
+        methods: {
+            unsubscribe(ownerId) {
+                axios.put("api/client/unsubscribe/" + ownerId, {}, 
+                            {headers: {'authorization': window.localStorage.getItem("token") }})
+                    .then(() => {
+                        this.showSubBtn = true;
+                        this.successPopUpVisible = true;
+                    });
+            },
+            closeSuccPopUp() {
+                this.successPopUpVisible = false;
+                this.$router.go();
+            }
+        },
         created() {
-            axios.get("api/client/subscriptions", {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.get("api/client/subscriptions", { headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     this.subscriptions = response.data;
                 }

@@ -11,7 +11,7 @@
                 <label>Reservation ends on:</label>
                 <p>{{formatDateStr(reserv.endDate)}}</p>
                 <label>Reservation price per day:</label>
-                <p>{{reserv.newPrice}}€/day <s>{{this.oldPrice}}</s></p>
+                <p>{{reserv.price}}€/day <s>{{this.oldPrice}}</s></p>
                 <label>Additional services:</label>
                 <p>{{reserv.additionalServices}}</p>
             </div> 
@@ -62,6 +62,7 @@
         },
         methods: {
             confirmationForRes(resId) {
+                console.log(this.reservations);
                 this.selectedResId = resId;
                 this.confirmPopUpVisible = true;
             },
