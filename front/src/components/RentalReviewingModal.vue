@@ -38,6 +38,9 @@
           
         </div>
 
+        <RentalReportingForm
+        />
+
         <SuccessPopUp v-show="successPopUpVisible"
             @close = closeSuccPopUp
             :mess = succMessage
@@ -55,12 +58,13 @@
     import SuccessPopUp from "@/components/SuccessPopUp.vue";
     import StarRating from 'vue-star-rating';
     import ErrorPopUp from "@/components/ErrorPopUp.vue";
-
+    import RentalReportingForm from "@/components/RentalReportingForm.vue";
 
     export default {
         name: "RentalReviewingModal",
         components: {
             StarRating,
+            RentalReportingForm,
             SuccessPopUp,
             ErrorPopUp
         },
@@ -94,7 +98,8 @@
                 )
                     .then(() => {
                         this.successPopUpVisible = true;
-                    }).catch((error) => {
+                    })
+                    .catch((error) => {
                         if (error.response.status === "400")
                                 errorPopUpVisible = true;
                     });
