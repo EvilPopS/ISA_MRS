@@ -4,7 +4,7 @@ import com.ftn.isa.model.Subscription;
 import com.ftn.isa.model.User;
 
 public class SubClientPreview {
-    private Long subId;
+    private Long ownerId;
     private String name;
     private String surname;
     private String phoneNum;
@@ -15,9 +15,8 @@ public class SubClientPreview {
     public SubClientPreview() {}
 
     public SubClientPreview(Subscription sub) {
-        this.subId = sub.getId();
-
         User owner = sub.getOwner();
+        this.ownerId = owner.getId();
         this.name = owner.getName();
         this.surname = owner.getSurname();
         this.phoneNum = owner.getPhoneNumber();
@@ -34,12 +33,12 @@ public class SubClientPreview {
         }
     }
 
-    public Long getSubId() {
-        return subId;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setSubId(Long subId) {
-        this.subId = subId;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getName() {

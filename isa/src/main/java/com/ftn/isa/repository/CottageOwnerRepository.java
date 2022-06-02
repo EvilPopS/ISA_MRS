@@ -12,6 +12,8 @@ public interface CottageOwnerRepository extends JpaRepository<CottageOwner, Long
 
     CottageOwner findByEmail(String email);
 
+    CottageOwner getOne(Long id);
+
     //@Query("select c from CottageOwner c where c. = ?1")
     //List<Cottage> findAllCottages(Long id);
 

@@ -31,37 +31,85 @@
         <div class="d-flex justify-content-center">
                 <button id="back-btn" class="button-style" @click="$emit('close')">Back</button>
         </div>
+
+        <SuccessPopUp v-show="successPopUpVisible"
+            @close = closeSuccPopUp
+            :mess = succMessage
+        />
     </div>
 </template>
 
 <script>
     import axios from 'axios';
+    import SuccessPopUp from "@/components/SuccessPopUp.vue";
 
     export default {
         name : "RentalOwnerProfileView",
+        components: {
+            SuccessPopUp
+        },
         data() {
             return {
-                showSubBtn: true
+                showSubBtn: true,
+                userType: null,
+
+                successPopUpVisible: false,
+                succMessage: ""
             }
         },
         props: {
-            ownerInfo: Object
+            ownerInfo: Object,
+            rentalType: String
         },
         methods: {
             setOwnerProfilePic(ownerProfilePic) {
                 try{
                     return require('@/assets/' + ownerProfilePic);
                 } catch(e) {}
+            },
+            subscribe() {
+                console.log(this.userType);
+                axios.post("api/client/subscribe/" + this.ownerInfo.id + "?userType=" + this.userType, {}, 
+                            {headers: {'authorization': window.localStorage.getItem("token") }})
+                    .then(() => {
+                        this.showSubBtn = false;
+                        this.succMessage = "You successfully subscribed!";
+                        this.successPopUpVisible = true;
+                    });
+            },
+            unsubscribe() {
+                axios.put("api/client/unsubscribe/" + this.ownerInfo.id, {}, 
+                            {headers: {'authorization': window.localStorage.getItem("token") }})
+                    .then(() => {
+                        this.showSubBtn = true;
+                        this.succMessage = "You successfully unsubscribed!";
+                        this.successPopUpVisible = true;
+                    });
+            },
+            closeSuccPopUp() {
+                this.successPopUpVisible = false;
             }
         },
         created() {
             axios.get("api/client/check-if-subscribed/" + this.ownerInfo.id, {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then(() => {
-                    this.showSubBtn = true;
+                    this.showSubBtn = false;
                 }).catch((error) => {
                     if (error.response.status == "404")
-                        this.showSubBtn = false;
+                        this.showSubBtn = true;
                 });
+
+            console.log(this.rentalType);
+            switch(this.rentalType) {
+                case "Cottage":
+                    this.userType = "COTTAGE_OWNER";
+                    break;
+                case "Boat":
+                    this.userType = "BOAT_OWNER";
+                    break;
+                case "Adventure":
+                    this.userType = "INSTRUCTOR";
+            }
         }
     }
 </script>

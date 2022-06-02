@@ -84,7 +84,8 @@
 
                         <label>Location on map:</label>
                         <MapContainer
-                            :mapHeight="'200'"
+                            :key="[lon, lat]"
+                            :mapHeight="'300'"
                             :coordinates="[lon, lat]"
                             :mapEditable="false"
                         />
@@ -117,6 +118,7 @@
 
             <RentalOwnerProfileView v-if="toShowOwnerProfile"
                 :ownerInfo="ownerInfo"
+                :rentalType="rentalType"
                 @close="reopenRentalDetails"
             />
         </div>
@@ -157,8 +159,8 @@
                 rate: "",
                 address: "",
                 images: [],
-                lon: "",
-                lat: "",
+                lon: 0,
+                lat: 0,
 
                 // svi rentali
                 rules: "",

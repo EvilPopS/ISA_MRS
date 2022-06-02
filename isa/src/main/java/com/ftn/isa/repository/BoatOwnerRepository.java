@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 public interface BoatOwnerRepository extends JpaRepository<BoatOwner, Long> {
     BoatOwner findByEmail(String email);
 
+    BoatOwner getOne(Long id);
+
     @Query(nativeQuery = true,
             value="SELECT own.* " +
                     "FROM boat_owner as own " +
