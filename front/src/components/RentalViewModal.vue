@@ -129,6 +129,7 @@
             />
 
             <RentalReviewingModal v-if="toShowRatingsAndReviews"
+                :rentalId="id"
                 @close="reopenRentalDetails"
             />
         </div>

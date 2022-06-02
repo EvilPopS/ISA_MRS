@@ -20,6 +20,7 @@
                     :border-width="3" 
                     :star-size="20"
                     :read-only="true"
+                    :increment="0.01"
                     :animate="true"
                     :rating="rev.rating">
                 </StarRating>
@@ -31,10 +32,14 @@
 </template>
 
 <script>
-    import StarRating from 'vue-star-rating'
+    import axios from 'axios'; 
+    import StarRating from 'vue-star-rating';
     
     export default {
         name: "RentalReviewingModal",
+        props: {
+            rentalId: Number
+        },
         components: {
             StarRating
         },
@@ -45,6 +50,13 @@
                 review: "",
                 rating: 0
             };
+        },
+        created() {
+            axios.get("api/notification/get-rental-reviews/" + this.rentalId, {headers: {'authorization': window.localStorage.getItem("token") }})
+                .then((response) => {
+                    console.log(response.data);
+                    this.reviews = response.data;
+                });
         }
     }
 </script>
