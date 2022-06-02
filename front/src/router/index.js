@@ -15,6 +15,7 @@ import AdminNotifications from '../views/AdminNotifications.vue';
 import OwnersSearch from '../views/OwnersSearch.vue';
 import ClientReservationHistory from '../views/ClientReservationHistory';
 import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
+import ClientSubscriptionsView from '@/views/ClientSubscriptionsView';
 import OwnersReportPage from '@/views/OwnersReportPage';
 
 const routes = [
@@ -101,10 +102,15 @@ const routes = [
     component: ClientUpcomingReservations
   },
   {
+    path: '/ClientSubscriptionsView',
+    name: 'ClientSubscriptionsView',
+    component: ClientSubscriptionsView
+  },
     path: '/OwnersReportPage',
     name: 'OwnersReportPage',
     component: OwnersReportPage
   }
+
 ]
 
 const router = createRouter({

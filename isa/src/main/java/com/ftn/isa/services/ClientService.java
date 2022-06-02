@@ -26,6 +26,9 @@ public class ClientService {
     private CottageRepository cottageRepo;
     @Autowired
     private BoatRepository boatRepo;
+    @Autowired
+    private UserService userService;
+
 
     public Client findByEmail(String email) {
         return clientRepo.findByEmail(email);
@@ -98,5 +101,29 @@ public class ClientService {
                 return true;
         }
         return false;
+    }
+
+    public boolean checkIfSubscribed(Client client, Long ownerId) {
+        for (Subscription sub : client.getSubscriptions())
+            if (sub.isActiveSubscription() && sub.getOwner().getId().equals(ownerId))
+                return true;
+        return false;
+    }
+
+    public void subscribeToOwner(Client client, Long ownerId, String usrType) {
+        client.getSubscriptions().add(
+                new Subscription(userService.getUserByIdAndRole(ownerId, usrType), client, true)
+        );
+        clientRepo.save(client);
+    }
+
+    public void unsubscribeFromOwner(Client client, Long ownerId) {
+        List<Subscription> subs = client.getSubscriptions();
+        for (Subscription sub : subs)
+            if (sub.isActiveSubscription() && sub.getOwner().getId().equals(ownerId)) {
+                sub.setActiveSubscription(false);
+                clientRepo.save(client);
+                break;
+            }
     }
 }

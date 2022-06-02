@@ -4,6 +4,9 @@ import com.ftn.isa.DTO.*;
 import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
+import com.ftn.isa.services.BoatOwnerService;
+import com.ftn.isa.services.CottageOwnerService;
+import com.ftn.isa.services.FishingInstructorService;
 import com.ftn.isa.services.RentalServService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +25,13 @@ import java.util.logging.SimpleFormatter;
 public class RentalServController {
     @Autowired
     private RentalServService rentalServService;
+    @Autowired
+    private CottageOwnerService cottageOwnerService;
+    @Autowired
+    private FishingInstructorService instructorService;
+    @Autowired
+    private BoatOwnerService boatOwnerService;
+
 
     @GetMapping(value="/search")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
@@ -65,11 +76,15 @@ public class RentalServController {
     @GetMapping(value="/cottage/details/{id}")
     @PreAuthorize("hasRole('CLIENT')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @Transactional
     public ResponseEntity<DetailedCottageInfoDTO> getCottageDetailedInfo(@PathVariable Long id) {
         Cottage cottage = rentalServService.getCottageById(id);
         if (cottage == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(new DetailedCottageInfoDTO(cottage), HttpStatus.OK);
+        return new ResponseEntity<>(
+                    new DetailedCottageInfoDTO(cottage, cottageOwnerService.getOwnerByCottageId(id)),
+                    HttpStatus.OK
+        );
     }
 
     @GetMapping(value="/boat/details/{id}")
@@ -79,7 +94,10 @@ public class RentalServController {
         Boat boat = rentalServService.getBoatById(id);
         if (boat == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(new DetailedBoatInfoDTO(boat), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new DetailedBoatInfoDTO(boat, boatOwnerService.getOwnerByBoatId(id)),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping(value="/adventure/details/{id}")
@@ -89,7 +107,10 @@ public class RentalServController {
         Adventure adventure = rentalServService.getAdventureById(id);
         if (adventure == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(new DetailedAdventureInfoDTO(adventure), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new DetailedAdventureInfoDTO(adventure, instructorService.getOwnerByAdventureId(id)),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping(value="/gradeUpdate")

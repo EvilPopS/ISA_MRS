@@ -6,6 +6,7 @@ import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Client;
 import com.ftn.isa.model.RentalService;
 import com.ftn.isa.model.Reservation;
+import com.ftn.isa.model.Subscription;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.ClientService;
 import com.ftn.isa.services.EmailService;
@@ -18,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -163,4 +166,63 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+    @GetMapping(value="/subscriptions")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<SubClientPreview>> fetchSubscriptions (HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        List<SubClientPreview> subs = new ArrayList<>();
+        for (Subscription sub : clientService.findByEmail(email).getSubscriptions())
+            if (sub.isActiveSubscription())
+                subs.add(new SubClientPreview(sub));
+
+        return new ResponseEntity<>(subs, HttpStatus.OK);
+    }
+
+
+    @GetMapping(value="/check-if-subscribed/{ownerId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> checkIfSubscribed(@PathVariable Long ownerId, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        if (!clientService.checkIfSubscribed(clientService.findByEmail(email), ownerId))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value="/subscribe/{ownerId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> subscribe(@PathVariable Long ownerId, @RequestParam("userType") String usrType, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        Client client = clientService.findByEmail(email);
+        if (clientService.checkIfSubscribed(client, ownerId))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        clientService.subscribeToOwner(client, ownerId, usrType);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value="/unsubscribe/{ownerId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> unsubscribe(@PathVariable Long ownerId, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        clientService.unsubscribeFromOwner(clientService.findByEmail(email), ownerId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
