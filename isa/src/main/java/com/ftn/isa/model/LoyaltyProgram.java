@@ -27,5 +27,27 @@ public class LoyaltyProgram {
         this.id = id;
     }
 
+    public LoyaltyType getLoyaltyType() {
+        return loyaltyType;
+    }
 
+    public void setLoyaltyType(LoyaltyType loyaltyType) {
+        this.loyaltyType = loyaltyType;
+    }
+
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Double discount) {
+        this.discount = discount;
+    }
+
+    public Double getIncrease() {
+        return increase;
+    }
+
+    public void setIncrease(Double increase) {
+        this.increase = increase;
+    }
 }

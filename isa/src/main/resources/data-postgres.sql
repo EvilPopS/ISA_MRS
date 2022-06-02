@@ -79,9 +79,8 @@ insert into cottage (id, name, description, capacity, rules, is_deleted, address
 
 insert into loyalty_program (discount, increase, loyalty_type)
     values (0, 0, 0),
-            (10, 10, 1),
-            (20, 20, 2),
-            (30, 30, 3);
+            (5, 5, 1),
+            (10, 10, 2);
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
                                 role_id, address_id, photo_id, loyalty_points)
@@ -110,16 +109,19 @@ insert into subscription(owner_id, client_id, is_active_subscription)
             (6, 4, true);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
-    values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null, false),
-            ('1/5/2022', '11/5/2022', false, true, 30, 1, 4, false, null, false),
-            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null, false),
-            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null, false),
-            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null, false),
-            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null, false),
-            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null, false),
-            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null, false),
-            ('10/6/2022', '12/6/2022', true, false, 40, 4, null, false, 'klima rostilj', false),
-            ('24/5/2022', '26/5/2022', false, true, 30, 2, 4, false, null, false),
-            ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null, false),
-            ('21/6/2022', '25/6/2022', true, false, 60, 4, null, false, 'klima wifi rostilj', false)
+values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null, false),
+       ('1/5/2022', '11/5/2022', false, true, 30, 1, 4, false, null, false),
+       ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null, false),
+       ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null, false),
+       ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null, false),
+       ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null, false),
+       ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null, false),
+       ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null, false),
+       ('10/6/2022', '12/6/2022', false, true, 40, 4, 4, false, null, false),
+       ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null, false),
+       ('14/5/2022 11:00', '18/5/2022 11:00', false, true, 40, 6, 4, false, null, false),
+       ('24/5/2022 11:00', '28/5/2022 11:00', true, true, 70, 5, 4, false, 'spa,table tennis', false),
+       ('29/5/2022 11:00', '30/5/2022 11:00', false, true, 40, 5, 4, false, null, false),
+       ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null, false),
+       ('21/6/2022', '25/6/2022', false, true, 60, 4, 4, false, null, false)
 

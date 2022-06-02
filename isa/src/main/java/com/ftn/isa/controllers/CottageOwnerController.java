@@ -46,6 +46,9 @@ public class CottageOwnerController  {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private LoyaltyProgramService loyaltyProgramService;
+
     @GetMapping
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
@@ -99,6 +102,30 @@ public class CottageOwnerController  {
         }
 
         return new ResponseEntity<Set<CottageDTO>>(cottagesSet, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/find-one-rental/{id}")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<CottageDTO> getAllCottages(@PathVariable Long id, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Set<Cottage> cottages = cottageOwner.getCottages();
+        CottageDTO returnCottage = null;
+        for (Cottage c : cottages) {
+            if (!c.isDeleted() && c.getId().equals(id)) returnCottage = new CottageDTO(c);
+        }
+
+        if (returnCottage == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<CottageDTO>(returnCottage, HttpStatus.OK);
     }
 
     @PostMapping(value = "/add-cottage")
@@ -360,6 +387,23 @@ public class CottageOwnerController  {
         cottageOwnerService.save(cottageOwner);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get-chart-data/{selectedGraph}/{selectedPeriod}/{selectedMonth}")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<List<String>>> getChartData(@PathVariable String selectedGraph, @PathVariable String selectedPeriod, @PathVariable String selectedMonth, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<List<String>> data = cottageOwnerService.getChartData(cottageOwner, selectedGraph, selectedPeriod, selectedMonth, loyaltyProgramService.getAllLoyaltyPrograms());
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
 }

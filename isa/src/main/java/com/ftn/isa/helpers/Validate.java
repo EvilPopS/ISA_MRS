@@ -4,13 +4,12 @@ import com.ftn.isa.DTO.ReservingInfoDTO;
 import com.ftn.isa.model.Reservation;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Validate {
     private static final String REG_NAME = "^[a-zA-Z\\s]+";
@@ -23,6 +22,93 @@ public class Validate {
 
     public static LocalDateTime getTodaysDate() {
         return LocalDateTime.now();
+    }
+
+    public static LocalDateTime getCurrentWeekMonday() {
+        LocalDateTime today = LocalDateTime.now();
+
+        LocalDateTime monday = today;
+        while (monday.getDayOfWeek() != DayOfWeek.MONDAY) {
+            monday = monday.minusDays(1);
+        }
+
+        return monday.withHour(0).withMinute(1).withSecond(1);
+    }
+
+    public static LocalDateTime getCurrentWeekSunday() {
+        LocalDateTime today = LocalDateTime.now();
+
+        // Go forward to get Sunday
+        LocalDateTime sunday = today;
+        while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY) {
+            sunday = sunday.plusDays(1);
+        }
+
+        return sunday.withHour(0).withMinute(1).withSecond(1);
+    }
+
+    public static LocalDateTime getCurrentMonthBegining() {
+        return LocalDateTime.now().withDayOfMonth(1);
+    }
+
+    public static LocalDateTime getCurrentMonthEnd() {
+        return LocalDateTime.now().plusMonths(1).withDayOfMonth(1).minusDays(1);
+    }
+
+    public static LocalDateTime getSelectedMonthStart(String selectedMonth) {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = getSelectedMonth(selectedMonth);
+        int day = 1;
+        c.set(year, month, day);
+        return LocalDateTime.ofInstant(c.toInstant(), c.getTimeZone().toZoneId()).toLocalDate().atTime(00,00);
+    }
+
+    public static LocalDateTime getSelectedMonthEnd(String selectedMonth) {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = getSelectedMonth(selectedMonth);
+        int day = 1;
+        c.set(year, month, day);
+        int numOfDaysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+        c.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth-1);
+        return LocalDateTime.ofInstant(c.toInstant(), c.getTimeZone().toZoneId()).toLocalDate().atTime(00,00);
+    }
+
+    public static int getSelectedMonth(String month) {
+        switch (month.toUpperCase()){
+            case "JANUARY": return Calendar.JANUARY;
+            case "FEBRUARY": return Calendar.FEBRUARY;
+            case "MARCH": return Calendar.MARCH;
+            case "APRIL": return Calendar.APRIL;
+            case "MAY": return Calendar.MAY;
+            case "JUNE": return Calendar.JUNE;
+            case "JULY": return Calendar.JULY;
+            case "AUGUST": return Calendar.AUGUST;
+            case "SEPTEMBER": return Calendar.SEPTEMBER;
+            case "OCTOBER": return Calendar.OCTOBER;
+            case "NOVEMBER": return Calendar.NOVEMBER;
+            case "DECEMBER": return Calendar.DECEMBER;
+        }
+        return Calendar.JANUARY;
+    }
+
+    public static LocalDateTime getStartOfYear() {
+        int year = 2022;  // you can pass any value of year Like 2020,2021...
+        int month = 1;   // you can pass any value of month Like 1,2,3...
+        YearMonth yearMonth = YearMonth.of( year, month );
+        LocalDate firstOfMonth = yearMonth.atDay( 1 );
+
+        return firstOfMonth.atStartOfDay();
+    }
+
+    public static LocalDateTime getEndOfYear() {
+        int year = 2022;  // you can pass any value of year Like 2020,2021...
+        int month = 12;   // you can pass any value of month Like 1,2,3...
+        YearMonth yearMonth = YearMonth.of( year, month );
+        LocalDate lastOfMonth = yearMonth.atEndOfMonth();
+
+        return lastOfMonth.atStartOfDay();
     }
 
     public static boolean validateSurName(String surName) {
@@ -100,4 +186,5 @@ public class Validate {
                 return false;
         return true;
     }
+
 }
