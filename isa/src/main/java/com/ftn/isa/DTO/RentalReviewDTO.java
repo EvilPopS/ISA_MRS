@@ -7,6 +7,8 @@ public class RentalReviewDTO {
     private double rating;
     private String review;
 
+    public RentalReviewDTO() {
+    }
 
     public RentalReviewDTO(Review review) {
         this.rating = review.getGrade();

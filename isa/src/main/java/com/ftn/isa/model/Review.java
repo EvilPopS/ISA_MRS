@@ -13,11 +13,11 @@ public class Review extends Notification{
     @JoinColumn(name = "receiver_id", referencedColumnName = "id")
     private User receiver;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private RentalService rentalService;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private Client sender;
 
@@ -26,6 +26,12 @@ public class Review extends Notification{
         super(message, isAnswered, localDateTime);
     }
 
+    public Review(String message, double rating, Client sender, RentalService rental) {
+        super(message);
+        this.grade = rating;
+        this.sender = sender;
+        this.rentalService = rental;
+    }
     public Review() {
 
     }

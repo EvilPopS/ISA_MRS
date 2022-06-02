@@ -26,7 +26,7 @@
                         <p>€{{reserv.price}}</p>
                     </div>
                     <div>
-                        <button v-if="!this.isHistoryRes && checkIfCancelable(reserv.startDate)" @click="emitCancel(reserv.id)" class="cancel-btn active-cancel-btn">Cancel</button>
+                        <button v-if="!this.isHistoryRes && checkIfCancelable(reserv.startDate)" @click.stop="emitCancel(reserv.id)" class="cancel-btn active-cancel-btn">Cancel</button>
                         <button v-else-if="!this.isHistoryRes && !checkIfCancelable(reserv.startDate)" class="cancel-btn disabled-cancel-btn"><s>Cancel</s></button>
                     </div>
                 </div>
