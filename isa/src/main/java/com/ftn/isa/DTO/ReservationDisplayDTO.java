@@ -1,6 +1,7 @@
 package com.ftn.isa.DTO;
 
 import com.ftn.isa.model.RentalService;
+import com.ftn.isa.model.RentalType;
 import com.ftn.isa.model.Reservation;
 
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 public class ReservationDisplayDTO {
     private Long id;
     private Long rentalId;
+    private String rentalType;
     private String rentalPic;
     private String name;
     private LocalDateTime startDate;
@@ -24,6 +26,16 @@ public class ReservationDisplayDTO {
         this.endDate = res.getEndTime();
         this.price = res.getPrice();
         this.additionalServices = res.getActionServices();
+        switch (rental.getRentalType()) {
+            case ADVENTURE:
+                this.rentalType = "Adventure";
+                break;
+            case BOAT:
+                this.rentalType = "Boat";
+                break;
+            default:
+                this.rentalType = "Cottage";
+        }
     }
 
     public ReservationDisplayDTO(Reservation res) {
@@ -35,6 +47,7 @@ public class ReservationDisplayDTO {
         this.endDate = res.getEndTime();
         this.price = res.getPrice();
         this.additionalServices = res.getActionServices();
+        this.rentalType = null;
     }
 
     public Long getId() {
@@ -51,6 +64,14 @@ public class ReservationDisplayDTO {
 
     public void setRentalId(Long rentalId) {
         this.rentalId = rentalId;
+    }
+
+    public String getRentalType() {
+        return rentalType;
+    }
+
+    public void setRentalType(String rentalType) {
+        this.rentalType = rentalType;
     }
 
     public String getRentalPic() {

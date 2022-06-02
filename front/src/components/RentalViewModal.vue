@@ -1,10 +1,16 @@
 <template>
     <div class="popup-overlay" @click="emitClose()">
         <div class="container popup" @click.stop>
-            <div class="row modal-style" v-show="!this.toShowReservationForm && !this.toShowRentalActions && !this.toShowOwnerProfile">
+            <div class="row modal-style" v-show="!this.toShowReservationForm && 
+                                                    !this.toShowRentalActions && 
+                                                    !this.toShowOwnerProfile && 
+                                                    !this.toShowRatingsAndReviews">
                 <div class="row btns-cont" v-if="isClient">
                     <div class="col justify-content-center">
                         <button class="btn-style" @click="showReservationForm">Reservation calendar</button>
+                    </div>
+                    <div class="col justify-content-center">
+                        <button class="btn-style rent-ratings" @click="showRatingsAndReviews">Ratings &amp; reviews</button>
                     </div>
                     <div class="col justify-content-center">
                         <button class="btn-style rent-owner-btn" @click="showOwnerProfile">Owner Profile</button>
@@ -121,6 +127,12 @@
                 :rentalType="rentalType"
                 @close="reopenRentalDetails"
             />
+
+            <RentalReviewingModal v-if="toShowRatingsAndReviews"
+                :rentalId="rentalId"
+                :rentalType="rentalType"
+                @close="reopenRentalDetails"
+            />
         </div>
     </div>
 </template>
@@ -131,6 +143,7 @@
     import RentalReservationForm from "@/components/RentalReservationForm.vue";
     import RentalActionReservations from "@/components/RentalActionReservations.vue";
     import RentalOwnerProfileView from "@/components/RentalOwnerProfileView.vue";
+    import RentalReviewingModal from "@/components/RentalReviewingModal.vue";
 
     export default {
         name: "RentalViewModal",
@@ -138,7 +151,8 @@
             MapContainer,
             RentalReservationForm,
             RentalActionReservations,
-            RentalOwnerProfileView
+            RentalOwnerProfileView,
+            RentalReviewingModal
         },
         props: {
             id: Number,
@@ -193,7 +207,8 @@
                 showDetailedAdventure: false,
                 toShowReservationForm: false,
                 toShowRentalActions: false,
-                toShowOwnerProfile: false
+                toShowOwnerProfile: false,
+                toShowRatingsAndReviews: false
             }
         },
         created() {
@@ -248,13 +263,17 @@
             showOwnerProfile() {
                 this.toShowOwnerProfile = true;
             },
+            showRatingsAndReviews() {
+                this.toShowRatingsAndReviews = true;
+            },
             reopenRentalDetails() {
                 this.toShowReservationForm = false;
                 this.toShowRentalActions = false;
                 this.toShowOwnerProfile = false;
+                this.toShowRatingsAndReviews = false;
             },
             updateActionReservs(resId) {
-                let a = this.actionReservations.splice(this.actionReservations.findIndex(res => res.id === resId), 1);
+                this.actionReservations.splice(this.actionReservations.findIndex(res => res.id === resId), 1);
             }
         }
     }
@@ -380,6 +399,10 @@
 
     .rent-owner-btn {
         background: rgb(18, 161, 18);
+    }
+
+    .rent-ratings {
+        background: rgb(161, 128, 18);
     }
 
     #info-holder {
