@@ -1,5 +1,6 @@
 package com.ftn.isa.model;
 
+
 import javax.persistence.*;
 
 @Entity
@@ -7,7 +8,7 @@ public class Report extends Notification{
     @Column(name = "is_negative", nullable = false)
     private boolean isNegative;
 
-    @Column(name = "has_showedUp", nullable = false)
+    @Column(name = "has_showedUp")
     private boolean hasShowedUp;
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -18,6 +19,8 @@ public class Report extends Notification{
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
+    @Column(name="client_is_sender")
+    private boolean clientIsSender;
 
     public Report(String message, boolean isAnswered, String localDateTime) {
         super(message, isAnswered, localDateTime);
@@ -32,13 +35,15 @@ public class Report extends Notification{
         this.hasShowedUp = hasShowedUp;
     }
 
-    public Report(String message) {
+    public Report(String message, Client client, User owner, Boolean clientIsSender) {
         super(message);
+        this.client = client;
+        this.owner = owner;
+        this.clientIsSender = clientIsSender;
+        this.isNegative = true;
     }
 
-    public Report() {
-
-    }
+    public Report() {}
 
     public boolean isNegative() {
         return isNegative;
@@ -70,5 +75,13 @@ public class Report extends Notification{
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public boolean isClientIsSender() {
+        return clientIsSender;
+    }
+
+    public void setClientIsSender(boolean clientIsSender) {
+        this.clientIsSender = clientIsSender;
     }
 }
