@@ -17,6 +17,7 @@ import ClientReservationHistory from '../views/ClientReservationHistory';
 import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
 import ClientSubscriptionsView from '@/views/ClientSubscriptionsView';
 import OwnersReportPage from '@/views/OwnersReportPage';
+import BoatOwnerHome from '../views/BoatOwnerHome.vue';
 
 const routes = [
   {
@@ -106,9 +107,15 @@ const routes = [
     name: 'ClientSubscriptionsView',
     component: ClientSubscriptionsView
   },
+  {
     path: '/OwnersReportPage',
     name: 'OwnersReportPage',
     component: OwnersReportPage
+  },
+  {
+    path: '/BoatOwnerHome',
+    name: 'BoatOwnerHome',
+    component: BoatOwnerHome
   }
 
 ]

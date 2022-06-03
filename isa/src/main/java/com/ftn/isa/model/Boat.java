@@ -26,13 +26,10 @@ public class Boat extends RentalService{
     @Column(name = "fishing_equipment", nullable = false)
     private String fishingEquipment;
 
-    @Column(name = "cancellation_conditions", nullable = false)
-    private Double cancellationConditions;
-
     public Boat() {
     }
 
-    public Boat(String type, String boatLength, String engineNumber, String enginePower, String maxSpeed, String navigationEquipment, String fishingEquipment, Double cancellationConditions) {
+    public Boat(String type, String boatLength, String engineNumber, String enginePower, String maxSpeed, String navigationEquipment, String fishingEquipment) {
         this.type = type;
         this.boatLength = boatLength;
         this.engineNumber = engineNumber;
@@ -40,7 +37,6 @@ public class Boat extends RentalService{
         this.maxSpeed = maxSpeed;
         this.navigationEquipment = navigationEquipment;
         this.fishingEquipment = fishingEquipment;
-        this.cancellationConditions = cancellationConditions;
     }
 
     public String getType() {
@@ -99,11 +95,4 @@ public class Boat extends RentalService{
         this.fishingEquipment = fishingEquipment;
     }
 
-    public Double getCancellationConditions() {
-        return cancellationConditions;
-    }
-
-    public void setCancellationConditions(Double cancellationConditions) {
-        this.cancellationConditions = cancellationConditions;
-    }
 }

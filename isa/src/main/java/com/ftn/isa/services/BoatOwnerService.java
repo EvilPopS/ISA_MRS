@@ -1,5 +1,7 @@
 package com.ftn.isa.services;
 
+import com.ftn.isa.DTO.BoatOwnerDTO;
+import com.ftn.isa.DTO.CottageOwnerDTO;
 import com.ftn.isa.model.BoatOwner;
 import com.ftn.isa.model.CottageOwner;
 import com.ftn.isa.repository.BoatOwnerRepository;
@@ -18,4 +20,12 @@ public class BoatOwnerService {
     public BoatOwner getOwnerByBoatId(Long boatId) {
         return boatOwnerRepository.getOwnerByCBoatId(boatId);
     }
+
+    public boolean save(BoatOwnerDTO boatOwnerDTO, BoatOwner bo) {
+        boatOwnerDTO.hashPassword();
+        bo.updatePersonalInfo(boatOwnerDTO);
+        boatOwnerRepository.save(bo);
+        return true;
+    }
+
 }
