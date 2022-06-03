@@ -86,7 +86,7 @@
                         </div>
                         <div id="mapContainer">
                             <MapContainer
-                                :coordinates = "[boat.lon, boat.lat]"
+                                :coordinates = "[19.83383399956332, 45.25697997579121]"
                                 :map-height = "200"
                                 :mapEditable="true"
                                 @changed-location = "changedLocationFunc"
@@ -120,12 +120,13 @@ import axios from 'axios';
 import MapContainer from "./MapContainer.vue"
 
 export default {
-    name: "EditBoatModal",
+    name: "AddBoatModal",
     components: {
         ErrorPopUp, SuccessPopUp, MapContainer
     },
     props: {
-        boat: Object
+        showAddNewBoat: Boolean,
+        succPopUpVisible: Boolean
     },
     data(){
         return {
@@ -140,11 +141,33 @@ export default {
             changedLocation: false,
 
             errMessage: '',
-            succMessage: 'Boat data is changed successfully!',
+            succMessage: 'New boat successfully!',
             errorPopUpVisible: false,
-            localSuccPopUpVisible: false,
+            localSuccPopUpVisible: this.succPopUpVisible,
 
-            data: Object
+            data: {
+                name: '',
+                description: '',
+                rules: '',
+                price: '',
+                noRooms: 0,
+                fishingEquipment: '',
+                navigationEquipment: '',
+                city: '',
+                street: '',
+                country: '',
+                averageRating: 0,
+                noRatings: 0,
+                capacity: 0,
+                photos: [],
+                lon: '',
+                lat: '',
+                type: '',
+                maxSpeed: '',
+                enginePower: '',
+                engineNumber: '',
+                boatLength: ''
+            }
         }
     },
     methods: {
@@ -238,11 +261,10 @@ export default {
                 this.data.fishingEquipment += this.localFishingEq[s]
                 if (counter2 < this.localFishingEq.length) this.data.fishingEquipment += ','
             }
-            axios.put("api/boat-owner/change-boat-data", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.post("api/boat-owner/add-boat", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
-                    })
-                    .catch(err => {
+                    }).catch(err => {
                         if (err.response.status === 404){
                             this.errMsg = "Client or owner with given email address is not found!";
                             this.errorPoup = true;
@@ -321,24 +343,12 @@ export default {
             if (this.localNavEq.length < 1)
                 throw "You need to add at least one navigation equipment.";
 
-            if (this.changedLocation && !(this.boat.city !== this.data.city || this.boat.street !== this.data.street)){
-                throw "Location on the map is changed, but you didn't change city/street in input fields.";
-            }
+            if (!this.changedLocation)
+                throw "You need to change location on the map";
+
         }
         
-    },
-    mounted(){
-            this.data = Object.assign({}, this.boat)
-            try {
-                this.localNavEq = this.boat.navigationEquipment.split(',')
-                this.localFishingEq = this.boat.fishingEquipment.split(',')
-                this.localPhotos = Object.assign([], this.boat.photos)
-            }catch (err){
-                this.localNavEq = this.boat.navigationEquipment //ako ne uspe split znaci da ima samo jedna
-                this.localFishingEq = this.boat.fishingEquipment
-                this.localPhotos = Object.assign([], this.boat.photos)
-            }
-   }
+    }
 
 }
 </script>

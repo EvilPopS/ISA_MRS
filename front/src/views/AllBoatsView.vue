@@ -55,7 +55,7 @@
             />
         </div>
         <div v-else-if="showAddNewBoat">
-            <AddCottageModal
+            <AddBoatModal
             :showAddNewBoat = "showAddNewBoat"
             :succPopUpVisible = "succPopUpVisible"
             @modal-closed = "showAddNewBoat = false"
@@ -93,7 +93,7 @@
 <script>
  import axios from 'axios';
  import EditBoatModal from '../components/EditBoatModal.vue'
- import AddCottageModal from '../components/AddCottageModal.vue'
+ import AddBoatModal from '../components/AddBoatModal.vue'
  import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
  import ErrorPopUp from '../components/ErrorPopUp.vue'
  import SuccessPopUp from '../components/SuccessPopUp.vue'
@@ -102,7 +102,7 @@
 export default {
    name: "AllBoatsView",
    components: {
-       EditBoatModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, DetailCottageModal
+       EditBoatModal, AddBoatModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, DetailCottageModal
    },
    data (){
        return {
