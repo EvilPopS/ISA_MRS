@@ -1,10 +1,19 @@
 <template>
     <div class="popup-overlay" @click="emitClose()">
         <div class="container popup" @click.stop>
-            <div class="row modal-style" v-show="!this.toShowReservationForm && !this.toShowRentalActions">
+            <div class="row modal-style" v-show="!this.toShowReservationForm && 
+                                                    !this.toShowRentalActions && 
+                                                    !this.toShowOwnerProfile && 
+                                                    !this.toShowRatingsAndReviews">
                 <div class="row btns-cont" v-if="isClient">
                     <div class="col justify-content-center">
                         <button class="btn-style" @click="showReservationForm">Reservation calendar</button>
+                    </div>
+                    <div class="col justify-content-center">
+                        <button class="btn-style rent-ratings" @click="showRatingsAndReviews">Ratings &amp; reviews</button>
+                    </div>
+                    <div class="col justify-content-center">
+                        <button class="btn-style rent-owner-btn" @click="showOwnerProfile">Owner Profile</button>
                     </div>
                     <div class="col justify-content-center">
                         <button class="btn-style" @click="showActionResevations">Rental actions</button>
@@ -81,7 +90,8 @@
 
                         <label>Location on map:</label>
                         <MapContainer
-                            :mapHeight="'200'"
+                            :key="[lon, lat]"
+                            :mapHeight="'300'"
                             :coordinates="[lon, lat]"
                             :mapEditable="false"
                         />
@@ -111,6 +121,18 @@
                 @close="reopenRentalDetails"
                 @update-action-reservations="updateActionReservs"
             />
+
+            <RentalOwnerProfileView v-if="toShowOwnerProfile"
+                :ownerInfo="ownerInfo"
+                :rentalType="rentalType"
+                @close="reopenRentalDetails"
+            />
+
+            <RentalReviewingModal v-if="toShowRatingsAndReviews"
+                :rentalId="rentalId"
+                :rentalType="rentalType"
+                @close="reopenRentalDetails"
+            />
         </div>
     </div>
 </template>
@@ -120,13 +142,17 @@
     import MapContainer from "@/components/MapContainer.vue";
     import RentalReservationForm from "@/components/RentalReservationForm.vue";
     import RentalActionReservations from "@/components/RentalActionReservations.vue";
+    import RentalOwnerProfileView from "@/components/RentalOwnerProfileView.vue";
+    import RentalReviewingModal from "@/components/RentalReviewingModal.vue";
 
     export default {
         name: "RentalViewModal",
         components: {
             MapContainer,
             RentalReservationForm,
-            RentalActionReservations
+            RentalActionReservations,
+            RentalOwnerProfileView,
+            RentalReviewingModal
         },
         props: {
             id: Number,
@@ -137,6 +163,8 @@
                 rentalId: this.id,
                 rentalType: this.type,
 
+                ownerInfo: {},
+
                 normalReservations: [],
                 actionReservations: [],
                 name: "",
@@ -145,8 +173,8 @@
                 rate: "",
                 address: "",
                 images: [],
-                lon: "",
-                lat: "",
+                lon: 0,
+                lat: 0,
 
                 // svi rentali
                 rules: "",
@@ -178,7 +206,9 @@
                 showDetailedBoat: false,
                 showDetailedAdventure: false,
                 toShowReservationForm: false,
-                toShowRentalActions: false
+                toShowRentalActions: false,
+                toShowOwnerProfile: false,
+                toShowRatingsAndReviews: false
             }
         },
         created() {
@@ -230,15 +260,20 @@
             showActionResevations() {
                 this.toShowRentalActions = true;
             },
+            showOwnerProfile() {
+                this.toShowOwnerProfile = true;
+            },
+            showRatingsAndReviews() {
+                this.toShowRatingsAndReviews = true;
+            },
             reopenRentalDetails() {
                 this.toShowReservationForm = false;
                 this.toShowRentalActions = false;
+                this.toShowOwnerProfile = false;
+                this.toShowRatingsAndReviews = false;
             },
             updateActionReservs(resId) {
-                console.log(this.actionReservations);
-                let a = this.actionReservations.splice(this.actionReservations.findIndex(res => res.id === resId), 1);
-                console.log(a);
-                console.log(this.actionReservations);
+                this.actionReservations.splice(this.actionReservations.findIndex(res => res.id === resId), 1);
             }
         }
     }
@@ -253,6 +288,8 @@
 
         let rental = response.data;
         
+        params.ownerInfo = rental.owner;
+
         params.name = rental.name;
         params.description = rental.description;
         params.price = rental.price + " €/day";
@@ -358,6 +395,14 @@
         margin: 5px 0px;
         height: 40px;
         width: 190px;
+    }
+
+    .rent-owner-btn {
+        background: rgb(18, 161, 18);
+    }
+
+    .rent-ratings {
+        background: rgb(161, 128, 18);
     }
 
     #info-holder {

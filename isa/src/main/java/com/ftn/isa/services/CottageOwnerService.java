@@ -27,6 +27,10 @@ public class CottageOwnerService {
         return cottageOwnerRepository.findByEmail(email);
     }
 
+    public CottageOwner getOwnerByCottageId(Long cottageId) {
+        return cottageOwnerRepository.getOwnerByCottageId(cottageId);
+    }
+
     public boolean save(CottageOwnerDTO cottageOwnerData, CottageOwner co) {
         cottageOwnerData.hashPassword();
         co.updatePersonalInfo(cottageOwnerData);

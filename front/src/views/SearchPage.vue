@@ -99,7 +99,8 @@
     export default {
         name: "SearchPage",
         components: {
-            ErrorPopUp, RentalViewModal
+            ErrorPopUp, 
+            RentalViewModal
         },
         data() {
             return {
@@ -131,7 +132,7 @@
             },
             entityBasicView(id, type) {
                 this.showRentalViewModal = true;
-                this. selectRentalId = id;
+                this.selectRentalId = id;
                 this.selectRentalType = type;
             },
             submitSearchForm() {
@@ -318,5 +319,9 @@
         width: 70%;
         align-content: center;
         margin: 0 auto;
+    }
+
+    #subBtn {
+        margin-top: 10px;
     }
 </style>

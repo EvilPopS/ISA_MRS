@@ -1,34 +1,55 @@
 <template>
-    <div id="sort-bar">
-        <div class="d-flex justify-content-center">
-            <button v-bind:class="{ btn_clicked: nameSortBtnClicked }" @click="sortByName();">&#8645; Rental Name</button>
-            <button v-bind:class="{ btn_clicked: startDateSortBtnClicked }" @click="sortByStartDate();">&#8645; Duration Start Date</button>
-            <button v-bind:class="{ btn_clicked: endDateSortBtnClicked }" @click="sortByEndDate();">&#8645; Duration End Date</button>
-            <button v-bind:class="{ btn_clicked: priceSortBtnClicked }" @click="sortByPrice();">&#8645; Price</button>
-        </div>
-    </div>
-
-    <div id="res-container" class="row justify-content-center">
-        <div id="cards-cont" class="row justify-content-center">
-            <div v-for="reserv in this.reservations" :key="reserv.id" class="card-style">
-                <label>Reserved rental name:</label>
-                <p>{{reserv.name}}</p>
-                <label>Reservation start date:</label>
-                <p>{{formatDateString(reserv.startDate)}}</p>
-                <label>Reservation end date:</label>
-                <p>{{formatDateString(reserv.endDate)}}</p>
-                <label>Reservation price per day:</label>
-                <p>€{{reserv.price}}</p>
-                <button v-if="!this.isHistoryRes && checkIfCancelable(reserv.startDate)" @click="emitCancel(reserv.id)" class="cancel-btn active-cancel-btn">Cancel</button>
-                <button v-else-if="!this.isHistoryRes && !checkIfCancelable(reserv.startDate)" class="cancel-btn disabled-cancel-btn"><s>Cancel</s></button>
+    <div>
+        <div id="sort-bar">
+            <div class="d-flex justify-content-center">
+                <button v-bind:class="{ btn_clicked: nameSortBtnClicked }" @click="sortByName();">&#8645; Rental Name</button>
+                <button v-bind:class="{ btn_clicked: startDateSortBtnClicked }" @click="sortByStartDate();">&#8645; Duration Start Date</button>
+                <button v-bind:class="{ btn_clicked: endDateSortBtnClicked }" @click="sortByEndDate();">&#8645; Duration End Date</button>
+                <button v-bind:class="{ btn_clicked: priceSortBtnClicked }" @click="sortByPrice();">&#8645; Price</button>
             </div>
         </div>
+
+        <div id="res-container" class="row justify-content-center">
+            <div id="cards-cont" class="row justify-content-center">
+                <div v-for="reserv in this.reservations" :key="reserv.id" class="card-style row" @click="openEntityView(reserv.rentalId, reserv.rentalType)">
+                    <div class="col">
+                        <img :src="setRentalPic(reserv.rentalPic)" class="rent-image">
+                    </div>
+                    <div class="col">
+                        <label>Reserved rental name:</label>
+                        <p>{{reserv.name}}</p>
+                        <label>Reservation start date:</label>
+                        <p>{{formatDateString(reserv.startDate)}}</p>
+                        <label>Reservation end date:</label>
+                        <p>{{formatDateString(reserv.endDate)}}</p>
+                        <label>Reservation price per day:</label>
+                        <p>€{{reserv.price}}</p>
+                    </div>
+                    <div>
+                        <button v-if="!this.isHistoryRes && checkIfCancelable(reserv.startDate)" @click.stop="emitCancel(reserv.id)" class="cancel-btn active-cancel-btn">Cancel</button>
+                        <button v-else-if="!this.isHistoryRes && !checkIfCancelable(reserv.startDate)" class="cancel-btn disabled-cancel-btn"><s>Cancel</s></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <RentalViewModal v-if="showRentalViewModal"
+            @close = closePopUp
+            :id = selectRentalId
+            :type = selectRentalType
+        />
+
     </div>
 </template>
 
 <script>
+    import RentalViewModal from "@/components/RentalViewModal.vue";
+
     export default {
         name: "ReservationsGallery",
+        components: {
+            RentalViewModal
+        },
         props: {
             reservations: Array,
             isHistoryRes: Boolean
@@ -39,9 +60,26 @@
                 startDateSortBtnClicked: false,
                 endDateSortBtnClicked: false,
                 priceSortBtnClicked: false,
+
+                showRentalViewModal: false,
+                selectRentalId: null,
+                selectRentalType: null
             };
         },
         methods: {
+            openEntityView(rentalId, rentalType) {
+                this.showRentalViewModal = true;
+                this.selectRentalId = rentalId;
+                this.selectRentalType = rentalType;
+            },
+            closePopUp() {
+                this.showRentalViewModal = false;
+            },
+            setRentalPic(rentalPic) {
+                try{
+                    return require('@/assets/' + rentalPic);
+                } catch(e) {}
+            },
             emitCancel(resId) {
                 this.$emit("cancel-reservation", resId);
             },
@@ -163,7 +201,7 @@
     }
 
     #cards-cont {
-        width: 70%;
+        width: 80%;
         min-height: 80vh;
         border-left: 1px solid rgb(103, 104, 101);
         border-right: 1px solid rgb(104, 101, 101);
@@ -175,21 +213,22 @@
 
     #res-container {
         margin-top: 30px;
+        max-width: 99.5vw;
     }
 
     .card-style {
         border: 1px solid black;
         border-radius: 20px;
-        width: 300px;
-        height: 315px;
+        width: 535px;
+        height: 335px;
         padding-top: 20px;
         margin: 20px;
     }
 
     .card-style:hover {
         margin: 12px 12px;
-        width: 316px;
-        height: 331px;
+        width: 551px;
+        height: 351px;
         background-color: rgba(245, 238, 238, 0.8);
     }
 
@@ -207,6 +246,14 @@
     .cancel-btn {
         border-radius: 20px;
         font-weight: bold;
+        width: 150px;
+        margin-bottom: 5px;
+    }
+
+    .rent-image {
+        height: 250px;
+        width: 250px;
+        border-radius: 30px 10px 30px 10px;
     }
 
     .active-cancel-btn {
