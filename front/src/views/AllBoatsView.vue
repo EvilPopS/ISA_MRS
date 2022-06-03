@@ -23,8 +23,8 @@
                                 <h5 class="card-title" id="heading-cottage">{{boat.name}}</h5>
                                 <p class="card-text"><b>Location:</b> {{boat.city}}, {{boat.street}}</p>
                                 <p class="card-text"><b>Description:</b>{{boat.description.length < 27 ? boat.description + "&#8205;&#8205;&#8205;&#8205;&#8205;." : boat.description}}</p>
-                                <p class="card-text"><b>Engine power:</b>{{boat.enginePower}}</p>
-                                <p class="card-text"><b>Max speed:</b>{{boat.maxSpeed}}</p>
+                                <p class="card-text"><b>Engine power:</b>{{boat.enginePower}}ks</p>
+                                <p class="card-text"><b>Max speed:</b>{{boat.maxSpeed}}km/h</p>
                                 <p class="card-text"><b>Price:</b>{{boat.price}} &euro;</p>
                                 <p class="card-text"><b>Rate:</b> {{boat.averageRating}}★</p>
                                 <span>
@@ -41,15 +41,15 @@
             </div>
         </div>
         <div v-if="showEdit">
-            <EditCottageModal
-            :cottage = "sendCottage"
+            <EditBoatModal
+            :boat = "sendBoat"
             @modal-closed = "showEdit = false"
             @succ-popup-close = "succPopUpClose"
             />
         </div>
         <div v-else-if="showDetails">
             <DetailCottageModal
-            :cottage = "sendCottage"
+            :cottage = "sendBoat"
             @modal-closed = "showDetails = false"
             @succ-popup-close = "succPopUpClose"
             />
@@ -92,7 +92,7 @@
 
 <script>
  import axios from 'axios';
- import EditCottageModal from '../components/EditCottageModal.vue'
+ import EditBoatModal from '../components/EditBoatModal.vue'
  import AddCottageModal from '../components/AddCottageModal.vue'
  import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
  import ErrorPopUp from '../components/ErrorPopUp.vue'
@@ -102,12 +102,12 @@
 export default {
    name: "AllBoatsView",
    components: {
-       EditCottageModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, DetailCottageModal
+       EditBoatModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, DetailCottageModal
    },
    data (){
        return {
             boats: [],
-            sendCottage: {},
+            sendBoat: {},
             boatToDelete: {},
             searched: '',
             errorPoup: false,
@@ -140,11 +140,11 @@ export default {
                 } catch(e) {}
         },
         showEditBoatModal(boat) {
-            this.sendCottage = boat
+            this.sendBoat = boat
             this.showEdit = true
         },
         showDetailModal(boat) {
-            this.sendCottage = boat
+            this.sendBoat = boat
             this.showDetails = true
         },
         showAddBoatModal() {
