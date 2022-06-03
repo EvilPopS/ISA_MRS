@@ -2,6 +2,7 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.BoatDTO;
 import com.ftn.isa.DTO.BoatOwnerDTO;
+import com.ftn.isa.DTO.CottageDTO;
 import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
@@ -110,7 +111,7 @@ public class BoatOwnerController {
     @PreAuthorize("hasRole('BOAT_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PutMapping(consumes="application/json", value="/change-boat-data")
-    public ResponseEntity<HttpStatus> updateCottageData(HttpServletRequest request, @RequestBody BoatDTO boatDTO) {
+    public ResponseEntity<HttpStatus> updateBoatData(HttpServletRequest request, @RequestBody BoatDTO boatDTO) {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -126,6 +127,25 @@ public class BoatOwnerController {
         photos = photoService.changeBoatPhotos(boatOwner, boatDTO.getId(), boatDTO.getPhotos());
         boatOwnerService.save(boatOwner, boatDTO, photos);
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/add-boat")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addNewBoat(HttpServletRequest request, @RequestBody BoatDTO boatDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!boatDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        boatOwnerService.addNewBoat(boatDTO, boatOwner);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

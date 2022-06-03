@@ -2,11 +2,13 @@ package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.BoatDTO;
 import com.ftn.isa.DTO.BoatOwnerDTO;
+import com.ftn.isa.DTO.CottageDTO;
 import com.ftn.isa.model.*;
 import com.ftn.isa.repository.BoatOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -20,6 +22,10 @@ public class BoatOwnerService {
 
     public BoatOwner getOwnerByBoatId(Long boatId) {
         return boatOwnerRepository.getOwnerByCBoatId(boatId);
+    }
+
+    public void save(BoatOwner boatOwner) {
+        boatOwnerRepository.save(boatOwner);
     }
 
     public boolean save(BoatOwnerDTO boatOwnerDTO, BoatOwner bo) {
@@ -68,6 +74,26 @@ public class BoatOwnerService {
         }
 
         boatOwnerRepository.save(boatOwner);
+    }
+
+    public void addNewBoat(BoatDTO boatDTO, BoatOwner boatOwner) {
+        Set<Photo> photos = new HashSet<>();
+        for (String p : boatDTO.getPhotos())
+            photos.add(new Photo(p));
+
+        Address address = new Address(boatDTO.getCountry(), boatDTO.getCity(), boatDTO.getStreet(),
+                boatDTO.getLon(), boatDTO.getLat());
+
+        Boat boat = new Boat(boatDTO.getName(), boatDTO.getDescription(),
+                boatDTO.getCapacity(), boatDTO.getRules(),
+                false, address, boatDTO.getAverageRating(), boatDTO.getNoRatings(),
+                RentalType.BOAT, boatDTO.getPrice(), boatDTO.getType(), boatDTO.getBoatLength(), boatDTO.getEngineNumber(),
+                boatDTO.getEnginePower(), boatDTO.getMaxSpeed(), boatDTO.getNavigationEquipment(), boatDTO.getFishingEquipment());
+
+        boat.setPhotos(photos);
+        boat.setAddress(address);
+        boatOwner.getBoats().add(boat);
+        this.save(boatOwner);
     }
 
 }

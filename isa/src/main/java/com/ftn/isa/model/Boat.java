@@ -2,6 +2,7 @@ package com.ftn.isa.model;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
 
 @Entity
 public class Boat extends RentalService{
@@ -30,6 +31,19 @@ public class Boat extends RentalService{
     }
 
     public Boat(String type, String boatLength, String engineNumber, String enginePower, String maxSpeed, String navigationEquipment, String fishingEquipment) {
+        this.type = type;
+        this.boatLength = boatLength;
+        this.engineNumber = engineNumber;
+        this.enginePower = enginePower;
+        this.maxSpeed = maxSpeed;
+        this.navigationEquipment = navigationEquipment;
+        this.fishingEquipment = fishingEquipment;
+    }
+
+    public Boat(String name, String description, int capacity, String rules, boolean isDeleted, Address address, Double averageRate,
+                int noRatings, RentalType rentalType, Double price, String type, String boatLength,
+                String engineNumber, String enginePower, String maxSpeed, String navigationEquipment, String fishingEquipment) {
+        super(name, description, new HashSet<>(), capacity, rules, isDeleted, address, averageRate, noRatings, rentalType,price);
         this.type = type;
         this.boatLength = boatLength;
         this.engineNumber = engineNumber;
