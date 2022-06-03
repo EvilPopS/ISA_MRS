@@ -25,4 +25,9 @@ public class ReportService {
 
         this.save(report);
     }
+
+    public void makeNewReport(String message, Client client, User owner) {
+        reportRepository.save(new Report(message, client, owner, true));
+    }
+
 }

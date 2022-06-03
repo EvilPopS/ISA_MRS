@@ -2,23 +2,55 @@
     <div class="popup-overlay" @click="$emit('close')">
         <div id="report-form-cont" @click.stop>
             <p class="modul-caption">Hm... You rated this rental with a low mark. If you want to report something just fill the form below and hit the green button!</p>
-            <textarea class="report-txt-area" ></textarea>
+            <textarea class="report-txt-area" v-model="reportMess"></textarea>
             <div class="d-flex justify-content-center">
                 <button class="btn-style send-btn-style" type="submit" @click="sendReport()">Send report</button>
             </div>
             <div class="row-reverse">
-                <button class="btn-style back-btn-style" @click="$emit('close')">Back</button>
+                <button class="btn-style quit-btn-style" @click="$emit('close')">Quit reporting</button>
             </div>
         </div>
+
+        <SuccessPopUp v-show="successPopUpVisible"
+            @close = closeSuccPopUp
+            :mess = succMessage
+        />
     </div>
 </template>
 
 <script>
+    import axios from "axios";
+    import SuccessPopUp from "@/components/SuccessPopUp.vue";
+
     export default {
         name: "RentalReportingForm",
+        components: {
+            SuccessPopUp
+        },
+        props: {
+            rentalId: Number,
+            rentalType: String
+        },
+        data() {
+            return { 
+                reportMess: "",
+
+                successPopUpVisible: false,
+                succMessage: "Your report has been submitted successfully!"
+            }
+        },
         methods: {
             sendReport() {
-                //TODO
+                axios.post("api/notification/new-report/" + this.rentalId + "?rentalType=" + this.rentalType,
+                            {report: this.reportMess},
+                            {headers: {'authorization': window.localStorage.getItem("token") }}
+                ).then(() => {
+                        this.successPopUpVisible = true;
+                    });
+            },
+            closeSuccPopUp() {
+                this.successPopUpVisible = false;
+                this.$emit('close');
             }
         }
     }
@@ -86,9 +118,9 @@
         height: 40px;
     }
 
-    .back-btn-style {
-        background: rgb(146, 144, 144);
-        width: 100px;
+    .quit-btn-style {
+        background: rgb(223, 54, 54);
+        width: 150px;
     }
 
     .send-btn-style {
