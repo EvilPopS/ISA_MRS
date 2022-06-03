@@ -1,5 +1,6 @@
 package com.ftn.isa.controllers;
 
+import com.ftn.isa.DTO.ClientReportDTO;
 import com.ftn.isa.DTO.NewReportDTO;
 import com.ftn.isa.DTO.RentalReviewDTO;
 import com.ftn.isa.configs.ServerConfig;
@@ -22,6 +23,10 @@ import java.util.List;
 public class NotificationController {
     @Autowired
     private CottageOwnerService cottageOwnerService;
+    @Autowired
+    private BoatOwnerService boatOwnerService;
+    @Autowired
+    private FishingInstructorService instructorService;
     @Autowired
     private ClientService clientService;
     @Autowired
@@ -88,7 +93,35 @@ public class NotificationController {
             }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
     }
 
+    @PostMapping(value = "/new-report/{rentalId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> sendNewReport(@PathVariable Long rentalId, @RequestBody ClientReportDTO reportDTO,
+                                                    @RequestParam String rentalType, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        User owner;
+        switch (rentalType) {
+            case "Cottage":
+                owner = cottageOwnerService.getOwnerByCottageId(rentalId);
+                break;
+            case "Adventure":
+                owner = instructorService.getOwnerByAdventureId(rentalId);
+                break;
+            default:
+                owner = boatOwnerService.getOwnerByBoatId(rentalId);
+        }
+
+        Client client = clientService.findByEmail(email);
+        reportService.makeNewReport(
+                reportDTO.getReport(),
+                client,
+                owner
+        );
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -38,7 +38,10 @@
           
         </div>
 
-        <RentalReportingForm
+        <RentalReportingForm v-show="toShowReportModal"
+            :rentalId = rentalId
+            :rentalType = rentalType
+            @close = closeReportModal
         />
 
         <SuccessPopUp v-show="successPopUpVisible"
@@ -79,6 +82,8 @@
                 review: "",
                 rating: 0,
 
+                toShowReportModal: false,
+
                 successPopUpVisible: false,
                 succMessage: "You review has been successfully submitted to admin for approval!",
 
@@ -106,10 +111,17 @@
             },
             closeSuccPopUp() {
                 this.successPopUpVisible = false;
-                this.$emit('close');
+                if (this.rating < 3.01)
+                    this.toShowReportModal = true;
+                else
+                    this.$emit('close');
             },
             closePopUp() {
                 this.errorPopUpVisible = false;
+            },
+            closeReportModal() {
+                this.toShowReportModal = false;
+                this.$emit('close');
             }
         },
         created() {
