@@ -86,4 +86,26 @@ public class BoatOwnerController {
         return new ResponseEntity<Set<BoatDTO>>(boatDTOSSet, HttpStatus.OK);
     }
 
+    @DeleteMapping(value="/delete-boat/{id}")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> deleteBoat(HttpServletRequest request, @PathVariable String id) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        try {
+            boatOwnerService.deleteBoat(boatOwner, Long.parseLong(id));
+        } catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
 }

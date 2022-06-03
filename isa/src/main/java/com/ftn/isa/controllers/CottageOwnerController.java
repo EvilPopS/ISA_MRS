@@ -159,7 +159,12 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
+        try {
+            cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
 
     }

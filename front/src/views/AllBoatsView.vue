@@ -167,15 +167,28 @@ export default {
                 this.succMessage = "Boat is successfully deleted!"
                 this.succPoupUp = true
 
-                this.cottages = this.cottages.filter((item) => {
-                    return this.cottageToDelete !== item       //ako vratimo true isti su
+                this.boats = this.boats.filter((item) => {
+                    return this.boatToDelete !== item       //ako vratimo true isti su
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
                 })
                 this.boatToDelete = {}   //reset vreednosti
-            }).catch((error) => {
-                this.errMsg = "Boat cannot be deleted due to upcoming reservations"
-                this.errorPoup = true
-            })
+            }).catch(err => {
+                if (err.response.status === 404){
+                    this.errMsg = "Client or owner with given email address is not found!";
+                    this.errorPoup = true;
+                } 
+                else if (err.response.status === 401) {
+                    this.errMsg = "You are not authorized!";
+                    this.errorPoup = true;
+                }
+                else if (err.response.status === 422) {
+                    this.errMsg = "Boat cannot be deleted due to upcoming reservations";
+                    this.errorPoup = true;
+                } else {
+                    this.errMsg = "Boat cannot be deleted due to upcoming reservations";
+                    this.errorPoup = true;
+                }
+            });
             
         },
         sortByName() {
