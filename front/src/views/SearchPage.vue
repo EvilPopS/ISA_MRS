@@ -1,5 +1,14 @@
 <template>
     <div class="split left">
+        <div id="sort-bar">
+            <div class="d-flex justify-content-center">
+                <button v-bind:class="{ btn_clicked: nameSortBtnClicked }" @click="sortByName();">&#8645; Name</button>
+                <button v-bind:class="{ btn_clicked: locationSortBtnClicked }" @click="sortByLocation();">&#8645; Location</button>
+                <button v-bind:class="{ btn_clicked: ratingSortBtnClicked }" @click="sortByRating();">&#8645; Rating</button>
+                <button v-bind:class="{ btn_clicked: priceSortBtnClicked }" @click="sortByPrice();">&#8645; Price</button>
+            </div>
+        </div>
+        
         <p id="search-res-init-mess" v-show="showInitSearchResMess">
             Nothing to show here... Try that fancy search form on your right side :D
         </p>
@@ -122,7 +131,12 @@
                 searchResult: [],
 
                 selectRentalId: null,
-                selectRentalType: null
+                selectRentalType: null,
+
+                nameSortBtnClicked: false,
+                locationSortBtnClicked: false,
+                ratingSortBtnClicked: false,
+                priceSortBtnClicked: false
             };
         },
         methods: {
@@ -168,8 +182,88 @@
 
                         this.searchResult = response.data;
                    });
+            },
+            sortByName() {
+                if (this.nameSortBtnClicked)
+                    this.searchResult.reverse();
+                else {
+                    uncheckSortButtons(this);
+                    this.nameSortBtnClicked = true;
+
+                    this.searchResult.sort(function(left, right) { 
+                        let lName = left.name.toUpperCase();
+                        let rName = right.name.toUpperCase();
+                        if (lName < rName) 
+                            return -1;
+                        else if (lName > rName)
+                            return 1;
+                        
+                        return 0;
+                    });
+                }
+            },
+            sortByLocation() {
+                if (this.locationSortBtnClicked)
+                    this.searchResult.reverse();
+                else {
+                    uncheckSortButtons(this);
+                    this.locationSortBtnClicked = true;
+
+                    this.searchResult.sort(function(left, right) { 
+                        let lLocation = left.city.toUpperCase();
+                        let rLocation = right.city.toUpperCase();
+                        if (lLocation < rLocation) 
+                            return -1;
+                        else if (lLocation > rLocation)
+                            return 1;
+                        
+                        return 0;
+                    });
+                }
+            },
+            sortByRating() {
+                if (this.ratingSortBtnClicked)
+                    this.searchResult.reverse();
+                else {
+                    uncheckSortButtons(this);
+                    this.ratingSortBtnClicked = true;
+
+                    this.searchResult.sort(function(left, right) { 
+                        let lRate = left.rate;
+                        let rRate = right.rate;
+                        if (lRate < rRate)
+                            return -1;
+                        else if (lRate > rRate)
+                            return 1;
+                        return 0;
+                    });
+                }
+            },
+            sortByPrice() {
+                if (this.priceSortBtnClicked)
+                    this.searchResult.reverse();
+                else {
+                    uncheckSortButtons(this);
+                    this.priceSortBtnClicked = true;
+
+                    this.searchResult.sort(function(left, right) { 
+                        let lPrice = left.price;
+                        let rPrice = right.price;
+                        if (lPrice < rPrice)
+                            return -1;
+                        else if (lPrice > rPrice)
+                            return 1;
+                        return 0;
+                    });
+                }
             }
         }
+    }
+    function uncheckSortButtons(btns) {
+        btns.nameSortBtnClicked = false;
+        btns.startDateSortBtnClicked = false;
+        btns.endDateSortBtnClicked = false;
+        btns.priceSortBtnClicked = false;
     }
 
     function validateForm(formData) {
@@ -218,9 +312,7 @@
     .left {
         width: 60%;
         margin-top: 32px;
-        padding-top: 40px;
-        padding-left: 20px;
-        padding-right: 20px;
+        padding: 40px 20px;
         left: 0;
     }
 
@@ -323,5 +415,26 @@
 
     #subBtn {
         margin-top: 10px;
+    }
+
+    #sort-bar {
+        margin-bottom: 30px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid;
+        border-radius: 0 0 30px 30px;
+    }
+
+    #sort-bar button {
+        margin: 0 5px;
+        border-radius: 10px;
+        font-weight: bold;
+        padding: 4px 15px;
+        background-color: rgb(6, 94, 40);
+        border: 1px rgb(71, 69, 69) solid;
+        color: white;
+    }
+
+    #sort-bar button:hover {
+        background-color: rgb(13, 143, 63);
     }
 </style>
