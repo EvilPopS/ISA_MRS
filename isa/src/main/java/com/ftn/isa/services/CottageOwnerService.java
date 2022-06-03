@@ -53,6 +53,7 @@ public class CottageOwnerService {
                 cottage.getAddress().setLat(cottageDTO.getLat());
                 cottage.setAdditionalServices(cottageDTO.getAdditionalServices());
                 cottage.setNoRooms(cottageDTO.getNoRooms());
+                cottage.setDescription(cottageDTO.getDescription());
                 cottage.setCapacity(cottageDTO.getCapacity());
                 cottage.setName(cottageDTO.getName());
                 cottage.setPrice(cottageDTO.getPrice());

@@ -2,15 +2,11 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.BoatDTO;
 import com.ftn.isa.DTO.BoatOwnerDTO;
-import com.ftn.isa.DTO.CottageDTO;
-import com.ftn.isa.DTO.CottageOwnerDTO;
 import com.ftn.isa.configs.ServerConfig;
-import com.ftn.isa.model.Boat;
-import com.ftn.isa.model.BoatOwner;
-import com.ftn.isa.model.Cottage;
-import com.ftn.isa.model.CottageOwner;
+import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.BoatOwnerService;
+import com.ftn.isa.services.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +26,9 @@ public class BoatOwnerController {
 
     @Autowired
     private TokenUtils tokenUtils;
+
+    @Autowired
+    private PhotoService photoService;
 
     @GetMapping
     @PreAuthorize("hasRole('BOAT_OWNER')")
@@ -106,6 +105,28 @@ public class BoatOwnerController {
 
         return new ResponseEntity<>(HttpStatus.OK);
 
+    }
+
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PutMapping(consumes="application/json", value="/change-boat-data")
+    public ResponseEntity<HttpStatus> updateCottageData(HttpServletRequest request, @RequestBody BoatDTO boatDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!boatDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Set<Photo> photos = new HashSet<>();
+        photos = photoService.changeBoatPhotos(boatOwner, boatDTO.getId(), boatDTO.getPhotos());
+        boatOwnerService.save(boatOwner, boatDTO, photos);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

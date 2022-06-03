@@ -58,7 +58,7 @@ insert into boat (id, name, description, capacity, rules, is_deleted, address_id
                       rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
                       navigation_equipment, fishing_equipment, boat_owner_id)
     values (nextval('my_seq_gen_rental'), 'The Black Pearl', 'Crni brodic, velik i lep.', 8, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 150,
-                'Ribarski brodic', '20m', '46345754', '500ks', '30km/h', 'radar,lidar,gps',
+                'Ribarski brodic', '20', '46345754', '500', '30', 'radar,lidar,gps',
                 'stap,mreza,dupla mreza', 3);
 
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted,
@@ -116,10 +116,10 @@ insert into boat (id, name, description, capacity, rules, is_deleted, address_id
                   rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
                   navigation_equipment, fishing_equipment, boat_owner_id)
 values (nextval('my_seq_gen_rental'), 'The White King', 'Ekstra brod, rezervisi odmah!', 6, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 70,
-        'Ribarska jahta sa kabinom', '15m', '46300754', '500ks', '20km/h', 'radar,findfish,gps',
+        'Ribarska jahta sa kabinom', '15', '46300754', '500', '20', 'radar,findfish,gps',
         'stap,mreza,mreza za ajkulu', 3),
        (nextval('my_seq_gen_rental'), 'Little boat', 'Mali brodic za manje rute!', 3, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 30,
-        'Ribarski brodic bez kabine', '5m', '46350154', '200ks', '15km/h', 'radar',
+        'Ribarski brodic bez kabine', '5', '46350154', '200', '15', 'radar',
         'stap,mreza', 3);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)

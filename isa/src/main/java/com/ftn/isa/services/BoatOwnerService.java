@@ -1,14 +1,13 @@
 package com.ftn.isa.services;
 
+import com.ftn.isa.DTO.BoatDTO;
 import com.ftn.isa.DTO.BoatOwnerDTO;
-import com.ftn.isa.DTO.CottageOwnerDTO;
-import com.ftn.isa.model.Boat;
-import com.ftn.isa.model.BoatOwner;
-import com.ftn.isa.model.Cottage;
-import com.ftn.isa.model.CottageOwner;
+import com.ftn.isa.model.*;
 import com.ftn.isa.repository.BoatOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public class BoatOwnerService {
@@ -41,6 +40,33 @@ public class BoatOwnerService {
                 break;
             }
         }
+        boatOwnerRepository.save(boatOwner);
+    }
+
+    public void save(BoatOwner boatOwner, BoatDTO boatDTO, Set<Photo> photos){
+        for (Boat boat : boatOwner.getBoats()){
+            if (boat.getId() == boatDTO.getId()) {
+                boat.setPhotos(photos);
+                boat.getAddress().setPlaceName(boatDTO.getCity());
+                boat.getAddress().setCountry(boatDTO.getCountry());
+                boat.getAddress().setStreet(boatDTO.getStreet());
+                boat.getAddress().setLon(boatDTO.getLon());
+                boat.getAddress().setLat(boatDTO.getLat());
+                boat.setNavigationEquipment(boatDTO.getNavigationEquipment());
+                boat.setFishingEquipment(boatDTO.getFishingEquipment());
+                boat.setCapacity(boatDTO.getCapacity());
+                boat.setDescription(boatDTO.getDescription());
+                boat.setName(boatDTO.getName());
+                boat.setPrice(boatDTO.getPrice());
+                boat.setRules(boatDTO.getRules());
+                boat.setType(boatDTO.getType());
+                boat.setBoatLength(boatDTO.getBoatLength());
+                boat.setEngineNumber(boatDTO.getEngineNumber());
+                boat.setEnginePower(boatDTO.getEnginePower());
+                boat.setMaxSpeed(boatDTO.getMaxSpeed());
+            }
+        }
+
         boatOwnerRepository.save(boatOwner);
     }
 

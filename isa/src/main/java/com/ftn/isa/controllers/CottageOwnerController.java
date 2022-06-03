@@ -185,7 +185,7 @@ public class CottageOwnerController  {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Set<Photo> photos = new HashSet<>();
-        photos = photoService.changeCottagePhotos(cottageOwner, cottageDTO);
+        photos = photoService.changeCottagePhotos(cottageOwner, cottageDTO.getId(), cottageDTO.getPhotos());
         cottageOwnerService.save(cottageOwner, cottageDTO, photos);
 
         return new ResponseEntity<>(HttpStatus.OK);

@@ -1,5 +1,6 @@
 package com.ftn.isa.DTO;
 
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Boat;
 import com.ftn.isa.model.Photo;
 
@@ -20,6 +21,7 @@ public class BoatDTO {
     private String lon;
     private String lat;
     private Double averageRating;
+    private int noRatings;
     private double price;
     private String type;
     private String boatLength;
@@ -44,6 +46,7 @@ public class BoatDTO {
         this.lon = boat.getAddress().getLon();
         this.lat = boat.getAddress().getLat();
         this.averageRating = boat.getAverageRate();
+        this.noRatings = boat.getNoRatings();
         this.price = boat.getPrice();
         for (Photo p : boat.getPhotos())
             this.photos.add(p.getPhotoPath());
@@ -59,7 +62,7 @@ public class BoatDTO {
 
     public BoatDTO(String name, String description, int capacity, String rules, String country,
                       String city, String street, String lon, String lat,Double averageRating,
-                      double price, String additionalServices, int noRatings, int noRooms, Long id,
+                      double price, int noRatings, Long id,
                    String type, String boatLength, String engineNumber, String enginePower, String maxSpeed,
                    String fishingEquipment, String navigationEquipment) {
         this.name = name;
@@ -72,6 +75,7 @@ public class BoatDTO {
         this.lon = lon;
         this.lat = lat;
         this.averageRating = averageRating;
+        this.noRatings = noRatings;
         this.price = price;
         this.id = id;
         this.type = type;
@@ -81,6 +85,26 @@ public class BoatDTO {
         this.maxSpeed = maxSpeed;
         this.fishingEquipment = fishingEquipment;
         this.navigationEquipment = navigationEquipment;
+    }
+
+    public boolean arePropsValidAdding() {
+        try {
+            double checkLength, checkEngineNum, checkEnginePow, checkMaxSpeed;
+            checkLength = Double.parseDouble(this.boatLength);
+            checkEngineNum = Double.parseDouble(this.engineNumber);
+            checkEnginePow = Double.parseDouble(this.enginePower);
+            checkMaxSpeed = Double.parseDouble(this.maxSpeed);
+            if (checkLength <= 0 || checkEngineNum <= 0 || checkEnginePow <= 0 || checkMaxSpeed <= 0) return false;
+        } catch (Exception e){
+            return false;
+        }
+        return  Validate.validateSurName(this.name) &&
+                Validate.validateWords(this.city) &&
+                Validate.validateWords(this.country) &&
+                Validate.validateStreet(this.street) &&
+                Validate.validateStreet(this.type) &&
+                this.price > 0 && this.capacity > 0 &&
+                this.photos.size() > 0;
     }
 
     public Long getId() {
@@ -241,5 +265,13 @@ public class BoatDTO {
 
     public void setFishingEquipment(String fishingEquipment) {
         this.fishingEquipment = fishingEquipment;
+    }
+
+    public int getNoRatings() {
+        return noRatings;
+    }
+
+    public void setNoRatings(int noRatings) {
+        this.noRatings = noRatings;
     }
 }
