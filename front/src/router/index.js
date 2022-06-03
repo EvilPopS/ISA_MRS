@@ -106,6 +106,7 @@ const routes = [
     name: 'ClientSubscriptionsView',
     component: ClientSubscriptionsView
   },
+  {
     path: '/OwnersReportPage',
     name: 'OwnersReportPage',
     component: OwnersReportPage

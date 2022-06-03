@@ -4,8 +4,6 @@ import javax.persistence.*;
 
 @Entity
 public class Report extends Notification{
-
-
     @Column(name = "is_negative", nullable = false)
     private boolean isNegative;
 
@@ -16,10 +14,10 @@ public class Report extends Notification{
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
 
-
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
+
 
     public Report(String message, boolean isAnswered, String localDateTime) {
         super(message, isAnswered, localDateTime);
@@ -32,6 +30,10 @@ public class Report extends Notification{
         this.owner = owner;
         this.isNegative = isNegative;
         this.hasShowedUp = hasShowedUp;
+    }
+
+    public Report(String message) {
+        super(message);
     }
 
     public Report() {

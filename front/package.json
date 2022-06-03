@@ -15,7 +15,7 @@
     "jquery": "^3.6.0",
     "vue": "^3.2.13",
     "vue-fusioncharts": "^3.2.0",
-    "vue-google-charts": "^1.0.0",
+    "vue-google-charts": "^1.1.0",
     "vue-router": "^4.0.3",
     "vue-search-input": "^1.1.2",
     "vue-star-rating": "^2.1.0",
