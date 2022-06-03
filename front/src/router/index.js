@@ -18,6 +18,7 @@ import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
 import ClientSubscriptionsView from '@/views/ClientSubscriptionsView';
 import OwnersReportPage from '@/views/OwnersReportPage';
 import BoatOwnerHome from '../views/BoatOwnerHome.vue';
+import AllBoatsView from '../views/AllBoatsView.vue';
 
 const routes = [
   {
@@ -116,6 +117,11 @@ const routes = [
     path: '/BoatOwnerHome',
     name: 'BoatOwnerHome',
     component: BoatOwnerHome
+  },
+  {
+    path: '/AllBoatsView',
+    name: 'AllBoatsView',
+    component: AllBoatsView
   }
 
 ]
