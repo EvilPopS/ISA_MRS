@@ -31,6 +31,7 @@
         <div v-else-if="userRole === 'BOAT_OWNER'">
             <a @click="boatOwnerHomeRedirect()" class="homeNav">Profile</a>
             <a @click="allBoatsRedirect()" class="homeNav">Boats</a>
+            <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
         </div>
 
         <div v-else-if="userRole === 'INSTRUCTOR'">
