@@ -98,7 +98,33 @@ public class ReservationService {
         return reservations;
     }
 
+    public Set<ReservationDTO> createResDTO(BoatOwner boatOwner, List<Client> allClients) {
+        Set<ReservationDTO> reservations = new HashSet<>();
+        for (Boat c : boatOwner.getBoats()){
+            for (Reservation reservation : c.getReservations()){
+                if (!reservation.isUnavailable() && reservation.isReserved() && !reservation.isCanceled()) {
+                    ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), c.getId(),
+                            c.getName(), reservation.getStartTime(), reservation.getEndTime(),
+                            reservation.getPrice(), reservation.isAction(), reservation.isReserved(), reservation.getActionServices());
+                    reservations.add(reservationDTO);
+                }
+            }
+        }
 
+        for (ReservationDTO resDTO : reservations) {
+            for (Client client : allClients) {
+                for (Reservation r : client.getReservations()) {
+                    if (resDTO.getReservationId() == r.getId()) {
+                        resDTO.setClientEmail(client.getEmail());
+                        resDTO.setClientProfilePhoto(client.getProfilePicture().getPhotoPath());
+                        resDTO.setClientFullName(client.getName() + " " + client.getSurname());
+                    }
+                }
+            }
+        }
+
+        return reservations;
+    }
 
     public boolean checkIfIsInUnvailable(LocalDateTime startTime, LocalDateTime endTime, Long rentalId){
         List<Reservation> reservations = reservationRepository.getAllReservations();

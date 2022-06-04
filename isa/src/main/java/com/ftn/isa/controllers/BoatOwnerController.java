@@ -3,11 +3,14 @@ package com.ftn.isa.controllers;
 import com.ftn.isa.DTO.BoatDTO;
 import com.ftn.isa.DTO.BoatOwnerDTO;
 import com.ftn.isa.DTO.CottageDTO;
+import com.ftn.isa.DTO.ReservationDTO;
 import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.BoatOwnerService;
+import com.ftn.isa.services.ClientService;
 import com.ftn.isa.services.PhotoService;
+import com.ftn.isa.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,12 @@ public class BoatOwnerController {
 
     @Autowired
     private PhotoService photoService;
+
+    @Autowired
+    private ReservationService reservationService;
+
+    @Autowired
+    private ClientService clientService;
 
     @GetMapping
     @PreAuthorize("hasRole('BOAT_OWNER')")
@@ -147,6 +156,22 @@ public class BoatOwnerController {
 
         boatOwnerService.addNewBoat(boatDTO, boatOwner);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value="/all-reservations")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<Set<ReservationDTO>> getAllReservations(HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Set<ReservationDTO> reservations = reservationService.createResDTO(boatOwner, clientService.getAllClients());
+        return new ResponseEntity<Set<ReservationDTO>>(reservations, HttpStatus.OK);
     }
 
 }
