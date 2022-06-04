@@ -65,6 +65,13 @@
         @succ-popup-close = "succPopUpClose"
         />
     </div>
+    <div v-if="showDetailsBoat">
+        <DetailBoatModal
+        :boat = "detailRental"
+        @modal-closed = "showDetailsBoat = false"
+        @succ-popup-close = "succPopUpClose"
+        />
+    </div>
     <ErrorPopUp v-show="errorPopUpVisible" 
         @close = closePopUp
         :mess = errMessage
@@ -78,13 +85,14 @@
 <script>
     import ErrorPopUp from "@/components/ErrorPopUp.vue"
     import DetailCottageModal from '../components/DetailCottageModal.vue'
+    import DetailBoatModal from '../components/DetailBoatModal.vue'
     import SuccessPopUp from '../components/SuccessPopUp.vue'
     import axios from 'axios';
 
     export default {
         name: "OwnersSearch",
         components: {
-            ErrorPopUp, DetailCottageModal, SuccessPopUp
+            ErrorPopUp, DetailCottageModal, DetailBoatModal, SuccessPopUp
         },
         data() {
             return {
@@ -98,6 +106,7 @@
                 searchRole: '',
                 detailRental: {},
                 showDetailsCottage: false,
+                showDetailsBoat: false,
                 errMessage : '',
                 errorPopUpVisible: false,
                 succPoupUp: false,
@@ -143,9 +152,22 @@
                         response.data.length === 0 ? this.toShowNoResultsMess = true : this.toShowNoResultsMess = false    
 
                         this.searchResult = response.data;
-                   }).catch((error) => {
-                        this.errMessage = "Error happened: " + error.data
-                        this.errorPopUpVisible = true
+                   }).catch(err => {
+                        if (err.response.status === 404){
+                            this.errMsg = "Client or owner with given email address is not found!";
+                            this.errorPoup = true;
+                        } 
+                        else if (err.response.status === 401) {
+                            this.errMsg = "You are not authorized!";
+                            this.errorPoup = true;
+                        }
+                        else if (err.response.status === 422) {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        } else {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        }
                     });
             },
             showDetailRental(rentalId) {
@@ -154,11 +176,26 @@
                     this.detailRental = response.data
                     if (this.searchRole === "COTTAGE_OWNER")
                         this.showDetailsCottage = true
-
-                    }).catch((error) => {
-                        this.errMsg = "Error happened: " + error.name
-                        this.errorPoup = true
-                    })
+                    else if (this.searchRole === "BOAT_OWNER")
+                        this.showDetailsBoat = true
+                    //poslednje ce biti else if za instruktora
+                    }).catch(err => {
+                        if (err.response.status === 404){
+                            this.errMsg = "Client or owner with given email address is not found!";
+                            this.errorPoup = true;
+                        } 
+                        else if (err.response.status === 401) {
+                            this.errMsg = "You are not authorized!";
+                            this.errorPoup = true;
+                        }
+                        else if (err.response.status === 422) {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        } else {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        }
+                    });
             }
         },
         mounted() {
@@ -169,8 +206,11 @@
             } else if (this.searchRole === "INSTRUCTOR"){
                 this.roleURL = "fishingInstructor"
                 this.showSearh = true
+            } else if (this.searchRole === "BOAT_OWNER"){
+                this.roleURL = "boat-owner"
+                this.showSearh = true
             } else {
-                //za boat
+                this.showSearh = false
             }
         }
     }

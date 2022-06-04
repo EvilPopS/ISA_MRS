@@ -1,10 +1,8 @@
 package com.ftn.isa.controllers;
 
-import com.ftn.isa.DTO.BoatDTO;
-import com.ftn.isa.DTO.BoatOwnerDTO;
-import com.ftn.isa.DTO.CottageDTO;
-import com.ftn.isa.DTO.ReservationDTO;
+import com.ftn.isa.DTO.*;
 import com.ftn.isa.configs.ServerConfig;
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.BoatOwnerService;
@@ -18,7 +16,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -172,6 +172,58 @@ public class BoatOwnerController {
 
         Set<ReservationDTO> reservations = reservationService.createResDTO(boatOwner, clientService.getAllClients());
         return new ResponseEntity<Set<ReservationDTO>>(reservations, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/find-one-rental/{id}")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<BoatDTO> getOneWithId(@PathVariable Long id, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Set<Boat> boats = boatOwner.getBoats();
+        BoatDTO returnBoat = null;
+        for (Boat c : boats) {
+            if (!c.isDeleted() && c.getId().equals(id)) returnBoat = new BoatDTO(c);
+        }
+
+        if (returnBoat == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<BoatDTO>(returnBoat, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/ownersSearch")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<OwnersSearchResDTO>> search(HttpServletRequest request, @RequestParam String minPrice,
+                                                           @RequestParam String maxPrice, @RequestParam String location,
+                                                           @RequestParam String minCapacity, @RequestParam String serviceName) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!Validate.validatePrice(minPrice) || !Validate.validatePrice(maxPrice)
+                || !Validate.validatePrice(minCapacity) || (!location.equals("") && !Validate.validateWords(location)))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<OwnersSearchResDTO> rentals = new ArrayList<>();
+        try {
+            rentals = boatOwnerService.search(boatOwner, minPrice, maxPrice, location, minCapacity, serviceName);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(rentals, HttpStatus.OK );
     }
 
 }

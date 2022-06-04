@@ -32,6 +32,7 @@
             <a @click="boatOwnerHomeRedirect()" class="homeNav">Profile</a>
             <a @click="allBoatsRedirect()" class="homeNav">Boats</a>
             <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
+            <a @click="ownersSearch()" class="homeNav">Search</a>
         </div>
 
         <div v-else-if="userRole === 'INSTRUCTOR'">

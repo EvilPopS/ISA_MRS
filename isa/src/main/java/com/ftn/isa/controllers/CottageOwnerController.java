@@ -107,7 +107,7 @@ public class CottageOwnerController  {
     @GetMapping(value="/find-one-rental/{id}")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    public ResponseEntity<CottageDTO> getAllCottages(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<CottageDTO> getOneWithId(@PathVariable Long id, HttpServletRequest request) {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
