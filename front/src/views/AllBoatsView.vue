@@ -48,8 +48,8 @@
             />
         </div>
         <div v-else-if="showDetails">
-            <DetailCottageModal
-            :cottage = "sendBoat"
+            <DetailBoatModal
+            :boat = "sendBoat"
             @modal-closed = "showDetails = false"
             @succ-popup-close = "succPopUpClose"
             />
@@ -97,12 +97,12 @@
  import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
  import ErrorPopUp from '../components/ErrorPopUp.vue'
  import SuccessPopUp from '../components/SuccessPopUp.vue'
- import DetailCottageModal from '../components/DetailCottageModal.vue'
+ import DetailBoatModal from '../components/DetailBoatModal.vue'
 
 export default {
    name: "AllBoatsView",
    components: {
-       EditBoatModal, AddBoatModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, DetailCottageModal
+       EditBoatModal, AddBoatModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, DetailBoatModal
    },
    data (){
        return {

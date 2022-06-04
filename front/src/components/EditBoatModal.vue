@@ -338,8 +338,8 @@ export default {
                 this.localFishingEq = this.boat.fishingEquipment.split(',')
                 this.localPhotos = Object.assign([], this.boat.photos)
             }catch (err){
-                this.localNavEq = this.boat.navigationEquipment //ako ne uspe split znaci da ima samo jedna
-                this.localFishingEq = this.boat.fishingEquipment
+                if (this.localNavEq.length == 0) this.localNavEq = this.boat.navigationEquipment //ako ne uspe split znaci da ima samo jedna
+                if (this.localFishingEq.length == 0) this.localFishingEq = this.boat.fishingEquipment
                 this.localPhotos = Object.assign([], this.boat.photos)
             }
    }
