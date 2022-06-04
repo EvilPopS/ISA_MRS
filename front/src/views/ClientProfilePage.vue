@@ -1,5 +1,5 @@
 <template>
-    <UserEditProfileForm
+    <UserEditProfileForm v-if="doneLoading"
         :type                = this.type
         :profilePicture      = this.profilePicture
         :points              = this.points
@@ -13,8 +13,8 @@
         :country             = this.country
         :city                = this.city
         :street              = this.street
+        :penalties           = this.penalties
         :currentProfilePic   = this.currentProfilePic
-        :currentPassword     = this.currentPassword
         :currentName         = this.currentName
         :currentSurname      = this.currentSurname
         :currentCity         = this.currentCity
@@ -52,7 +52,8 @@
                 profilePicture: 'logo.png',
                 type: '',
                 loyalty: '',
-                points: '',
+                points: -1,
+                penalties: -1,
 
                 currentProfilePic: '',
                 currentPassword: '',
@@ -63,7 +64,8 @@
                 currentStreet: '',
                 currentPhoneNumber: '',
 
-                succPopUpVisible: false
+                succPopUpVisible: false,
+                doneLoading: false
             }
         },
         methods: {
@@ -97,7 +99,7 @@
                 this.succPopUpVisible = false;
             }
         },
-        created() {
+        mounted() {
             axios.get("api/client", {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     let data = response.data;
@@ -113,6 +115,7 @@
                     this.type = data.userType;
                     this.loyalty = data.loyaltyStatus;
                     this.points = data.loyaltyPoints;
+                    this.penalties = data.penalties;
                     
                     this.currentPassword = data.password;
                     this.currentName = data.name;
@@ -122,6 +125,8 @@
                     this.currentStreet = data.street;
                     this.currentPhoneNumber =data.phoneNumber;
                     this.currentProfilePic =data.profilePicture;
+
+                    this.doneLoading = true;
                 })
         }
     }

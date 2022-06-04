@@ -26,6 +26,11 @@
             @close = closeSuccPopUp
             :mess = succMessage
         />
+        
+        <ErrorPopUp v-show="errorPopUpVisible" 
+            @close = closePopUp
+            :mess = errMessage
+        /> 
 
         <ConfirmationPopUp v-show="confirmPopUpVisible"
             :title="'Confirmation'"
@@ -39,13 +44,15 @@
 <script>
     import axios from 'axios';
     import SuccessPopUp from "@/components/SuccessPopUp.vue";
-    import ConfirmationPopUp from "@/components/ConfirmationPopUp.vue"
+    import ConfirmationPopUp from "@/components/ConfirmationPopUp.vue";
+    import ErrorPopUp from "@/components/ErrorPopUp.vue";
 
     export default {
         name: "RentalActionReservations",
         components: {
             SuccessPopUp,
-            ConfirmationPopUp
+            ConfirmationPopUp,
+            ErrorPopUp
         },
         props: {
             oldPrice: String,
@@ -57,12 +64,14 @@
                 successPopUpVisible: false,
                 confirmPopUpVisible: false,
 
-                selectedResId: -1
+                selectedResId: -1,
+
+                errorPopUpVisible: false,
+                errMessage: ""
             }
         },
         methods: {
             confirmationForRes(resId) {
-                console.log(this.reservations);
                 this.selectedResId = resId;
                 this.confirmPopUpVisible = true;
             },
@@ -71,7 +80,12 @@
                     .then(() => {
                         this.successPopUpVisible = true;
                         this.$emit('update-action-reservations', this.selectedResId);
-                    }).catch(() => {});
+                    }).catch(() => {
+                        if (err.response.status === 406) {
+                            this.errMessage = "You have more than 2 penalties at this moment and therefore you cannot make reservations!";
+                            this.errorPopUpVisible = true;
+                        }
+                    });
             },
             closePopUp() {
                 this.errorPopUpVisible = false;

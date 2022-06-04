@@ -82,10 +82,13 @@
                 }
 
                 axios.post("api/client/make-reservation", requestBody, {headers: {'authorization': window.localStorage.getItem("token") }})
-                    .then(response => {
+                    .then(() => {
                         this.successPopUpVisible = true;
                     }).catch(err => {
-                        this.errMessage = "The reservation period you entered is already taken or you are trying to make a reservation for the period you previously canceled!";
+                        if (err.response.status === 406)
+                            this.errMessage = "You have more than 2 penalties at this moment and therefore you cannot make reservations!";
+                        else 
+                            this.errMessage = "The reservation period you entered is already taken or you are trying to make a reservation for the period you previously canceled!";
                         this.errorPopUpVisible = true;
                     });
             },

@@ -437,4 +437,8 @@
     #sort-bar button:hover {
         background-color: rgb(13, 143, 63);
     }
+
+    .btn_clicked {
+        background-color: rgb(12, 165, 71) !important;
+    }
 </style>

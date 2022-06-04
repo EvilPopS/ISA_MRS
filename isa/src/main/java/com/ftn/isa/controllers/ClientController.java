@@ -112,6 +112,10 @@ public class ClientController {
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
+        Client client = clientService.findByEmail(email);
+        if (client.getNoPenalties() > 2)
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+
         if (!Validate.validateDatePeriod(reservationData.getStartDate(), reservationData.getEndDate()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -127,7 +131,6 @@ public class ClientController {
         if (!Validate.validateIfReservationPeriodIsAvailable(rental.getReservations(), reservationData))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        Client client = clientService.findByEmail(email);
         if (!Validate.validateIfResPeriodWasCanceled(client.getReservations(), reservationData))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 

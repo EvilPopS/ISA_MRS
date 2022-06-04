@@ -18,6 +18,7 @@ public class ClientProfileDTO {
     private String userType;
     private String loyaltyStatus;
     private int loyaltyPoints;
+    private int penalties;
 
 
     public ClientProfileDTO() {}
@@ -44,6 +45,7 @@ public class ClientProfileDTO {
                 this.loyaltyStatus = "GOLD";
         }
         this.loyaltyPoints = client.getLoyaltyPoints();
+        this.penalties = client.getNumOfPenalties();
     }
 
     public void hashPassword() {
@@ -157,4 +159,11 @@ public class ClientProfileDTO {
         this.loyaltyPoints = loyaltyPoints;
     }
 
+    public int getPenalties() {
+        return penalties;
+    }
+
+    public void setPenalties(int penalties) {
+        this.penalties = penalties;
+    }
 }

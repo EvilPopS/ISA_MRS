@@ -23,6 +23,8 @@ public class Client extends User {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private List<Subscription> subscriptions;
 
+    @Column(name = "num_of_penalties")
+    private int numOfPenalties;
 
     public Client() {
     }
@@ -80,5 +82,13 @@ public class Client extends User {
 
     public void setSubscriptions(List<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+
+    public int getNumOfPenalties() {
+        return numOfPenalties;
+    }
+
+    public void setNumOfPenalties(int numOfPenalties) {
+        this.numOfPenalties = numOfPenalties;
     }
 }
