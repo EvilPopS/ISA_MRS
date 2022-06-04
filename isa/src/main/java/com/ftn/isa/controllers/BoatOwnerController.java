@@ -5,10 +5,7 @@ import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
-import com.ftn.isa.services.BoatOwnerService;
-import com.ftn.isa.services.ClientService;
-import com.ftn.isa.services.PhotoService;
-import com.ftn.isa.services.ReservationService;
+import com.ftn.isa.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +36,9 @@ public class BoatOwnerController {
 
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private LoyaltyProgramService loyaltyProgramService;
 
     @GetMapping
     @PreAuthorize("hasRole('BOAT_OWNER')")
@@ -224,6 +224,23 @@ public class BoatOwnerController {
         }
 
         return new ResponseEntity<>(rentals, HttpStatus.OK );
+    }
+
+    @GetMapping(value = "/get-chart-data/{selectedGraph}/{selectedPeriod}/{selectedMonth}")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<List<String>>> getChartData(@PathVariable String selectedGraph, @PathVariable String selectedPeriod, @PathVariable String selectedMonth, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<List<String>> data = boatOwnerService.getChartData(boatOwner, selectedGraph, selectedPeriod, selectedMonth, loyaltyProgramService.getAllLoyaltyPrograms());
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
 }

@@ -176,9 +176,10 @@ public class CottageOwnerService {
             List<String> innerList = new ArrayList<>();
             innerList.add(c.getName());
             for (Reservation res : c.getReservations()){
-                if ((!res.isCanceled() && !res.isUnavailable() && res.isReserved()) && (res.getStartTime().isAfter(start) && res.getStartTime().isBefore(end))){
-                    counter += res.getPrice() + res.getPrice() * increaseRev/100;
-                }   //za revenue je uzeto da mesec/nedelja u kome pocinje za nju se doda revenue
+                if (DAYS.between(start, res.getEndTime()) != 0)
+                    counter += (DAYS.between(res.getStartTime(), res.getEndTime())) * (res.getPrice() + res.getPrice() * increaseRev/100);
+                else
+                    counter += (res.getPrice() + res.getPrice() * increaseRev/100);   //za revenue je uzeto da mesec/nedelja u kome pocinje za nju se doda revenue
             }
             if (counter < 0) counter = 0;
             innerList.add(String.valueOf(counter));

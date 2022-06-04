@@ -137,7 +137,7 @@ values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null, false),
        ('24/5/2022 11:00', '28/5/2022 11:00', true, true, 70, 5, 4, false, 'spa,table tennis', false),
        ('29/5/2022 11:00', '30/5/2022 11:00', false, true, 40, 5, 4, false, null, false),
        ('14/6/2022 11:00', '15/6/2022 11:00', false, true, 150, 9, 4, false, null, false),
-       ('10/6/2022 11:00', '10/6/2022 18:00', false, true, 50, 10, 4, false, null, true),
+       ('10/6/2022 11:00', '11/6/2022 18:00', false, true, 50, 10, 4, false, null, true),
        ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null, false),
        ('21/6/2022', '25/6/2022', false, true, 60, 4, 4, false, null, false)
 
