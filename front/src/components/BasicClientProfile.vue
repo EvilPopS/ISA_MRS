@@ -76,10 +76,24 @@ export default {
     mounted() {
         axios.get('api/client/basic-profile/' + this.clientEmail, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
                 this.data = response.data
-            }).catch((error) => {
-                console.log('Error happened: ' + error.data)
-                alert("Error happened: " + error.data)
-            });
+            }).catch(err => {
+                    if (err.response.status === 404){
+                        this.errMsg = "Client or owner with given email address is not found!";
+                        this.errorPoup = true;
+                    } 
+                    else if (err.response.status === 401) {
+                        this.errMsg = "You are not authorized!";
+                        this.errorPoup = true;
+                    }
+                    else if (err.response.status === 422) {
+                        this.errMsg = "Error! Wrong data!";
+                        this.errorPoup = true;
+                    } else {
+                        this.errMsg = "Error! Wrong data!";
+                        this.errorPoup = true;
+                    }
+                });
+
     }
 }
 </script>
