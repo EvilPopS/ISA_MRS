@@ -57,6 +57,9 @@ public class Client extends User {
         this.setPhoneNumber(data.getPhoneNumber());
     }
 
+    public void incLoyaltyPoints(int points) {
+        this.setLoyaltyPoints(this.getLoyaltyPoints() + points);
+    }
 
     public Set<Reservation> getReservations() {
         return reservations;

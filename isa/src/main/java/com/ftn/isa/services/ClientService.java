@@ -126,4 +126,14 @@ public class ClientService {
                 break;
             }
     }
+
+    public void increasePoints(Client client) {
+        client.incLoyaltyPoints(5);
+        clientRepo.save(client);
+    }
+
+    public void decreasePoints(Client client) {
+        client.incLoyaltyPoints(-5);
+        clientRepo.save(client);
+    }
 }

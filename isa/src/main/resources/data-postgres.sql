@@ -60,7 +60,7 @@ insert into boat_owner (id, email, password, name, surname, address_id, phone_nu
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted, is_active,
                     photo_id, role_id, loyalty_type, loyalty_points, num_of_penalties)
     values (nextval('my_seq_gen_user'), 'client1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O',
-                        'Marko', 'Markovic', 1, '0601231231', false, true, 1, 1, 0, 124, 3);
+                        'Marko', 'Markovic', 1, '0601231231', false, true, 1, 1, 0, 124, 2);
 
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                            is_active, photo_id, role_id, loyalty_type, loyalty_points)

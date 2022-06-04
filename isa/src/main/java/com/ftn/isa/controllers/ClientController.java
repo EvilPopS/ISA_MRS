@@ -142,6 +142,8 @@ public class ClientController {
                     client
                 )
         );
+
+        clientService.increasePoints(client);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -162,14 +164,22 @@ public class ClientController {
         } catch(Exception ignored) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        clientService.increasePoints(client);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(value="/cancel-reservation/{resId}")
     @PreAuthorize("hasRole('CLIENT')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    public ResponseEntity<HttpStatus> cancelReservation (@PathVariable Long resId) {
+    public ResponseEntity<HttpStatus> cancelReservation (@PathVariable Long resId, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         reservationService.cancelReservation(resId);
+
+        clientService.decreasePoints(clientService.findByEmail(email));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
