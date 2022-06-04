@@ -38,8 +38,6 @@
                         <input type="text" id="city" class="form-control" v-model="data.city">
                         <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" v-model="data.street">
-                        <span>Rating</span>
-                        <hr class="solid">
                         <span>
                             <div class="inline-inputs">
                                 <label class="label" for="rating">Rating:</label>
@@ -50,6 +48,10 @@
                                 <input type="text" id="num-ratings" class="form-control rating" v-model="data.noRatings" disabled>
                             </div>
                         </span>
+                        <div>
+                            <label class="label" for="capacity">Capacity:</label>
+                            <input type="text" id="capacity" class="form-control" v-model="data.capacity">
+                        </div>
                     </div>
                     <div class="col-4">
                         <div>

@@ -25,15 +25,19 @@
                                 <input type="text" id="lenght" class="form-control rating" v-model="data.boatLength">
                             </div>
                         </span>
-                        <label class="label" for="additionalServices">Navigation equipment(press alt + , to add):</label>
-                        <input type="text" class="form-control" v-model="tempNavEq" @keyup.alt="addNavEq">
-                        <div v-for="service in this.localNavEq" :key="service" class="pill">
-                            <span  @click="deleteNavEq(service)">{{service}}</span>
+                        <div>
+                            <label class="label" for="additionalServices">Navigation equipment(press alt + , to add):</label>
+                            <input type="text" class="form-control" v-model="tempNavEq" @keyup.alt="addNavEq">
+                            <div v-for="service in this.localNavEq" :key="service" class="pill">
+                                <span  @click="deleteNavEq(service)">{{service}}</span>
+                            </div>
                         </div>
-                        <label class="label">Fishing equipment(press alt + , to add):</label>
-                        <input type="text" class="form-control" v-model="tempFishingEq" @keyup.alt="addFishingEq">
-                        <div v-for="service in this.localFishingEq" :key="service" class="pill">
-                            <span  @click="deleteFishingEq(service)">{{service}}</span>
+                        <div>
+                            <label class="label">Fishing equipment(press alt + , to add):</label>
+                            <input type="text" class="form-control" v-model="tempFishingEq" @keyup.alt="addFishingEq">
+                            <div v-for="service in this.localFishingEq" :key="service" class="pill">
+                                <span  @click="deleteFishingEq(service)">{{service}}</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-4">

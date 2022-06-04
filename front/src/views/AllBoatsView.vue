@@ -22,7 +22,7 @@
                             <div class="card-body">
                                 <h5 class="card-title" id="heading-cottage">{{boat.name}}</h5>
                                 <p class="card-text"><b>Location:</b> {{boat.city}}, {{boat.street}}</p>
-                                <p class="card-text"><b>Description:</b>{{boat.description.length < 27 ? boat.description + "&#8205;&#8205;&#8205;&#8205;&#8205;." : boat.description}}</p>
+                                <p class="card-text" style="white-space: pre-line;"><b>Description:</b>{{boat.description.length <= 25 ? boat.description + '\n.' : boat.description}}</p>
                                 <p class="card-text"><b>Engine power:</b>{{boat.enginePower}}ks</p>
                                 <p class="card-text"><b>Max speed:</b>{{boat.maxSpeed}}km/h</p>
                                 <p class="card-text"><b>Price:</b>{{boat.price}} &euro;</p>

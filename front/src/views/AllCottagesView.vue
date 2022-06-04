@@ -22,7 +22,7 @@
                             <div class="card-body">
                                 <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
                                 <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
-                                <p class="card-text"><b>Description:</b>{{cottage.description.length < 27 ? cottage.description + "&#8205;&#8205;&#8205;&#8205;&#8205;." : cottage.description}}</p>
+                                <p class="card-text" style="white-space: pre-line;"><b>Description:</b>{{cottage.description.length <= 25 ? cottage.description + '\n.' : cottage.description}}</p>
                                 <p class="card-text"><b>Price:</b>{{cottage.price}} &euro;</p>
                                 <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
                                 <span>

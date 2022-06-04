@@ -25,19 +25,23 @@
                                 <input type="text" id="lenght" class="form-control rating" v-model="data.boatLength">
                             </div>
                         </span>
-                        <label class="label" for="additionalServices">Navigation equipment(press alt + , to add):</label>
-                        <input type="text" class="form-control" v-model="tempNavEq" @keyup.alt="addNavEq">
-                        <div v-for="service in this.localNavEq" :key="service" class="pill">
-                            <span  @click="deleteNavEq(service)">{{service}}</span>
+                        <div>
+                            <label class="label" for="additionalServices">Navigation equipment(press alt + , to add):</label>
+                            <input type="text" class="form-control" v-model="tempNavEq" @keyup.alt="addNavEq">
+                            <div v-for="service in this.localNavEq" :key="service" class="pill">
+                                <span  @click="deleteNavEq(service)">{{service}}</span>
+                            </div>
                         </div>
-                        <label class="label">Fishing equipment(press alt + , to add):</label>
-                        <input type="text" class="form-control" v-model="tempFishingEq" @keyup.alt="addFishingEq">
-                        <div v-for="service in this.localFishingEq" :key="service" class="pill">
-                            <span  @click="deleteFishingEq(service)">{{service}}</span>
+                        <div>
+                            <label class="label">Fishing equipment(press alt + , to add):</label>
+                            <input type="text" class="form-control" v-model="tempFishingEq" @keyup.alt="addFishingEq">
+                            <div v-for="service in this.localFishingEq" :key="service" class="pill">
+                                <span  @click="deleteFishingEq(service)">{{service}}</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <span>Address</span>
+                        <span>Address&Engine</span>
                         <hr class="solid">
                         <label class="label" for="zip-code">Country:</label>
                         <input type="text" id="zip-code" class="form-control" v-model="data.country">
@@ -45,6 +49,10 @@
                         <input type="text" id="city" class="form-control" v-model="data.city">
                         <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" v-model="data.street">
+                        <label class="label" for="capacity">Capacity:</label>
+                        <input type="text" id="capacity" class="form-control" v-model="data.capacity">
+                        <label class="label" for="engine-number"><br>Engine number:</label>
+                        <input type="text" id="engine-number" class="form-control" v-model="data.engineNumber">
                         <span>
                             <div class="inline-inputs">
                                 <label class="label" for="rating">Rating:</label>
@@ -57,18 +65,14 @@
                         </span>
                         <span>
                             <div class="inline-inputs">
-                                <label class="label" for="engine-power">Engine<br>power(ks):</label>
+                                <label class="label" for="engine-power"><br><br>Engine<br>power(ks):</label>
                                 <input type="text" id="engine-power" class="form-control rating" v-model="data.enginePower">
                             </div>
                             <div class="inline-inputs">
-                                <label class="label" for="max-speed">Max<br>speed(km/h):</label>
+                                <label class="label" for="max-speed"><br><br>Max<br>speed(km/h):</label>
                                 <input type="text" id="max-speed" class="form-control rating" v-model="data.maxSpeed">
                             </div>
                         </span>
-                        <label class="label" for="engine-number">Engine number:</label>
-                        <input type="text" id="engine-number" class="form-control" v-model="data.engineNumber">
-                        <label class="label" for="capacity">Capacity:</label>
-                        <input type="text" id="capacity" class="form-control" v-model="data.capacity">
                     </div>
                     <div class="col-4">
                         <div>
