@@ -113,7 +113,7 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         Client client = clientService.findByEmail(email);
-        if (client.getNoPenalties() > 2)
+        if (client.getNumOfPenalties() > 2)
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 
         if (!Validate.validateDatePeriod(reservationData.getStartDate(), reservationData.getEndDate()))
@@ -153,8 +153,12 @@ public class ClientController {
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
+        Client client = clientService.findByEmail(email);
+        if (client.getNumOfPenalties() > 2)
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+
         try {
-            reservationService.makeActionReservation(resId, clientService.findByEmail(email));
+            reservationService.makeActionReservation(resId, client);
         } catch(Exception ignored) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

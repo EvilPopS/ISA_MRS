@@ -85,6 +85,7 @@
                     .then(() => {
                         this.successPopUpVisible = true;
                     }).catch(err => {
+                        console.log(err.response.status);
                         if (err.response.status === 406)
                             this.errMessage = "You have more than 2 penalties at this moment and therefore you cannot make reservations!";
                         else 

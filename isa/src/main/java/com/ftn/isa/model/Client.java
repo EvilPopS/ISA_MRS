@@ -12,9 +12,6 @@ import java.util.Set;
 
 @Entity
 public class Client extends User {
-    @Column(name = "no_penalties", nullable = false)
-    private int noPenalties;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Set<Reservation> reservations;
@@ -42,7 +39,7 @@ public class Client extends User {
             this.setRole(new Role("ROLE_CLIENT"));
             this.setLoyaltyPoints(0);
             this.setLoyaltyType(LoyaltyType.REGULAR);
-            this.noPenalties = 0;
+            this.numOfPenalties = 0;
             this.reservations = new HashSet<>();
             this.subscriptions = new ArrayList<>();
     }
@@ -60,13 +57,6 @@ public class Client extends User {
         this.setPhoneNumber(data.getPhoneNumber());
     }
 
-    public int getNoPenalties() {
-        return noPenalties;
-    }
-
-    public void setNoPenalties(int noPenalties) {
-        this.noPenalties = noPenalties;
-    }
 
     public Set<Reservation> getReservations() {
         return reservations;
