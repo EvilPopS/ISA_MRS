@@ -86,7 +86,7 @@ insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, n
                                 role_id, address_id, photo_id, loyalty_points)
     values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
                 'Instric', 4, 5, 1, 0),
-           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Instro2', 'sifra1223', '0619990009',
+           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', false, false, 0, 'Instro2', 'sifra1223', '0619990009',
         'Instriiiic', 4, 3, 1, 0);
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,

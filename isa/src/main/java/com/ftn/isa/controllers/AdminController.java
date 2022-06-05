@@ -122,6 +122,7 @@ public class AdminController {
                 fishingInstructorService.save(fishingInstructor);
             req.setSender(fishingInstructor);
             req.setAnswered(true);
+            requestService.save(req);
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -133,6 +134,7 @@ public class AdminController {
             cottageOwnerService.save(cottageOwner);
             req.setSender(cottageOwner);
             req.setAnswered(true);
+            requestService.save(req);
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -144,6 +146,7 @@ public class AdminController {
             clientService.saveOrUpdateClient(client);
             req.setSender(client);
             req.setAnswered(true);
+            requestService.save(req);
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -168,6 +171,7 @@ public class AdminController {
             fishingInstructorService.save(fishingInstructor);
             req.setSender(fishingInstructor);
             req.setAnswered(true);
+            requestService.save(req);
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -179,6 +183,7 @@ public class AdminController {
             cottageOwnerService.save(cottageOwner);
             req.setSender(cottageOwner);
             req.setAnswered(true);
+            requestService.save(req);
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -190,6 +195,7 @@ public class AdminController {
             clientService.saveOrUpdateClient(client);
             req.setSender(client);
             req.setAnswered(true);
+            requestService.save(req);
 
             return new ResponseEntity<>(HttpStatus.OK);
         }

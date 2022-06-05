@@ -8,7 +8,7 @@
                         <h5 class="card-title" id="heading-adventure">{{adventure.name}}</h5>
                         <p class="card-text"><b>Location:</b> {{adventure.city}}, {{adventure.street}}</p>
                         <p class="card-text"><b>Description:</b>{{adventure.description}}</p>
-                        <p class="card-text"><b>Rate:</b> {{adventure.averageRating}}</p>
+                        <p class="card-text"><b>Rate:</b> {{adventure.rating === 0 ? 'Not yet rated.' : adventure.rating}}</p>
                         <span>
                             <button class="btn btn-success card-btns" @click="showAdventureDetail(adventure)">Details</button>
                             <button class="btn btn-success card-btns" @click="addNewReservation(adventure)">Calendar</button>

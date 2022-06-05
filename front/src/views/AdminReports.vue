@@ -92,6 +92,9 @@ export default {
             this.reports = this.reports.filter(item => item != report);
             this.reports.push();
             
+        },
+        ignoreReport(){
+            console.log("...")  ;
         }
     }
 }

@@ -97,7 +97,7 @@ public class FishingInstructorController {
 
     @PostMapping(value="/adventures/add-adventure")
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    public ResponseEntity<HttpStatus> addNewCottage(HttpServletRequest request, @RequestBody AdventureDTO adventureDTO) {
+    public ResponseEntity<HttpStatus> addAdventure(HttpServletRequest request, @RequestBody AdventureDTO adventureDTO) {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

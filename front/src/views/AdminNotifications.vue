@@ -152,6 +152,7 @@ export default {
         allowRequest(){
             console.log("Allowing request...");
             console.log( window.localStorage.getItem("token"));
+            console.log(this.requestToBeAllowed.requestType);
             this.confirmationPopUpVisible = false;
             // obrisi sendera i stavi isAnswered na true
             if (this.requestToBeAllowed.requestType === 'ACCOUNT DELETION'){
@@ -168,11 +169,11 @@ export default {
             } else if (this.requestToBeAllowed.requestType === "RENTAL SERVICE RATE"){
                 console.log("allow rental service rate");
             }
-            else if (this.reqestToBeAllowed.requestType === "ACCOUNT REGISTRATION"){
+            else if (this.requestToBeAllowed.requestType === 'ACCOUNT REGISTRATION'){
                 axios.post('api/admin/registration/allow',this.requestToBeAllowed, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
                 this.requests = this.requests.filter(item => item != this.requestToBeAllowed);
                 this.succPopUpVisible = true;
-                this.succMessage = 'Account deletion request is successfully allowed.';
+                this.succMessage = 'Account registration request is successfully allowed.';
                 this.requests.push();
 
 
