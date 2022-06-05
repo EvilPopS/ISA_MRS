@@ -198,10 +198,22 @@ export default {
             axios.post("api/cottage-owner/add-cottage", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
-                    })
-                    .catch(function (error) {
-                        this.errMessage = "Error happened: " + error.data
-                        this.errorPopUpVisible = true
+                    }).catch(err => {
+                        if (err.response.status === 404){
+                            this.errMsg = "Client or owner with given email address is not found!";
+                            this.errorPoup = true;
+                        } 
+                        else if (err.response.status === 401) {
+                            this.errMsg = "You are not authorized!";
+                            this.errorPoup = true;
+                        }
+                        else if (err.response.status === 422) {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        } else {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        }
                     });
 
         },

@@ -29,7 +29,11 @@ insert into photo (photo_path, rental_id)
            ('home-page-pic-instructor.jpg', 1),
            ('home-page-pic-instructor.jpg', 2),
            ('home-page-pic-boat.jpg', 1),
-           ('home-page-pic-boat.jpg', 2);
+           ('home-page-pic-boat.jpg', 2),
+           ('boat1.jpg', 3),
+           ('boat4.jpg', 3),
+           ('boat2.jpg', 9),
+           ('boat3.jpg', 10);
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted, loyalty_points,
                         is_active, photo_id, role_id, loyalty_type)
@@ -45,17 +49,17 @@ insert into adventure (id, name, description, capacity, rules, is_deleted, addre
             (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
                 false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0);
 
+insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
+                        is_active, photo_id, role_id, loyalty_type, loyalty_points)
+values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Bojan', 'Bojanic', 7, '06222332323', false, true, 1,
+        3, 0, 10);
+
 insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                       rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
-                      navigation_equipment, fishing_equipment, cancellation_conditions)
-    values (nextval('my_seq_gen_rental'), 'The Black Pearl', 'Crni brodic, velik i lep.', 8, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 50,
-                'Ribarski brodic', '20m', '46345754', '500ks', '30km/h', 'Neka navigaciona oprema ne razumem ti se ja u to.',
-                'Pecaroska oprema, ne znam sta sve ide tu.', 35.0);
-
-insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                            is_active, photo_id, role_id, loyalty_type, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', 'boat123', 'Bojan', 'Bojanic', 7, '06222332323', false, true, 1,
-                3, 0, 10);
+                      navigation_equipment, fishing_equipment, boat_owner_id)
+    values (nextval('my_seq_gen_rental'), 'The Black Pearl', 'Crni brodic, velik i lep.', 8, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 150,
+                'Ribarski brodic', '20', '46345754', '500', '30', 'radar,lidar,gps',
+                'stap,mreza,dupla mreza', 3);
 
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, role_id, loyalty_type, no_penalties, loyalty_points)
@@ -109,6 +113,16 @@ insert into subscription(owner_id, client_id, is_active_subscription)
             (3, 4, true),
             (6, 4, true);
 
+insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+                  rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
+                  navigation_equipment, fishing_equipment, boat_owner_id)
+values (nextval('my_seq_gen_rental'), 'The White King', 'Ekstra brod, rezervisi odmah!', 6, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 70,
+        'Ribarska jahta sa kabinom', '15', '46300754', '500', '20', 'radar,findfish,gps',
+        'stap,mreza,mreza za ajkulu', 3),
+       (nextval('my_seq_gen_rental'), 'Little boat', 'Mali brodic za manje rute!', 3, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 30,
+        'Ribarski brodic bez kabine', '5', '46350154', '200', '15', 'radar',
+        'stap,mreza', 3);
+
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
 values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null, false),
        ('1/5/2022', '11/5/2022', false, true, 30, 1, 4, false, null, false),
@@ -123,6 +137,8 @@ values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null, false),
        ('14/5/2022 11:00', '18/5/2022 11:00', false, true, 40, 6, 4, false, null, false),
        ('24/5/2022 11:00', '28/5/2022 11:00', true, true, 70, 5, 4, false, 'spa,table tennis', false),
        ('29/5/2022 11:00', '30/5/2022 11:00', false, true, 40, 5, 4, false, null, false),
+       ('14/6/2022 11:00', '15/6/2022 11:00', false, true, 150, 9, 4, false, null, false),
+       ('04/7/2022 11:00', '11/7/2022 18:00', false, true, 50, 10, 4, false, null, false),
        ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null, false),
        ('21/6/2022', '25/6/2022', false, true, 60, 4, 4, false, null, false)
 

@@ -78,7 +78,7 @@ public abstract class RentalService {
 
     public boolean hasUpcomingReservations() {
         for (Reservation r : reservations){
-            if (Validate.getTodaysDate().isBefore(r.getEndTime())) return true;
+            if (Validate.getTodaysDate().isBefore(r.getEndTime()) && !r.isUnavailable() && !r.isCanceled()) return true;
         }
         return false;
     }

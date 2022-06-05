@@ -233,7 +233,19 @@
                             }
                         });
                     } else if (this.userType == "boat-owner") {
-                        //ovde ce ici boat
+                        axios.post("api/boat-owner/register", requestBody).then((response) => {
+                            this.succMessage = "Your account has been successfully registered. Registration request will be processed by admin as soon as possible!"
+                            this.succPopUpVisible = true;
+                        }).catch(err => {
+                            if (err.response.status === 409){
+                                this.errMessage = "An account with the given email address already exists!";
+                                this.errorPopUpVisible = true;
+                            } 
+                            else if (err.response.status === 422) {
+                                this.errMessage = "Please make sure your phone number is not used by another account.";
+                                this.errorPopUpVisible = true;
+                            }
+                        });
                     }
                     
                 }

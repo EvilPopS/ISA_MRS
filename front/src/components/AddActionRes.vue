@@ -54,7 +54,7 @@ export default {
         SuccessPopUp, ErrorPopUp
     },
     props: {
-        cottage: Object
+        rental: Object
     },
     data(){
         return {
@@ -63,7 +63,7 @@ export default {
                 startTime: '',
                 endTime: '',
                 actionServices: '',
-                cottageId: this.cottage.id
+                rentalId: this.rental.id
             },
 
             todaysDate: '',
@@ -101,7 +101,7 @@ export default {
         },
         closeSuccPopUp() {
                 this.localSuccPopUpVisible = false
-                this.$router.go(); 
+                this.$emit('modal-closed');
         },
         addAction() {
             try { this.checkInputs(); } 
@@ -124,7 +124,7 @@ export default {
                     })
                     .catch(err => {
                             if (err.response.status === 404){
-                                this.errMessage = "Cottage owner with that email doesn't!";
+                                this.errMessage = "Owner with that email doesn't!";
                                 this.errorPopUpVisible = true;
                             } 
                             else if (err.response.status === 401) {
@@ -155,6 +155,7 @@ export default {
     mounted() {
         this.todaysDate = new Date().toISOString()
 
+        this.choosenList = []
         this.searchRole = window.localStorage.getItem("userRole")
         if (this.searchRole === "COTTAGE_OWNER"){
             this.roleURL = "cottage-owner"
@@ -164,8 +165,8 @@ export default {
             //staviti nesto za pecanje od opreme
             this.servicesList = ["MASSAGE", "BREAKFAST", "MINI-BAR", "SPA", "TABLE TENNIS", "KARAOKE"]
         } else if (this.searchRole === "BOAT_OWNER") {
-            //za boat
-        } else {
+            this.roleURL = "boat-owner"
+            this.servicesList = ["RADAR", "AUTOPILOT", "VDR", "GPS", "LURES", "FLY REELS"]
         }
     }
 }

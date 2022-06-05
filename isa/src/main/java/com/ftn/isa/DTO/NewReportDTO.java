@@ -12,15 +12,18 @@ public class NewReportDTO {
 
     private String clientEmail;
 
+    private String ownerRole;
+
     public NewReportDTO() {
 
     }
 
-    public NewReportDTO(boolean isNegative, boolean hasShowedUp, String message, String clientEmail) {
+    public NewReportDTO(boolean isNegative, boolean hasShowedUp, String message, String clientEmail, String ownerRole) {
         this.isNegative = isNegative;
         this.hasShowedUp = hasShowedUp;
         this.message = message;
         this.clientEmail = clientEmail;
+        this.ownerRole = ownerRole;
     }
 
     public boolean arePropsValid() {
@@ -39,8 +42,12 @@ public class NewReportDTO {
         return isNegative;
     }
 
-    public void setNegative(boolean negativeP) {
+    public void setIsNegative(boolean negativeP) {
         isNegative = negativeP;
+    }
+
+    public void setNegative(boolean negative) {
+        isNegative = negative;
     }
 
     public boolean isHasShowedUp() {
@@ -59,5 +66,11 @@ public class NewReportDTO {
         this.message = message;
     }
 
+    public String getOwnerRole() {
+        return ownerRole;
+    }
 
+    public void setOwnerRole(String ownerRole) {
+        this.ownerRole = ownerRole;
+    }
 }

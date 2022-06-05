@@ -10,7 +10,7 @@
                         <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" @click="positiveFeedback()">
                         <label class="btn btn-outline-success  left-btn-check" for="btnradio1">Positive</label>
 
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @click="negativeFeedback()">
+                        <input type="radio" class="btn-check" name="btnradio2" id="btnradio2" autocomplete="off" @click="negativeFeedback()">
                         <label class="btn btn-outline-success" for="btnradio2">Negative</label>
                     </div>
                 </div>
@@ -63,7 +63,8 @@ export default {
                 message: '',
                 isNegative: false,
                 hasShowedUp: false,
-                clientEmail: this.clientEmail
+                clientEmail: this.clientEmail,
+                ownerRole: window.localStorage.getItem("userRole")
             },
             errorPopUpVisible: false,
             localSuccPopUpVisible: false,

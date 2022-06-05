@@ -5,28 +5,39 @@
             <div class="container">
                 <div class="row">
                     <div class="col-4">
-                        <span>Cottage</span>
+                        <span>Boat</span>
                         <hr class="solid">
-                        <label class="label" for="name">Cottage name:</label>
+                        <label class="label" for="name">Boat name:</label>
                         <input type="text" id="name" class="form-control" v-model="data.name">
                         <label class="label" for="description">description:</label>
                         <input type="text" id="description" class="form-control" v-model="data.description">
                         <label class="label" for="rules">Rules:</label>
                         <input type="text" id="rules" class="form-control" v-model="data.rules">
+                        <label class="label" for="type">Boat type:</label>
+                        <input type="text" id="type" class="form-control" v-model="data.type">
                         <span>
                             <div class="inline-inputs">
-                                <label class="label" for="price">Price/day €:</label>
+                                <label class="label" for="price"><br>Price/day €:</label>
                                 <input type="text" id="price" class="form-control rating" v-model="data.price">
                             </div>
                             <div class="inline-inputs">
-                                <label class="label" for="no-rooms">No. rooms:</label>
-                                <input type="text" id="no-rooms" class="form-control rating" v-model="data.noRooms">
+                                <label class="label" for="lenght"><br>Lenght(m):</label>
+                                <input type="text" id="lenght" class="form-control rating" v-model="data.boatLength">
                             </div>
                         </span>
-                        <label class="label" for="additionalServices">Additional services(press alt + , to add):</label>
-                        <input type="text" class="form-control" v-model="tempService" @keyup.alt="addService">
-                        <div v-for="service in this.localServices" :key="service" class="pill">
-                            <span  @click="deleteService(service)">{{service}}</span>
+                        <div>
+                            <label class="label" for="additionalServices">Navigation equipment(press alt + , to add):</label>
+                            <input type="text" class="form-control" v-model="tempNavEq" @keyup.alt="addNavEq">
+                            <div v-for="service in this.localNavEq" :key="service" class="pill">
+                                <span  @click="deleteNavEq(service)">{{service}}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="label">Fishing equipment(press alt + , to add):</label>
+                            <input type="text" class="form-control" v-model="tempFishingEq" @keyup.alt="addFishingEq">
+                            <div v-for="service in this.localFishingEq" :key="service" class="pill">
+                                <span  @click="deleteFishingEq(service)">{{service}}</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-4">
@@ -48,10 +59,20 @@
                                 <input type="text" id="num-ratings" class="form-control rating" v-model="data.noRatings" disabled>
                             </div>
                         </span>
-                        <div>
-                            <label class="label" for="capacity">Capacity:</label>
-                            <input type="text" id="capacity" class="form-control" v-model="data.capacity">
-                        </div>
+                        <span>
+                            <div class="inline-inputs">
+                                <label class="label" for="engine-power">Engine<br>power(ks):</label>
+                                <input type="text" id="engine-power" class="form-control rating" v-model="data.enginePower">
+                            </div>
+                            <div class="inline-inputs">
+                                <label class="label" for="max-speed">Max<br>speed(km/h):</label>
+                                <input type="text" id="max-speed" class="form-control rating" v-model="data.maxSpeed">
+                            </div>
+                        </span>
+                        <label class="label" for="engine-number">Engine number:</label>
+                        <input type="text" id="engine-number" class="form-control" v-model="data.engineNumber">
+                        <label class="label" for="capacity">Capacity:</label>
+                        <input type="text" id="capacity" class="form-control" v-model="data.capacity">
                     </div>
                     <div class="col-4">
                         <div>
@@ -69,7 +90,7 @@
                         </div>
                         <div id="mapContainer">
                             <MapContainer
-                                :coordinates = "[cottage.lon, cottage.lat]"
+                                :coordinates = "[19.83383399956332, 45.25697997579121]"
                                 :map-height = "200"
                                 :mapEditable="true"
                                 @changed-location = "changedLocationFunc"
@@ -80,7 +101,7 @@
                 </div>
             </div>
             <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
-                <button type="button" class="btn btn-secondary" @click="changeCottage">Save changes</button>
+                <button type="button" class="btn btn-secondary" @click="changeBoat">Save changes</button>
                 <button type="button" class="btn btn-outline-secondary" @click="closeWindow">Cancel</button>
             </div>
         </div>
@@ -103,29 +124,54 @@ import axios from 'axios';
 import MapContainer from "./MapContainer.vue"
 
 export default {
-    name: "EditCottageModal",
+    name: "AddBoatModal",
     components: {
         ErrorPopUp, SuccessPopUp, MapContainer
     },
     props: {
-        cottage: Object
+        showAddNewBoat: Boolean,
+        succPopUpVisible: Boolean
     },
     data(){
         return {
-            tempService: '',
+            tempNavEq: '',
+            tempFishingEq: '',
             newPicture: 'addPhoto.png',
 
             localPhotos: [],
-            localServices: [],
+            localNavEq: [],
+            localFishingEq: [],
 
             changedLocation: false,
 
             errMessage: '',
-            succMessage: 'Cottage data is changed successfully!',
+            succMessage: 'New boat successfully!',
             errorPopUpVisible: false,
-            localSuccPopUpVisible: false,
+            localSuccPopUpVisible: this.succPopUpVisible,
 
-            data: Object
+            data: {
+                name: '',
+                description: '',
+                rules: '',
+                price: '',
+                noRooms: 0,
+                fishingEquipment: '',
+                navigationEquipment: '',
+                city: '',
+                street: '',
+                country: '',
+                averageRating: 0,
+                noRatings: 0,
+                capacity: 0,
+                photos: [],
+                lon: '',
+                lat: '',
+                type: '',
+                maxSpeed: '',
+                enginePower: '',
+                engineNumber: '',
+                boatLength: ''
+            }
         }
     },
     methods: {
@@ -144,21 +190,40 @@ export default {
                 this.$emit("succ-popup-close");
                 this.$router.go(); 
         },
-        addService(e) {
+        addNavEq(e) {
             //uvek je ocpiono prvi parametar event
             //key up je recimo kada se svaki put klikne nesto pojedinacno na tastaturi
-            if (e.key === ',' && this.tempService){
-                if (!this.localServices.includes(this.tempService)){
-                    this.localServices.push(this.tempService)    //zbog duplikata
+            if (e.key === ',' && this.tempNavEq){
+                if (!this.localNavEq.includes(this.tempNavEq)){
+                    this.localNavEq.push(this.tempNavEq)    //zbog duplikata
                 }
                 
-                this.tempService = ''     //resetuje se trenutni
+                this.tempNavEq = ''     //resetuje se trenutni
             }
         },
-        deleteService(service){
+        addFishingEq(e) {
+            //uvek je ocpiono prvi parametar event
+            //key up je recimo kada se svaki put klikne nesto pojedinacno na tastaturi
+            if (e.key === ',' && this.tempFishingEq){
+                if (!this.localFishingEq.includes(this.tempFishingEq)){
+                    this.localFishingEq.push(this.tempFishingEq)    //zbog duplikata
+                }
+                
+                this.tempFishingEq = ''     //resetuje se trenutni
+            }
+        },
+        deleteNavEq(service){
             //parametar je skill koji se brise
             //uzimamo trenutni item kad filter iterira i ako je to taj brisemo
-            this.localServices = this.localServices.filter((item) => {
+            this.localNavEq = this.localNavEq.filter((item) => {
+                return service !== item       //ako vratimo true isti su
+                //kad se uslov ispuni filtrira sta je stisnuto iz liste
+            })
+        },
+        deleteFishingEq(service){
+            //parametar je skill koji se brise
+            //uzimamo trenutni item kad filter iterira i ako je to taj brisemo
+            this.localFishingEq = this.localFishingEq.filter((item) => {
                 return service !== item       //ako vratimo true isti su
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
             })
@@ -177,7 +242,7 @@ export default {
                     this.localPhotos.push(this.newPicture)    //zbog duplikata
                 }
         },
-        changeCottage(){
+        changeBoat(){
             try { this.checkInputs(); } 
                 catch(error) {        
                     this.errMessage = error;
@@ -186,20 +251,39 @@ export default {
                 }
 
             this.data.photos = this.localPhotos
-            this.data.additionalServices = []
-            let counter = 0
-            for (let s in this.localServices){
-                counter++
-                this.data.additionalServices += this.localServices[s]
-                if (counter < this.localServices.length) this.data.additionalServices += ','
-            } 
-            axios.put("api/cottage-owner/change-cottage-data", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
+            this.data.fishingEquipment = []
+            this.data.navigationEquipment = []
+            let counter1 = 0
+            let counter2 = 0
+            for (let s in this.localNavEq){
+                counter1++
+                this.data.navigationEquipment += this.localNavEq[s]
+                if (counter1 < this.localNavEq.length) this.data.navigationEquipment += ','
+            }
+            for (let s in this.localFishingEq){
+                counter2++
+                this.data.fishingEquipment += this.localFishingEq[s]
+                if (counter2 < this.localFishingEq.length) this.data.fishingEquipment += ','
+            }
+            axios.post("api/boat-owner/add-boat", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        alert(error.name)
+                    }).catch(err => {
+                        if (err.response.status === 404){
+                            this.errMsg = "Client or owner with given email address is not found!";
+                            this.errorPoup = true;
+                        } 
+                        else if (err.response.status === 401) {
+                            this.errMsg = "You are not authorized!";
+                            this.errorPoup = true;
+                        }
+                        else if (err.response.status === 422) {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        } else {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        }
                     });
 
         },
@@ -224,8 +308,20 @@ export default {
             if (!this.validate(this.data.street, streetReg))
                 throw "Make sure you entered a valid street name.";
             
-            if (!this.validate(this.data.noRooms, numReg) || this.data.noRooms <= 0)
-                throw "Make sure your entered valid number of rooms.";
+            if (!this.validate(this.data.boatLength, numReg) || this.data.boatLength <= 0)
+                throw "Make sure your entered valid lenght of boat.";
+
+            if (!this.validate(this.data.maxSpeed, numReg) || this.data.maxSpeed <= 0)
+                throw "Make sure your entered valid max speed.";
+
+            if (!this.validate(this.data.enginePower, numReg) || this.data.enginePower <= 0)
+                throw "Make sure your entered valid engine power.";
+
+            if (!this.validate(this.data.engineNumber, numReg) || this.data.engineNumber <= 0)
+                throw "Make sure your entered valid engine number.";
+
+            if (!this.validate(this.data.type, streetReg))
+                throw "Make sure you entered a valid boat type.";
             
             if (!this.validate(this.data.capacity, numReg) || this.data.capacity <= 0)
                 throw "Capacity must be greater than 0.";
@@ -245,25 +341,18 @@ export default {
             if (this.localPhotos.length > 4)
                 throw "You cannot upload more than 4 photos.";
 
-            if (this.localServices.length < 1)
-                throw "You need to add at least one local service.";
+            if (this.localFishingEq.length < 1)
+                throw "You need to add at least one fishing equipment.";
 
-            if (this.changedLocation && !(this.cottage.city !== this.data.city || this.cottage.street !== this.data.street)){
-                throw "Location on the map is changed, but you didn't change city/street in input fields.";
-            }
+            if (this.localNavEq.length < 1)
+                throw "You need to add at least one navigation equipment.";
+
+            if (!this.changedLocation)
+                throw "You need to change location on the map";
+
         }
         
-    },
-    mounted(){
-            this.data = Object.assign({}, this.cottage)
-            try {
-                this.localServices = this.cottage.additionalServices.split(',')
-                this.localPhotos = Object.assign([], this.cottage.photos)
-            }catch (err){
-                this.localServices = this.cottage.additionalServices //ako ne uspe split znaci da ima samo jedna
-                this.localPhotos = Object.assign([], this.cottage.photos)
-            }
-   }
+    }
 
 }
 </script>
@@ -387,7 +476,7 @@ export default {
     }
 
     #mapContainer {
-        margin-top: 5%;
+        margin-top: 30%;
     }
 
     label {

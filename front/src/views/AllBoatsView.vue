@@ -2,7 +2,7 @@
     <div v-if="showSearch">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <div class="container" style="margin-top: 5%">
-            <div v-if="cottages.length > 0">
+            <div v-if="boats.length > 0">
                 <span id="fa-search-id">
                     <input type="text" placeholder="Search..." id="search-input" v-model="searched"/>
                     <i class="fa fa-search" id="search-icon-color" aria-hidden="true"></i>
@@ -13,21 +13,23 @@
                     </div>
                 </span>
                 <span>
-                    <button class="btn btn-success add-btn" id="btn-add" @click="showAddCottageModal()">Add cottage</button>
+                    <button class="btn btn-success add-btn" id="btn-add" @click="showAddBoatModal()">Add boat</button>
                 </span>
                 <div class="row">
-                    <div class="col-12 col-md-5 col-lg-4" v-for="cottage in filtered" :key="cottage.name">
+                    <div class="col-12 col-md-5 col-lg-4" v-for="boat in filtered" :key="boat.name">
                         <div class="card" style="width: 18rem; margin-top: 5%" id="card-body-id">
-                            <img :src="setPicture(cottage)" id="cottage-img" class="card-img-top" alt="This is cottage picture" @click="showDetailModal(cottage)">
+                            <img :src="setPicture(boat)" id="cottage-img" class="card-img-top" alt="This is boat picture" @click="showDetailModal(boat)">
                             <div class="card-body">
-                                <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
-                                <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
-                                <p class="card-text" style="white-space: pre-line;"><b>Description:</b>{{cottage.description.length <= 25 ? cottage.description + '\n.' : cottage.description}}</p>
-                                <p class="card-text"><b>Price:</b>{{cottage.price}} &euro;</p>
-                                <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
+                                <h5 class="card-title" id="heading-cottage">{{boat.name}}</h5>
+                                <p class="card-text"><b>Location:</b> {{boat.city}}, {{boat.street}}</p>
+                                <p class="card-text" style="white-space: pre-line;"><b>Description:</b>{{boat.description.length <= 25 ? boat.description + '\n.' : boat.description}}</p>
+                                <p class="card-text"><b>Engine power:</b>{{boat.enginePower}}ks</p>
+                                <p class="card-text"><b>Max speed:</b>{{boat.maxSpeed}}km/h</p>
+                                <p class="card-text"><b>Price:</b>{{boat.price}} &euro;</p>
+                                <p class="card-text"><b>Rate:</b> {{boat.averageRating}}★</p>
                                 <span>
-                                    <button class="btn btn-success card-btns" @click="showEditCottageModal(cottage)">Change</button>
-                                    <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(cottage)">Delete</button>
+                                    <button class="btn btn-success card-btns" @click="showEditBoatModal(boat)">Change</button>
+                                    <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(boat)">Delete</button>
                                 </span>    
                             </div>
                         </div>
@@ -39,24 +41,24 @@
             </div>
         </div>
         <div v-if="showEdit">
-            <EditCottageModal
-            :cottage = "sendCottage"
+            <EditBoatModal
+            :boat = "sendBoat"
             @modal-closed = "showEdit = false"
             @succ-popup-close = "succPopUpClose"
             />
         </div>
         <div v-else-if="showDetails">
-            <DetailCottageModal
-            :cottage = "sendCottage"
+            <DetailBoatModal
+            :boat = "sendBoat"
             @modal-closed = "showDetails = false"
             @succ-popup-close = "succPopUpClose"
             />
         </div>
-        <div v-else-if="showAddNewCottage">
-            <AddCottageModal
-            :showAddNewCottage = "showAddNewCottage"
+        <div v-else-if="showAddNewBoat">
+            <AddBoatModal
+            :showAddNewBoat = "showAddNewBoat"
             :succPopUpVisible = "succPopUpVisible"
-            @modal-closed = "showAddNewCottage = false"
+            @modal-closed = "showAddNewBoat = false"
             @succ-popup-close = "succPopUpClose"
             />
         </div>
@@ -84,39 +86,39 @@
 
 <script>
  import axios from 'axios';
- import EditCottageModal from '../components/EditCottageModal.vue'
- import AddCottageModal from '../components/AddCottageModal.vue'
+ import EditBoatModal from '../components/EditBoatModal.vue'
+ import AddBoatModal from '../components/AddBoatModal.vue'
  import ConfirmationPopUp from '../components/ConfirmationPopUp.vue'
  import ErrorPopUp from '../components/ErrorPopUp.vue'
  import SuccessPopUp from '../components/SuccessPopUp.vue'
- import DetailCottageModal from '../components/DetailCottageModal.vue'
+ import DetailBoatModal from '../components/DetailBoatModal.vue'
 
 export default {
-   name: "AllCottagesView",
+   name: "AllBoatsView",
    components: {
-       EditCottageModal, AddCottageModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, DetailCottageModal
+       EditBoatModal, AddBoatModal, ConfirmationPopUp, ErrorPopUp, SuccessPopUp, DetailBoatModal
    },
    data (){
        return {
-            cottages: [],
-            sendCottage: {},
-            cottageToDelete: {},
+            boats: [],
+            sendBoat: {},
+            boatToDelete: {},
             searched: '',
             errorPoup: false,
-            errMsg: "Cottage cannot be deleted due to upcoming reservations",
+            errMsg: "Boat cannot be deleted due to upcoming reservations",
             succPoupUp: false,
             succMessage: '',
             
             showDetails: false,
             showEdit: false,
-            showAddNewCottage: false,
+            showAddNewBoat: false,
             showDeleteCottage: false,
             confirmationPopUpVisible: false,
 
-            deletionMessage: "Are you sure about deleting this cottage?",
-            deletionTitle: "Cottage deleting",
+            deletionMessage: "Are you sure about deleting this boat?",
+            deletionTitle: "Boat deleting",
 
-            showSearch: window.localStorage.getItem("userRole") === "COTTAGE_OWNER",
+            showSearch: window.localStorage.getItem("userRole") === "BOAT_OWNER",
             
             calendarForCottage: {},
 
@@ -126,27 +128,27 @@ export default {
        }
    }, 
    methods: {
-        setPicture(cottage) {
+        setPicture(boat) {
                 try{
-                    return require('../assets/' + cottage.photos[0]);
+                    return require('../assets/' + boat.photos[0]);
                 } catch(e) {}
         },
-        showEditCottageModal(cottage) {
-            this.sendCottage = cottage
+        showEditBoatModal(boat) {
+            this.sendBoat = boat
             this.showEdit = true
         },
-        showDetailModal(cottage) {
-            this.sendCottage = cottage
+        showDetailModal(boat) {
+            this.sendBoat = boat
             this.showDetails = true
         },
-        showAddCottageModal() {
-            this.showAddNewCottage = true
+        showAddBoatModal() {
+            this.showAddNewBoat = true
         },
         succPopUpClose() {
             this.succPopUpVisible = false;
         },
-        showConfirmDeletionDialog(cottage) {
-            this.cottageToDelete = cottage;
+        showConfirmDeletionDialog(boat) {
+            this.boatToDelete = boat;
             this.confirmationPopUpVisible = true;
         },
         closeSuccPopUp() {
@@ -154,30 +156,43 @@ export default {
         },
         confirmDeletion(){
             this.confirmationPopUpVisible = false
-            axios.delete('api/cottage-owner/delete-cottage/' + this.cottageToDelete.id, {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.delete('api/boat-owner/delete-boat/' + this.boatToDelete.id, {headers: {'authorization': window.localStorage.getItem("token") }})
             .then((response) => {
-                this.succMessage = "Cottage is successfully deleted!"
+                this.succMessage = "Boat is successfully deleted!"
                 this.succPoupUp = true
 
-                this.cottages = this.cottages.filter((item) => {
-                    return this.cottageToDelete !== item       //ako vratimo true isti su
+                this.boats = this.boats.filter((item) => {
+                    return this.boatToDelete !== item       //ako vratimo true isti su
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
                 })
-                this.cottageToDelete = {}   //reset vreednosti
-            }).catch((error) => {
-                this.errMsg = "Cottage cannot be deleted due to upcoming reservations"
-                this.errorPoup = true
-            })
+                this.boatToDelete = {}   //reset vreednosti
+            }).catch(err => {
+                if (err.response.status === 404){
+                    this.errMsg = "Client or owner with given email address is not found!";
+                    this.errorPoup = true;
+                } 
+                else if (err.response.status === 401) {
+                    this.errMsg = "You are not authorized!";
+                    this.errorPoup = true;
+                }
+                else if (err.response.status === 422) {
+                    this.errMsg = "Boat cannot be deleted due to upcoming reservations";
+                    this.errorPoup = true;
+                } else {
+                    this.errMsg = "Boat cannot be deleted due to upcoming reservations";
+                    this.errorPoup = true;
+                }
+            });
             
         },
         sortByName() {
             if (this.nameSortBtnClicked)
-                this.cottages.reverse();
+                this.boats.reverse();
             else {
                 this.uncheckSortButtons();
                 this.nameSortBtnClicked = true;
 
-                this.cottages.sort(function(left, right) { 
+                this.boats.sort(function(left, right) { 
                     let lName = left.name.toUpperCase();
                     let rName = right.name.toUpperCase();
                     if (lName < rName) 
@@ -191,12 +206,12 @@ export default {
         },
         sortByPrice() {
             if (this.priceSortBtnClicked)
-                this.cottages.reverse();
+                this.boats.reverse();
             else {
                 this.uncheckSortButtons();
                 this.priceSortBtnClicked = true;
 
-                this.cottages.sort(function(left, right) { 
+                this.boats.sort(function(left, right) { 
                     let lPrice = left.price;
                     let rPrice = right.price;
                     if (lPrice < rPrice)
@@ -209,12 +224,12 @@ export default {
         },
         sortByRate() {
             if (this.rateSortBtnClicked)
-                this.cottages.reverse();
+                this.boats.reverse();
             else {
                 this.uncheckSortButtons();
                 this.rateSortBtnClicked = true;
 
-                this.cottages.sort(function(left, right) { 
+                this.boats.sort(function(left, right) { 
                     let lRate = left.averageRating;
                     let rRate = right.averageRating;
                     if (lRate < rRate)
@@ -232,9 +247,9 @@ export default {
         }
    },
    mounted(){
-       axios.get('api/cottage-owner/all-cottages', {headers: {'authorization': window.localStorage.getItem("token") }})
+       axios.get('api/boat-owner/all-boats', {headers: {'authorization': window.localStorage.getItem("token") }})
        .then((response) => {
-           this.cottages = response.data
+           this.boats = response.data
         }).catch(err => {
             if (err.response.status === 404){
                 this.errMsg = "Client or owner with given email address is not found!";
@@ -256,9 +271,10 @@ export default {
    },
    computed: {
         filtered: function(){
-            return this.cottages.filter((res) => {
+            return this.boats.filter((res) => {
                 return ((res.name.toLowerCase()).match(this.searched.toLowerCase()) || (res.description.toLowerCase()).match(this.searched.toLowerCase())
-                || (res.averageRating.toString()).match(this.searched) || (res.price.toString()).match(this.searched) || (res.city.toLowerCase()).match(this.searched.toLowerCase()))
+                || (res.averageRating.toString()).match(this.searched) || (res.price.toString()).match(this.searched) || (res.city.toLowerCase()).match(this.searched.toLowerCase()) 
+                || ((res.enginePower.toLowerCase()).match(this.searched.toLowerCase())) || ((res.maxSpeed.toLowerCase()).match(this.searched.toLowerCase())))
             });
         }
     }
