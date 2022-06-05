@@ -68,12 +68,6 @@
             @confirmed-event = "confirmDeletion"
             />
         </div>
-        <div v-else-if="showAddNewRes">
-            <NewReservationsComponent
-                @modal-closed = "showAddNewRes = false"
-                :choosenCottage="calendarForCottage"
-            />
-        </div>
         <ErrorPopUp v-show="errorPoup" 
             @close = "errorPoup = false"
             :mess = "errMsg"

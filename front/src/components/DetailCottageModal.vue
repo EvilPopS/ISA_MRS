@@ -74,7 +74,7 @@
             <div v-if="showAddNewRes">
             <NewReservationsComponent
                 @modal-closed = "showAddNewRes = false"
-                :choosenCottage="cottage"
+                :choosenRental="cottage"
             />
             </div>
         </div>

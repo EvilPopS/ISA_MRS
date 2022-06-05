@@ -18,21 +18,21 @@
                                 <Tab :isSelected="selected === 'Regular'">
                                     <AddRegularRes
                                         @modal-closed = "closeWindow()"
-                                        :cottage="choosenCottage"
+                                        :rental="choosenRental"
                                     ></AddRegularRes>
                                 </Tab>
 
                                 <Tab :isSelected="selected === 'Action'">
                                     <AddActionRes
                                         @modal-closed = "closeWindow()"
-                                        :cottage="choosenCottage"
+                                        :rental="choosenRental"
                                     ></AddActionRes>
                                 </Tab>
 
                                 <Tab :isSelected="selected === 'Unavailability'">
                                     <AddUnvailablePeriod
                                         @modal-closed = "closeWindow()"
-                                        :cottage="choosenCottage"
+                                        :rental="choosenRental"
                                     ></AddUnvailablePeriod>
                                 </Tab>
 
@@ -58,7 +58,7 @@ export default {
         Tab, TabNav, AddActionRes, AddRegularRes, AddUnvailablePeriod
     },
     props: {
-        choosenCottage: Object
+        choosenRental: Object
     },
     data(){
         return {
