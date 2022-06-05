@@ -40,6 +40,15 @@ public class BoatOwnerController {
     @Autowired
     private LoyaltyProgramService loyaltyProgramService;
 
+    @Autowired
+    private SubscriptionService subscriptionService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private RequestService requestService;
+
     @GetMapping
     @PreAuthorize("hasRole('BOAT_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
@@ -242,5 +251,165 @@ public class BoatOwnerController {
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
+
+    @PostMapping(value = "/add-action-reservation")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addNewActionRes(HttpServletRequest request, @RequestBody ActionResDTO actionResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!actionResDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!boatOwnerService.checkIfBoatExists(boatOwner, actionResDTO.getRentalId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Reservation newRes = reservationService.addNewActionRes(actionResDTO, boatOwner);
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Boat c : boatOwner.getBoats()){
+            if (c.getId().equals(actionResDTO.getRentalId())){
+                c.getReservations().add(newRes);
+                break;
+            }
+        }
+        boatOwnerService.save(boatOwner);
+        notifySubscribers(boatOwner, actionResDTO);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    private void notifySubscribers(BoatOwner boatOwner, ActionResDTO actionResDTO) {
+        for (Subscription s : subscriptionService.getAllSubscriptions()){
+            if (s.getOwner().getId().equals(boatOwner.getId()) && s.isActiveSubscription()){
+                try {
+                    emailService.sendMail(s.getClient().getEmail(), "New Action on the radar",
+                            "New action reservation is waiting for you! Check this great deal" +
+                                    " for rental of owner " + boatOwner.getName() + " " + boatOwner.getSurname() +
+                                    " now for just " + String.valueOf(actionResDTO.getPrice()) + " euros!"
+                    );
+                } catch(Exception ignored){
+                    //nikom nista
+                }
+            }
+        }
+    }
+
+    @PostMapping(value = "/add-regular-reservation")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addRegularRes(HttpServletRequest request, @RequestBody RegularResDTO regularResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Client client = clientService.findByEmail(regularResDTO.getClientEmail());
+        if (client == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!regularResDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!boatOwnerService.checkIfBoatExists(boatOwner, regularResDTO.getRentalId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!clientService.checkIfCurrentResInProgress(client))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, boatOwner, client, false);
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Boat c : boatOwner.getBoats()){
+            if (c.getId().equals(regularResDTO.getRentalId())){
+                c.getReservations().add(newRes);
+                break;
+            }
+        }
+        boatOwnerService.save(boatOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/add-unvailable-period")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addUnvailablePeriod(HttpServletRequest request, @RequestBody RegularResDTO regularResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!regularResDTO.checkOnlyDate())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!boatOwnerService.checkIfBoatExists(boatOwner, regularResDTO.getRentalId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, boatOwner, null, true);
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Boat c : boatOwner.getBoats()){
+            if (c.getId().equals(regularResDTO.getRentalId())){
+                c.getReservations().add(newRes);
+                break;
+            }
+        }
+        boatOwnerService.save(boatOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(consumes="application/json", value="/register")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> registerUser(@RequestBody OwnerRegDTO ownerData) {
+        if (!ownerData.arePropsValid())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (boatOwnerService.findByEmail(ownerData.getEmail()) != null)
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+
+        BoatOwner boatOwner = null;
+        try {
+            boatOwner = new BoatOwner(ownerData);
+            boatOwnerService.save(boatOwner);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        Request regRequest = new Request(RequestType.ACCOUNT_REGISTRATION, boatOwner, ownerData.getRegReason());
+        requestService.save(regRequest);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value="/confirm-mail/{email}")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> activateAccount(@PathVariable String email){
+        BoatOwner boatOwner = boatOwnerService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        boatOwner.setActive(true);
+        boatOwnerService.save(boatOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 }

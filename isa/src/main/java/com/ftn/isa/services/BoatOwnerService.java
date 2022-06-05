@@ -238,4 +238,12 @@ public class BoatOwnerService {
         return data;
     }
 
+    public boolean checkIfBoatExists(BoatOwner boatOwner, Long boatId) {
+        for (Boat c : boatOwner.getBoats()){
+            if (c.getId().equals(boatId))
+                return true;
+        }
+        return false;
+    }
+
 }

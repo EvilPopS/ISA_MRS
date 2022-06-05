@@ -2,7 +2,7 @@ package com.ftn.isa.model;
 
 
 import com.ftn.isa.DTO.BoatOwnerDTO;
-import com.ftn.isa.DTO.CottageOwnerDTO;
+import com.ftn.isa.DTO.OwnerRegDTO;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -26,6 +26,26 @@ public class BoatOwner extends User {
         address.setStreet(data.getStreet());
         this.getProfilePicture().setPhotoPath(data.getProfilePicture());
         this.setPhoneNumber(data.getPhoneNumber());
+    }
+
+    public BoatOwner() {
+
+    }
+
+    public BoatOwner(OwnerRegDTO data) {
+        this.setName(data.getName());
+        this.setSurname(data.getSurname());
+        this.setEmail(data.getEmail());
+        this.setAddress(new Address(data.getCountry(), data.getCity(), data.getAddress()));
+        this.setPhoneNumber(data.getPhoneNumber());
+        this.setProfilePicture(new Photo(data.getProfilePicture()));
+        this.setPassword(data.getPassword());
+        this.setDeleted(false);
+        this.setActive(false);
+        this.setRole(new Role("ROLE_BOAT_OWNER"));
+        this.setLoyaltyPoints(0);
+        this.setLoyaltyType(LoyaltyType.REGULAR);
+        this.boats = new HashSet<>();
     }
 
     public Set<Boat> getBoats() {
