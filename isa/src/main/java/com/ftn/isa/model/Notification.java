@@ -36,6 +36,12 @@ public abstract class Notification {
         this.sentTime = LocalDateTime.now();
     }
 
+    public Notification(String message){
+        this.message = message;
+        this.isAnswered = false;
+        this.sentTime = LocalDateTime.now();
+    }
+
     public Notification() {
 
     }

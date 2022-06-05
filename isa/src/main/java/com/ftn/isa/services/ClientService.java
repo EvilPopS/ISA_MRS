@@ -81,13 +81,13 @@ public class ClientService {
 
     private boolean matchReservation(Reservation res, RentalService rental, List<ReservationDisplayDTO> reservationHistory, boolean areDone) {
         for (Reservation r: rental.getReservations())
-            if (res.getId().equals(r.getId())) {
+            if (res.getId().equals(r.getId()) && !res.isCanceled()) {
                 if (areDone) {
                     if (res.getEndTime().isBefore(LocalDateTime.now()))
                         reservationHistory.add(new ReservationDisplayDTO(res, rental));
                 }
                 else {
-                    if (!res.isCanceled() && res.getEndTime().isAfter(LocalDateTime.now()))
+                    if (res.getEndTime().isAfter(LocalDateTime.now()))
                         reservationHistory.add(new ReservationDisplayDTO(res, rental));
                 }
                 return true;
