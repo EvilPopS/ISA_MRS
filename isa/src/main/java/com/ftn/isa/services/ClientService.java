@@ -97,7 +97,8 @@ public class ClientService {
 
     public boolean checkIfCurrentResInProgress(Client client) {
         for (Reservation res : client.getReservations()){
-            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime()))
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime())
+                && !res.isCanceled() && res.isReserved())
                 return true;
         }
         return false;

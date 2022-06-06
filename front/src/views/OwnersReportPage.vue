@@ -173,8 +173,11 @@ export default {
         } else if (this.searchRole === "INSTRUCTOR"){
             this.roleURL = "fishingInstructor"
             this.showSearch = true
+        } else if (this.searchRole === "BOAT_OWNER") {
+            this.roleURL = "boat-owner"
+            this.showSearch = true
         } else {
-            //za boat
+            this.showSearch = false
         }
     }
 }

@@ -3,61 +3,81 @@
         <div class="modal-content">
             <button id="close_btn" @click="closeWindow()" class="close">X</button>
             <div class="container">
-                <h1>{{cottage.name}}</h1>
+                <h1>{{boat.name}}</h1>
                 <div class="row">
+                    <div id="photo-gallery">
+                        <carousel :items-to-show="1" autoplay="5000" wrapAround="true">
+                            <slide v-for="photo in boat.photos" :key="photo">
+                                <img id="carosel-img" :src="setPicture(photo)">
+                            </slide>
+                            <template #addons>
+                                <navigation />
+                                <pagination />
+                            </template>
+                        </carousel>
+                    </div>
                     <div class="col-6">
                         <div class="start-data">
                             <h4>Basic data</h4>
-                            <p class="d-flex justify-content-left"><b>Cottage name: </b> {{cottage.name}}</p>
-                            <p class="d-flex justify-content-left"><b>Description: </b> {{cottage.description}}</p>
-                            <p class="d-flex justify-content-left"><b>Rules: </b> {{cottage.rules}}</p>
+                            <p class="d-flex justify-content-left"><b>Boat name: </b> {{boat.name}}</p>
+                            <p class="d-flex justify-content-left"><b>Description: </b> {{boat.description}}</p>
+                            <p class="d-flex justify-content-left"><b>Rules: </b> {{boat.rules}}</p>
+                        </div>
+                        <div class="start-data">
+                            <h4>Engine data</h4>
+                            <p class="d-flex justify-content-left"><b>Engine number: </b> {{boat.engineNumber}}</p>
+                            <p class="d-flex justify-content-left"><b>Engine power: </b> {{boat.enginePower}}ks</p>
+                            <p class="d-flex justify-content-left"><b>Max speed: </b> {{boat.maxSpeed}}km/h</p>
                         </div>
                         <div>
                             <div class="start-data">
-                                <h4>Additional services:</h4>
-                                <div v-for="service in additServ" :key="service" class="pill">
+                                <h4>Navigation equipment:</h4>
+                                <div v-for="service in navEq" :key="service" class="pill">
                                     <span >{{service}}</span>
                                 </div>
                              </div>
                         </div>
-                        <div id="photo-gallery">
-                            <carousel :items-to-show="1" autoplay="5000" wrapAround="true">
-                                <slide v-for="photo in cottage.photos" :key="photo">
-                                    <img :src="setPicture(photo)">
-                                </slide>
-                                <template #addons>
-                                    <navigation />
-                                    <pagination />
-                                </template>
-                            </carousel>
+                        <div class="badge-div">
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                Price: {{boat.price}}€
+                            </div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                No rooms: {{boat.noRooms}}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                Rate: {{boat.averageRating}}★
+                            </div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                No ratings: {{boat.noRatings}}
+                            </div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="start-data">
                             <h4>Address</h4>
-                            <p class="d-flex justify-content-left"><b>Country: </b> {{cottage.country}}</p>
-                            <p class="d-flex justify-content-left"><b>City: </b> {{cottage.city}}</p>
-                            <p class="d-flex justify-content-left"><b>Street: </b> {{cottage.street}}</p>
+                            <p class="d-flex justify-content-left"><b>Country: </b> {{boat.country}}</p>
+                            <p class="d-flex justify-content-left"><b>City: </b> {{boat.city}}</p>
+                            <p class="d-flex justify-content-left"><b>Street: </b> {{boat.street}}</p>
+                        </div>
+                        <div class="start-data">
+                            <h4>Boat type</h4>
+                            <p class="d-flex justify-content-left"><b>Boat length: </b> {{boat.boatLength}}m</p>
+                            <p class="d-flex justify-content-left"><b>Capacity: </b> {{boat.capacity}}</p>
+                            <p class="d-flex justify-content-left"><b>Boat type: </b> {{boat.type}}</p>
                         </div>
                         <div>
-                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
-                                Price: {{cottage.price}}€
-                            </div>
-                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
-                                No rooms: {{cottage.noRooms}}
-                            </div>
-                        </div>
-                        <div>
-                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
-                                Rate: {{cottage.averageRating}}★
-                            </div>
-                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
-                                No ratings: {{cottage.noRatings}}
-                            </div>
+                            <div class="start-data">
+                                <h4>Fishing equipment:</h4>
+                                <div v-for="service in fishingEq" :key="service" class="pill">
+                                    <span >{{service}}</span>
+                                </div>
+                             </div>
                         </div>
                         <div id="map-container">
                             <MapContainer
-                                :coordinates = "[cottage.lon, cottage.lat]"
+                                :coordinates = "[boat.lon, boat.lat]"
                                 :map-height = "200"
                                 :mapEditable="false"
                                 @changed-location = "changedLocationFunc"
@@ -74,7 +94,7 @@
             <div v-if="showAddNewRes">
             <NewReservationsComponent
                 @modal-closed = "showAddNewRes = false"
-                :choosenRental="cottage"
+                :choosenRental="boat"
             />
             </div>
         </div>
@@ -88,16 +108,17 @@ import MapContainer from "./MapContainer.vue"
 import NewReservationsComponent from '../components/NewReservationsComponent.vue'
 
 export default {
-    name: "DetailCottageModal",
+    name: "DetailBoatModal",
     components: {
         Carousel, Slide, Pagination, Navigation, MapContainer, NewReservationsComponent
     },
     props: {
-        cottage: Object
+        boat: Object
     },
     data(){
         return {
-            additServ: [],
+            navEq: [],
+            fishingEq: [],
             showAddNewRes: false,
 
         }
@@ -120,9 +141,11 @@ export default {
     },
     mounted() {
         try {
-            this.additServ = this.cottage.additionalServices.split(',')
+            this.navEq = this.boat.navigationEquipment.split(',')
+            this.fishingEq = this.boat.fishingEquipment.split(',');
         } catch (err){
-            this.additServ = this.cottage.additionalServices //ako ne uspe split znaci da ima samo jedna
+            if (this.navEq.length == 0) this.navEq = this.boat.navigationEquipment //ako ne uspe split znaci da ima samo jedna
+            if (this.fishingEq.length == 0) this.fishingEq = this.boat.fishingEquipment
         }
     }
 }
@@ -176,14 +199,15 @@ export default {
         cursor: pointer;
     }
 
-    img {
+    #carosel-img {
         width: auto;
-        height: 200px;
+        min-width: 500px;
+        height: 300px;
         border-radius: 20px;
     }
 
     #photo-gallery {
-        margin: 5% 10% 10% 10%;
+        margin: 5% 0;
     }
 
     h1 {
@@ -252,8 +276,12 @@ export default {
     }
 
     #btn-calendar {
-        width: 30px;
-        height: 30px;
+        width: 30px !important;
+        height: 30px !important;
     }
     
+    .badge-div {
+        margin-top: 10%;
+    }
+
 </style>

@@ -50,7 +50,7 @@ public class ClientController {
 
     @GetMapping(value="/basic-profile/{email}")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @PreAuthorize("hasRole('COTTAGE_OWNER') || hasRole('INSTRUCTOR') || hasRole('BOAT_OWNER')")
     public ResponseEntity<BasicClientDTO> getBasicProfileByEmail(HttpServletRequest request, @PathVariable String email) {
         String ownerEmail = tokenUtils.getEmailDirectlyFromHeader(request);
         if (ownerEmail == null)

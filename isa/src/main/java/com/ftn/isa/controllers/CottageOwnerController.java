@@ -107,7 +107,7 @@ public class CottageOwnerController  {
     @GetMapping(value="/find-one-rental/{id}")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    public ResponseEntity<CottageDTO> getAllCottages(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<CottageDTO> getOneWithId(@PathVariable Long id, HttpServletRequest request) {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -159,7 +159,12 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
+        try {
+            cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
@@ -180,7 +185,7 @@ public class CottageOwnerController  {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Set<Photo> photos = new HashSet<>();
-        photos = photoService.changeCottagePhotos(cottageOwner, cottageDTO);
+        photos = photoService.changeCottagePhotos(cottageOwner, cottageDTO.getId(), cottageDTO.getPhotos());
         cottageOwnerService.save(cottageOwner, cottageDTO, photos);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -281,7 +286,7 @@ public class CottageOwnerController  {
         if (!actionResDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, actionResDTO.getCottageId()))
+        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, actionResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Reservation newRes = reservationService.addNewActionRes(actionResDTO, cottageOwner);
@@ -289,7 +294,7 @@ public class CottageOwnerController  {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Cottage c : cottageOwner.getCottages()){
-            if (c.getId().equals(actionResDTO.getCottageId())){
+            if (c.getId().equals(actionResDTO.getRentalId())){
                 c.getReservations().add(newRes);
                 break;
             }
@@ -335,7 +340,7 @@ public class CottageOwnerController  {
         if (!regularResDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getCottageId()))
+        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         if (!clientService.checkIfCurrentResInProgress(client))
@@ -346,7 +351,7 @@ public class CottageOwnerController  {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Cottage c : cottageOwner.getCottages()){
-            if (c.getId().equals(regularResDTO.getCottageId())){
+            if (c.getId().equals(regularResDTO.getRentalId())){
                 c.getReservations().add(newRes);
                 break;
             }
@@ -371,7 +376,7 @@ public class CottageOwnerController  {
         if (!regularResDTO.checkOnlyDate())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getCottageId()))
+        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Reservation newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, null, true);
@@ -379,7 +384,7 @@ public class CottageOwnerController  {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Cottage c : cottageOwner.getCottages()){
-            if (c.getId().equals(regularResDTO.getCottageId())){
+            if (c.getId().equals(regularResDTO.getRentalId())){
                 c.getReservations().add(newRes);
                 break;
             }

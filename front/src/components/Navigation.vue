@@ -29,6 +29,14 @@
             <a @click="ownersReport()" class="homeNav">Reports</a>
         </div>
 
+        <div v-else-if="userRole === 'BOAT_OWNER'">
+            <a @click="boatOwnerHomeRedirect()" class="homeNav">Profile</a>
+            <a @click="allBoatsRedirect()" class="homeNav">Boats</a>
+            <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
+            <a @click="ownersSearch()" class="homeNav">Search</a>
+            <a @click="ownersReport()" class="homeNav">Reports</a>
+        </div>
+
         <div v-else-if="userRole === 'INSTRUCTOR'">
             <a @click="instructorProfilePageRedirect()" class="homeNav">Profile</a>
             <a @click="adventuresRedirect()" class="homeNav">Adventures</a>
@@ -120,6 +128,12 @@
             },
             clientLoyaltyProgramViewRedirect: function() {
                 pushView(this, "ClientLoyaltyProgramView");
+            },
+            boatOwnerHomeRedirect : function () {
+                pushView(this, "BoatOwnerHome");
+            },
+            allBoatsRedirect: function() {
+                pushView(this, "AllBoatsView")
             }
         }
     }

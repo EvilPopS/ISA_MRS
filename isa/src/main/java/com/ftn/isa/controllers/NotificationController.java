@@ -4,6 +4,14 @@ import com.ftn.isa.DTO.ClientReportDTO;
 import com.ftn.isa.DTO.NewReportDTO;
 import com.ftn.isa.DTO.RentalReviewDTO;
 import com.ftn.isa.configs.ServerConfig;
+import com.ftn.isa.model.Client;
+import com.ftn.isa.model.CottageOwner;
+import com.ftn.isa.model.User;
+import com.ftn.isa.security.auth.TokenUtils;
+import com.ftn.isa.services.ClientService;
+import com.ftn.isa.services.CottageOwnerService;
+import com.ftn.isa.services.ReportService;
+import com.ftn.isa.services.UserService;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
@@ -39,6 +47,9 @@ public class NotificationController {
     private RentalServService rentalServService;
 
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping(value = "/add-report")
     @PreAuthorize("hasRole('COTTAGE_OWNER') || hasRole('INSTRUCTOR') || hasRole('BOAT_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
@@ -47,15 +58,15 @@ public class NotificationController {
         if (ownerEmail == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        CottageOwner cottageOwner = cottageOwnerService.findByEmail(ownerEmail);
+        User owner = userService.getUserByEmailAndRole(ownerEmail, reportDTO.getOwnerRole());
         Client client = clientService.findByEmail(reportDTO.getClientEmail());
-        if (cottageOwner == null || client == null)
+        if (owner == null || client == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         if (!reportDTO.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        reportService.addNewReport(cottageOwner, client, reportDTO);
+        reportService.addNewReport(owner, client, reportDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

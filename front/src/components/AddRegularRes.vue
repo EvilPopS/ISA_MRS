@@ -36,16 +36,16 @@ export default {
         SuccessPopUp, ErrorPopUp
     },
     props: {
-        cottage: Object
+        rental: Object
     },
     data(){
         return {
             regularData: {
                 startTime: '',
                 endTime: '',
-                cottageId: this.cottage.id,
+                rentalId: this.rental.id,
                 clientEmail: '',
-                price: this.cottage.price
+                price: this.rental.price
             },
 
             todaysDate: '',
@@ -67,7 +67,7 @@ export default {
         },
         closeSuccPopUp() {
                 this.localSuccPopUpVisible = false
-                this.$router.go(); 
+                this.$emit('modal-closed');
         },
         addRegRes() {
             try { this.checkInputs(); } 
@@ -83,7 +83,7 @@ export default {
                     })
                     .catch(err => {
                             if (err.response.status === 404){
-                                this.errMessage = "Cottage owner or client with that email doesn't!";
+                                this.errMessage = "Owner or client with that email doesn't!";
                                 this.errorPopUpVisible = true;
                             } 
                             else if (err.response.status === 401) {
@@ -118,8 +118,7 @@ export default {
         } else if (this.searchRole === "INSTRUCTOR"){
             this.roleURL = "fishingInstructor"
         } else if (this.searchRole === "BOAT_OWNER") {
-            //za boat
-        } else {
+            this.roleURL = "boat-owner"
         }
     }
 }
