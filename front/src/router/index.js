@@ -17,6 +17,7 @@ import ClientReservationHistory from '../views/ClientReservationHistory';
 import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
 import ClientSubscriptionsView from '@/views/ClientSubscriptionsView';
 import OwnersReportPage from '@/views/OwnersReportPage';
+import ClientLoyaltyProgramView from '@/views/ClientLoyaltyProgramView';
 
 const routes = [
   {
@@ -110,6 +111,11 @@ const routes = [
     path: '/OwnersReportPage',
     name: 'OwnersReportPage',
     component: OwnersReportPage
+  },
+  {
+    path: '/ClientLoyaltyProgramView',
+    name: 'ClientLoyaltyProgramView',
+    component: ClientLoyaltyProgramView
   }
 
 ]

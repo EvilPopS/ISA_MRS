@@ -38,6 +38,9 @@ public class ClientProfileDTO {
             case REGULAR:
                 this.loyaltyStatus = "REGULAR";
                 break;
+            case BRONZE:
+                this.loyaltyStatus = "BRONZE";
+                break;
             case SILVER:
                 this.loyaltyStatus = "SILVER";
                 break;

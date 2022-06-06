@@ -60,7 +60,7 @@ insert into boat_owner (id, email, password, name, surname, address_id, phone_nu
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted, is_active,
                     photo_id, role_id, loyalty_type, loyalty_points, num_of_penalties)
     values (nextval('my_seq_gen_user'), 'client1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O',
-                        'Marko', 'Markovic', 1, '0601231231', false, true, 1, 1, 0, 124, 2);
+                        'Marko', 'Markovic', 1, '0601231231', false, true, 1, 1, 1, 224, 2);
 
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                            is_active, photo_id, role_id, loyalty_type, loyalty_points)
@@ -77,10 +77,11 @@ insert into cottage (id, name, description, capacity, rules, is_deleted, address
            (nextval('my_seq_gen_rental'), 'Centar NS', 'Najlepsi pogled na centar NS.', 5, 'Zabranjeno pusenje!',
             false, 10, 0, 0, 0, 60, 'wifi,klima,parking,rostilj', 4, 5);
 
-insert into loyalty_program (discount, increase, loyalty_type)
-    values (0, 0, 0),
-            (5, 5, 1),
-            (10, 10, 2);
+insert into loyalty_program (discount, increase, loyalty_type, price)
+    values (0, 0, 0, 0),
+            (4, 4, 1, 100),
+            (7, 7, 2, 200),
+            (10, 10, 3, 300);
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
                                 role_id, address_id, photo_id, loyalty_points)

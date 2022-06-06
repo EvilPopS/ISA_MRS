@@ -136,4 +136,33 @@ public class ClientService {
         client.incLoyaltyPoints(-5);
         clientRepo.save(client);
     }
+
+    public boolean updateClientLoyaltyProgram(Client client, List<LoyaltyProgram> programs, String newProgram) {
+        LoyaltyType type = LoyaltyType.REGULAR;
+        switch (newProgram) {
+            case "BRONZE":
+                type = LoyaltyType.BRONZE;
+                break;
+            case "SILVER":
+                type = LoyaltyType.SILVER;
+                break;
+            case "GOLD":
+                type = LoyaltyType.GOLD;
+                break;
+        }
+
+        for (LoyaltyProgram lp : programs)
+            if (lp.getLoyaltyType() == type) {
+                int leftPoints = client.getLoyaltyPoints() - lp.getPrice();
+                if (leftPoints >= 0)
+                    client.setLoyaltyPoints(leftPoints);
+                else
+                    return false;
+
+                client.setLoyaltyType(type);
+                clientRepo.save(client);
+                return true;
+            }
+        return false;
+    }
 }

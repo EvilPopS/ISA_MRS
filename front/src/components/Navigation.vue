@@ -18,6 +18,7 @@
             <a @click="clientReservHistoryRedirect()" class="homeNav">Reservation History</a>
             <a @click="clientUpcomingReservsRedirect()" class="homeNav">Upcoming Reservations</a>
             <a @click="clientSubscriptionsViewRedirect()" class="homeNav">Subscriptions</a>
+            <a @click="clientLoyaltyProgramViewRedirect()" class="homeNav">Loyalty Program</a>
         </div>
 
         <div v-else-if="userRole === 'COTTAGE_OWNER'">
@@ -116,6 +117,9 @@
             },
             ownersReport: function(){
                 pushView(this, "OwnersReportPage");
+            },
+            clientLoyaltyProgramViewRedirect: function() {
+                pushView(this, "ClientLoyaltyProgramView");
             }
         }
     }
