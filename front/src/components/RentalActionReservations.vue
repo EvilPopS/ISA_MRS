@@ -5,15 +5,15 @@
         </div>
         <div class="row justify-content-center actions-cont">
             <p v-show="this.reservations.length === 0" id="no-reses-label">There are no action reservations to be displayed!</p>
-            <div class="action-card-style" @click="confirmationForRes(reserv.id)" v-for="reserv in this.reservations" :key="reserv.id">
+            <div class="action-card-style" @click="confirmationForRes(reserv.id, reserv.price, reserv.startDate, reserv.endDate)" v-for="reserv in this.reservations" :key="reserv.id">
                 <label>Reservation starts on:</label>
                 <p>{{formatDateStr(reserv.startDate)}}</p>
                 <label>Reservation ends on:</label>
                 <p>{{formatDateStr(reserv.endDate)}}</p>
                 <label>Reservation price per day:</label>
-                <p>{{reserv.price}}€/day <s>{{this.oldPrice}}</s></p>
+                <p>{{reserv.price}} €/day <s>{{this.oldPrice}}</s></p>
                 <label>Additional services:</label>
-                <p>{{reserv.additionalServices}}</p>
+                <p>{{reserv.additionalServices === null ? "None" : reserv.additionalServices}}</p>
             </div> 
         </div>
         <div id="btn-bar" class="row form-style justify-content-center">
@@ -26,10 +26,15 @@
             @close = closeSuccPopUp
             :mess = succMessage
         />
+        
+        <ErrorPopUp v-show="errorPopUpVisible" 
+            @close = closePopUp
+            :mess = errMessage
+        /> 
 
         <ConfirmationPopUp v-show="confirmPopUpVisible"
             :title="'Confirmation'"
-            :message="'Are you sure you want to make reservation for the selected action?'"
+            :message="confMessage"
             @modal-closed="closeConfirmationPopUp"
             @confirmed-event="makeReservation"
         />
@@ -39,13 +44,15 @@
 <script>
     import axios from 'axios';
     import SuccessPopUp from "@/components/SuccessPopUp.vue";
-    import ConfirmationPopUp from "@/components/ConfirmationPopUp.vue"
+    import ConfirmationPopUp from "@/components/ConfirmationPopUp.vue";
+    import ErrorPopUp from "@/components/ErrorPopUp.vue";
 
     export default {
         name: "RentalActionReservations",
         components: {
             SuccessPopUp,
-            ConfirmationPopUp
+            ConfirmationPopUp,
+            ErrorPopUp
         },
         props: {
             oldPrice: String,
@@ -55,23 +62,46 @@
             return {
                 succMessage: "The reservation was successful!",
                 successPopUpVisible: false,
-                confirmPopUpVisible: false,
 
-                selectedResId: -1
+                confirmPopUpVisible: false,
+                confMessage: "",
+
+                selectedResId: -1,
+
+                errorPopUpVisible: false,
+                errMessage: ""
             }
         },
         methods: {
-            confirmationForRes(resId) {
-                console.log(this.reservations);
+            confirmationForRes(resId, reservPrice, startDate, endDate) {
                 this.selectedResId = resId;
-                this.confirmPopUpVisible = true;
+
+                axios.get("api/loyalty-program/get-client-discount", {headers: {'authorization': window.localStorage.getItem("token") }})
+                    .then((response) => {
+                        let discount = response.data;
+                        
+                        let numOfDays = Math.ceil((new Date(endDate) - new Date(startDate))/86400000);
+                        let money = numOfDays*reservPrice;
+
+                        let totalPrice = money - money*discount/100;
+                        this.confMessage = "You are about to submit payment of " + 
+                                            totalPrice + 
+                                            "€ in total. Are you sure you want to continue?";
+                        this.confirmPopUpVisible = true;
+                    }
+                );
             },
             makeReservation() {
                 axios.put("api/client/make-action-reservation/" + this.selectedResId, {}, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(() => {
                         this.successPopUpVisible = true;
                         this.$emit('update-action-reservations', this.selectedResId);
-                    }).catch(() => {});
+                    }).catch(() => {
+                        if (err.response.status === 406) {
+                            this.errMessage = "You have more than 2 penalties at this moment and therefore you cannot make reservations!";
+                            this.errorPopUpVisible = true;
+                        }
+                    });
             },
             closePopUp() {
                 this.errorPopUpVisible = false;

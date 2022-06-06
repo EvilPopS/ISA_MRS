@@ -4,8 +4,6 @@ import javax.persistence.*;
 
 @Entity
 public class LoyaltyProgram {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,6 +16,9 @@ public class LoyaltyProgram {
 
     @Column(name = "increase", nullable = false)
     private Double increase;
+
+    @Column(name = "price", nullable = false)
+    private int price;
 
     public Long getId() {
         return id;
@@ -49,5 +50,13 @@ public class LoyaltyProgram {
 
     public void setIncrease(Double increase) {
         this.increase = increase;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }
