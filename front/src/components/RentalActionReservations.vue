@@ -13,7 +13,7 @@
                 <label>Reservation price per day:</label>
                 <p>{{reserv.price}} €/day <s>{{this.oldPrice}}</s></p>
                 <label>Additional services:</label>
-                <p>{{reserv.additionalServices}}</p>
+                <p>{{reserv.additionalServices === null ? "None" : reserv.additionalServices}}</p>
             </div> 
         </div>
         <div id="btn-bar" class="row form-style justify-content-center">
