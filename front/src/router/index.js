@@ -17,6 +17,7 @@ import ClientReservationHistory from '../views/ClientReservationHistory';
 import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
 import ClientSubscriptionsView from '@/views/ClientSubscriptionsView';
 import OwnersReportPage from '@/views/OwnersReportPage';
+import ClientLoyaltyProgramView from '@/views/ClientLoyaltyProgramView';
 import BoatOwnerHome from '../views/BoatOwnerHome.vue';
 import AllBoatsView from '../views/AllBoatsView.vue';
 
@@ -112,6 +113,11 @@ const routes = [
     path: '/OwnersReportPage',
     name: 'OwnersReportPage',
     component: OwnersReportPage
+  },
+  {
+    path: '/ClientLoyaltyProgramView',
+    name: 'ClientLoyaltyProgramView',
+    component: ClientLoyaltyProgramView
   },
   {
     path: '/BoatOwnerHome',

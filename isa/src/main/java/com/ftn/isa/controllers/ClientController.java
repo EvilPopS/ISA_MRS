@@ -8,18 +8,13 @@ import com.ftn.isa.model.RentalService;
 import com.ftn.isa.model.Reservation;
 import com.ftn.isa.model.Subscription;
 import com.ftn.isa.security.auth.TokenUtils;
-import com.ftn.isa.services.ClientService;
-import com.ftn.isa.services.EmailService;
-import com.ftn.isa.services.RentalServService;
-import com.ftn.isa.services.ReservationService;
+import com.ftn.isa.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,14 +23,16 @@ import java.util.List;
 public class ClientController {
     @Autowired
     private ClientService clientService;
-    @Autowired
-    private EmailService emailService;
+
     @Autowired
     private TokenUtils tokenUtils;
     @Autowired
     private RentalServService rentalServService;
     @Autowired
     private ReservationService reservationService;
+
+    @Autowired
+    private LoyaltyProgramService loyaltyProgramService;
 
     @GetMapping
     @PreAuthorize("hasRole('CLIENT')")
@@ -112,24 +109,23 @@ public class ClientController {
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        if (!Validate.validateDatePeriod(reservationData.getStartDate(), reservationData.getEndDate()))
+        Client client = clientService.findByEmail(email);
+        if (client.getNumOfPenalties() > 2)
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+
+        if (!Validate.validateDatePeriod(reservationData.getStartDate(), reservationData.getEndDate())
+                || !Validate.validateIfResPeriodWasCanceled(client.getReservations(), reservationData)
+        )
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         RentalService rental;
         try {
             rental = rentalServService.getEntityByTypeAndId(reservationData.getRentalType(), reservationData.getRentalId());
-            if (rental == null)
+            if (rental == null || !Validate.validateIfReservationPeriodIsAvailable(rental.getReservations(), reservationData))
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception ignored) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        if (!Validate.validateIfReservationPeriodIsAvailable(rental.getReservations(), reservationData))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        Client client = clientService.findByEmail(email);
-        if (!Validate.validateIfResPeriodWasCanceled(client.getReservations(), reservationData))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         reservationService.saveReservation(
                 new Reservation(
@@ -139,6 +135,8 @@ public class ClientController {
                     client
                 )
         );
+
+        clientService.increasePoints(client);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -150,19 +148,31 @@ public class ClientController {
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
+        Client client = clientService.findByEmail(email);
+        if (client.getNumOfPenalties() > 2)
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+
         try {
-            reservationService.makeActionReservation(resId, clientService.findByEmail(email));
+            reservationService.makeActionReservation(resId, client);
         } catch(Exception ignored) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        clientService.increasePoints(client);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(value="/cancel-reservation/{resId}")
     @PreAuthorize("hasRole('CLIENT')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
-    public ResponseEntity<HttpStatus> cancelReservation (@PathVariable Long resId) {
+    public ResponseEntity<HttpStatus> cancelReservation (@PathVariable Long resId, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         reservationService.cancelReservation(resId);
+
+        clientService.decreasePoints(clientService.findByEmail(email));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -223,6 +233,22 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         clientService.unsubscribeFromOwner(clientService.findByEmail(email), ownerId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value="/buy-loyalty-program/{program}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> buyLoyaltyProgram(@PathVariable String program, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        if (
+            !clientService.updateClientLoyaltyProgram(clientService.findByEmail(email), loyaltyProgramService.getAllLoyaltyPrograms(), program)
+        )
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

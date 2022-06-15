@@ -112,6 +112,7 @@
             <RentalReservationForm v-show="toShowReservationForm"
                 :rentalId="rentalId"
                 :rentalType="rentalType"
+                :rentalPrice="price"
                 @close="reopenRentalDetails"
             />
 
@@ -156,7 +157,7 @@
         },
         props: {
             id: Number,
-            type: String
+            type: String,
         },
         data() {
             return {
@@ -211,7 +212,7 @@
                 toShowRatingsAndReviews: false
             }
         },
-        created() {
+        mounted() {
             if (this.isClient) {
                 switch(this.type){
                     case "Cottage":

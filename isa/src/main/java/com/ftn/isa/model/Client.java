@@ -12,9 +12,6 @@ import java.util.Set;
 
 @Entity
 public class Client extends User {
-    @Column(name = "no_penalties", nullable = false)
-    private int noPenalties;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Set<Reservation> reservations;
@@ -23,6 +20,8 @@ public class Client extends User {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private List<Subscription> subscriptions;
 
+    @Column(name = "num_of_penalties")
+    private int numOfPenalties;
 
     public Client() {
     }
@@ -40,7 +39,7 @@ public class Client extends User {
             this.setRole(new Role("ROLE_CLIENT"));
             this.setLoyaltyPoints(0);
             this.setLoyaltyType(LoyaltyType.REGULAR);
-            this.noPenalties = 0;
+            this.numOfPenalties = 0;
             this.reservations = new HashSet<>();
             this.subscriptions = new ArrayList<>();
     }
@@ -58,12 +57,8 @@ public class Client extends User {
         this.setPhoneNumber(data.getPhoneNumber());
     }
 
-    public int getNoPenalties() {
-        return noPenalties;
-    }
-
-    public void setNoPenalties(int noPenalties) {
-        this.noPenalties = noPenalties;
+    public void incLoyaltyPoints(int points) {
+        this.setLoyaltyPoints(this.getLoyaltyPoints() + points);
     }
 
     public Set<Reservation> getReservations() {
@@ -80,5 +75,13 @@ public class Client extends User {
 
     public void setSubscriptions(List<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+
+    public int getNumOfPenalties() {
+        return numOfPenalties;
+    }
+
+    public void setNumOfPenalties(int numOfPenalties) {
+        this.numOfPenalties = numOfPenalties;
     }
 }
