@@ -16,8 +16,14 @@ import OwnersSearch from '../views/OwnersSearch.vue';
 import ClientReservationHistory from '../views/ClientReservationHistory';
 import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
 import AdminReports from '../views/AdminReports'
+import AdminLoyaltyProgram from '../views/AdminLoyaltyProgram.vue'
 
 const routes = [
+  {
+    path: '/AdminLoyaltyProgram',
+    name: 'AdminLoyaltyProgram',
+    component: AdminLoyaltyProgram
+  },
   {
     path: '/CottageOwnerHomePage',
     name: 'CottageOwnerHomePage',

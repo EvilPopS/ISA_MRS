@@ -9,6 +9,12 @@
     <div v-if="modalVisible">
         <AnswerOnReportModal
         @modal-closed = "modalVisible=false"
+        @succ-pop-up-closed = "hideAnsweredOrIngored"
+        :clientFullName="clickedReport.clientName"
+        :ownerFullName="clickedReport.ownerName"
+        :clientEmail="clickedReport.clientEmail"
+        :ownerEmail="clickedReport.ownerEmail"
+        :reportId="clickedReport.id"
          />
     </div>
 
@@ -49,29 +55,12 @@ export default {
     },  
     data () {
         return {
-            reports: 
-                [
-                    {
-                        message : "Nije mi se svidela usluga jer nije bilo zanimljivo.",
-                        sentTime : "01/06/2022 11:11",
-                        isNegative : true,
-                        hasShowedUp : true,
-                        senderName : 'Marko Markovic',
-                        isAnswered : false,
-
-                    },{
-                        message : "Nije mi se svidela usluga jer nije bilo zanimljivo.",
-                        sentTime : "02/06/2022 21:21",
-                        isNegative : true,
-                        hasShowedUp : true,
-                        senderName : 'Milos Milosevic',
-                        isAnswered : false,
-                    }
-                ],
+                reports: [], 
                 modalVisible : false,
                 ignoreTitle : 'Are you sure?',
                 ignoreMessage : 'Report is going to be ignored',
-                confirmationPopUpVisible : false
+                confirmationPopUpVisible : false,
+                clickedReport : '',
 
 
             }
@@ -82,8 +71,14 @@ export default {
     methods : {
         showConfirmAllowingDialog : function(report){
             this.modalVisible = true;
+            this.clickedReport = report;
+
+
+        },
+
+        hideAnsweredOrIgnored(){
             this.reports = this.reports.filter(item => item != report);
-            report.isAnswered = true;
+            this.clickedReport.isAnswered = true;
             this.reports.push();
         },
         
@@ -96,6 +91,18 @@ export default {
         ignoreReport(){
             console.log("...")  ;
         }
+    },
+
+    mounted () {
+        axios.get('api/admin/reports', {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
+            this.reports = response.data;
+
+
+    }).catch((e) => {
+        this.errMessage = e;
+        this.errorPopUpVisible = true;
+    });
+        
     }
 }
 

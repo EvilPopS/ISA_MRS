@@ -5,11 +5,13 @@
                     <div class="row no-gutters">
                         <div class="col-md-4">
                             <img :src="setPicture(request)" style="height : 100px;" alt="...">
-                            <p>{{review.senderName}}</p>
+                            <p>{{review.clientName}}</p>
                         </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h5 class="card-title badge bg-success text-wrap rounded-pill status">Request type: {{review.requestType}}</h5>
+                            <h5 class="card-title badge text-wrap rounded-pill status"
+                                :class="review.isNegative ? 'bg-danger' : 'bg-success'"
+                            >{{ review.isNegative ? 'NEGATIVE REPORT' : 'POSITIVE REPORT' }}</h5>
                             <p class="card-text"> Request message: {{review.message}}</p>
                             <p class="card-text"><small class="text-muted">{{review.sendTime}}</small></p>
                             <span>
@@ -34,11 +36,11 @@ export default {
 
 
     methods : {
-                    setPicture(request) {
+            setPicture(request) {
                 try{
                     return require('../assets/' + 'default.jpg'); // ovde promeniti da ucita sliku koju stvarno treba da ucita
                 } catch(e) {}
-        },
+        }
     }
 
 }

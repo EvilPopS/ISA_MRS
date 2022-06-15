@@ -76,11 +76,11 @@ insert into cottage (id, name, description, capacity, rules, is_deleted, address
            (nextval('my_seq_gen_rental'), 'Centar NS', 'Najlepsi pogled na centar NS.', 5, 'Zabranjeno pusenje!',
             false, 10, 0, 0, 0, 60, 'wifi,klima,parking,rostilj', 4, 5);
 
-insert into loyalty_program (discount, increase, loyalty_type)
-    values (0, 0, 0),
-            (10, 10, 1),
-            (20, 20, 2),
-            (30, 30, 3);
+insert into loyalty_program (discount, increase, loyalty_type, price)
+values (0, 0, 0, 0),
+       (4, 4, 1, 100),
+       (7, 7, 2, 200),
+       (10, 10, 3, 300);
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
                                 role_id, address_id, photo_id, loyalty_points)
@@ -121,4 +121,9 @@ insert into reservation (start_time, end_time, is_action, is_reserved, price, re
             ('10/6/2022', '12/6/2022', true, false, 40, 4, null, false, 'klima rostilj'),
             ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null),
             ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null),
-            ('21/6/2022', '25/6/2022', true, false, 60, 4, null, false, 'klima wifi rostilj')
+            ('21/6/2022', '25/6/2022', true, false, 60, 4, null, false, 'klima wifi rostilj');
+
+insert into report(id, is_answered, message, sent_time, has_showed_up, is_negative, client_id, owner_id)
+    values (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekli', '05/06/2022 11:11', true, true , 4, 6),
+           (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekliiiiiiiiiiiii', '05/06/2022 22:22', true, true , 4, 6);
+
