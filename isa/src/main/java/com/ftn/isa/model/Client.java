@@ -35,7 +35,7 @@ public class Client extends User {
             this.setProfilePicture(new Photo(data.getProfilePicture()));
             this.setPassword(data.getPassword());
             this.setDeleted(false);
-            this.setActive(false);
+            this.setActive(true);
             this.setRole(new Role("ROLE_CLIENT"));
             this.setLoyaltyPoints(0);
             this.setLoyaltyType(LoyaltyType.REGULAR);

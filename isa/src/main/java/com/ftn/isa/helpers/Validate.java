@@ -2,7 +2,9 @@ package com.ftn.isa.helpers;
 
 import com.ftn.isa.DTO.ReservingInfoDTO;
 import com.ftn.isa.model.Reservation;
+import org.springframework.data.jpa.repository.Lock;
 
+import javax.persistence.LockModeType;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -171,7 +173,7 @@ public class Validate {
         LocalDateTime endTime = LocalDateTime.parse(reservingData.getEndDate(), format);
 
         for (Reservation res : reservations)
-            if (res.periodsAreOverlapping(startTime, endTime))
+            if (!res.isCanceled() && res.periodsAreOverlapping(startTime, endTime))
                 return false;
         return true;
     }
