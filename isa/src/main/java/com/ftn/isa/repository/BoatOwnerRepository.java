@@ -13,7 +13,7 @@ public interface BoatOwnerRepository extends JpaRepository<BoatOwner, Long> {
     @Query(nativeQuery = true,
             value="SELECT own.* " +
                     "FROM boat_owner as own " +
-                    "JOIN boat as bt ON bt.cottage_owner_id = own.id " +
+                    "JOIN boat as bt ON bt.boat_owner_id = own.id " +
                     "WHERE bt.id = :boat_id"
     )
     BoatOwner getOwnerByCBoatId(@Param("boat_id") double boatId);

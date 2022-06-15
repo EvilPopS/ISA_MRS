@@ -34,11 +34,11 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-7">
                                 <label>Name:</label>
                                 <input type="text" v-model="name" disabled>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label>Price:</label>
                                 <input type="text" v-model="price" disabled>
                             </div>
@@ -76,7 +76,8 @@
                             </div>
 
                         </div>
-                        <div v-if="showDetailedAdventure">
+
+                        <div v-else-if="showDetailedAdventure">
                             <label>Rules:</label>
                             <textarea class="text-area-style" v-model="rules" disabled></textarea>
                             <label>Instructor biography:</label>
@@ -84,8 +85,34 @@
                             <label>Fishing equipment:</label>
                             <input type="text" v-model="fishingEquipment" disabled>
                         </div>
-                        <div v-if="showDetailedBoat">
 
+                        <div v-else-if="showDetailedBoat">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label>Engine number:</label>
+                                    <input type="text" v-model="engineNumber" disabled>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label>Max speed:</label>
+                                    <input type="text" v-model="maxSpeed" disabled>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label>Engine power:</label>
+                                    <input type="text" v-model="enginePower" disabled>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <label>Fishing equipment:</label>
+                                    <input type="text" v-model="fishingEquipment" disabled>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label>Length:</label>
+                                    <input type="text" v-model="boatLength" disabled>
+                                </div>
+                            </div>
+                            <label>Navigation equipment:</label>
+                            <input type="text" v-model="navigationEquipment" disabled>
                         </div>
 
                         <label>Location on map:</label>
@@ -226,6 +253,9 @@
                     case "Boat":
                         axios.get("api/rental/boat/details/" + this.id, {headers: {'authorization': window.localStorage.getItem("token") }})
                             .then((response) => {
+                                this.showDetailedBoat = true;
+                                setUpDefaultRentalInfo(this, response);
+                                setUpDetailedBoatInfo(this, response);
                             });
                         break;
                     case "Adventure":
@@ -314,12 +344,17 @@
     }
 
     function setUpDetailedBoatInfo(params, response) {
-        // let cottage = response.data;
-        
-        // params.rules = cottage.rules;
-        // params.capacity = cottage.capacity + " 웃";
+        let boat = response.data;
 
-        // TODO - not implemented yet
+        params.rules = boat.rules;
+        params.capacity = boat.capacity + " 웃";
+        params.fishingEquipment = boat.fishingEquipment.replaceAll(",", ", ");
+        params.boatType = boat.boatType;
+        params.boatLength = boat.boatLength + " m";
+        params.engineNumber = boat.engineNumber;
+        params.enginePower = boat.enginePower + " kW";
+        params.maxSpeed = boat.maxSpeed + " km/h";
+        params.navigationEquipment = boat.navigationEquipment.replaceAll(",", ", ");
     }
 
     function setUpDetailedAdventureInfo(params, response) {

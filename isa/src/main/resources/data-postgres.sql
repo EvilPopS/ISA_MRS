@@ -42,17 +42,35 @@ insert into admin (id, email, password, name, surname, address_id, phone_number,
            (nextval('my_seq_gen_user'), 'admin2@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Saban', 'Saulic', 3, '0614283764', false,100,
                 true, 2, 5, 0);
 
-insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
-                            rental_type, price, biography, fishing_equipment, cancellation_conditions)
-    values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
-                false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5),
-            (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
-                false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0);
-
 insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, role_id, loyalty_type, loyalty_points)
-values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Bojan', 'Bojanic', 7, '06222332323', false, true, 1,
+    values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Bojan', 'Bojanic', 7, '06222332323', false, true, 1,
         3, 0, 10);
+
+insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted, is_active,
+                     photo_id, role_id, loyalty_type, loyalty_points, num_of_penalties)
+     values (nextval('my_seq_gen_user'), 'client1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O',
+                         'Marko', 'Markovic', 1, '0601231231', false, true, 1, 1, 1, 224, 2);
+
+insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
+                           is_active, photo_id, role_id, loyalty_type, loyalty_points)
+    values (nextval('my_seq_gen_user'), 'srdjan@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
+        2, 0, 10);
+
+insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
+                                role_id, address_id, photo_id, loyalty_points)
+    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
+                'Instric', 4, 5, 1, 0),
+           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Instro2', 'sifra1223', '0619990009',
+        'Instriiiic', 4, 3, 1, 0);
+
+insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+                            rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
+    values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
+                false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5, 6),
+            (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
+                false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 6);
+
 
 insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                       rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
@@ -61,16 +79,6 @@ insert into boat (id, name, description, capacity, rules, is_deleted, address_id
                 'Ribarski brodic', '20', '46345754', '500', '30', 'radar,lidar,gps',
                 'stap,mreza,dupla mreza', 3);
 
-insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted, is_active,
-                    photo_id, role_id, loyalty_type, loyalty_points, num_of_penalties)
-    values (nextval('my_seq_gen_user'), 'client1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O',
-                        'Marko', 'Markovic', 1, '0601231231', false, true, 1, 1, 1, 224, 2);
-
-insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                           is_active, photo_id, role_id, loyalty_type, loyalty_points)
-
-values (nextval('my_seq_gen_user'), 'srdjan@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
-        2, 0, 10);
 
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, additional_services, no_rooms,cottage_owner_id)
@@ -87,12 +95,7 @@ insert into loyalty_program (discount, increase, loyalty_type, price)
             (7, 7, 2, 200),
             (10, 10, 3, 300);
 
-insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
-                                role_id, address_id, photo_id, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
-                'Instric', 4, 5, 1, 0),
-           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Instro2', 'sifra1223', '0619990009',
-        'Instriiiic', 4, 3, 1, 0);
+
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
