@@ -6,6 +6,7 @@ import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
+import org.hibernate.dialect.lock.PessimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +44,8 @@ public class CottageOwnerController  {
     @Autowired
     private SubscriptionService subscriptionService;
 
-    @Autowired
-    private EmailService emailService;
+    //@Autowired
+    //private EmailService emailService;
 
     @Autowired
     private LoyaltyProgramService loyaltyProgramService;
@@ -300,12 +301,12 @@ public class CottageOwnerController  {
             }
         }
         cottageOwnerService.save(cottageOwner);
-        notifySubscribers(cottageOwner, actionResDTO);
+        //notifySubscribers(cottageOwner, actionResDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    /*@PreAuthorize("hasRole('COTTAGE_OWNER')")
     private void notifySubscribers(CottageOwner cottageOwner, ActionResDTO actionResDTO) {
         for (Subscription s : subscriptionService.getAllSubscriptions()){
             if (s.getOwner().getId().equals(cottageOwner.getId()) && s.isActiveSubscription()){
@@ -321,6 +322,7 @@ public class CottageOwnerController  {
             }
         }
     }
+     */
 
     @PostMapping(value = "/add-regular-reservation")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
@@ -345,8 +347,12 @@ public class CottageOwnerController  {
 
         if (!clientService.checkIfCurrentResInProgress(client))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, client, false);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, client, false);
+        } catch(PessimisticEntityLockException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 

@@ -6,8 +6,10 @@ import com.ftn.isa.DTO.ReservationDTO;
 import com.ftn.isa.model.*;
 import com.ftn.isa.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -155,7 +157,7 @@ public class ReservationService {
 
     public boolean checkOverlapingWithOtherRes(List<Reservation> reservations, LocalDateTime startTime, LocalDateTime endTime) {
                 for (Reservation reservation : reservations) {
-                    if (!reservation.isCanceled() && reservation.isReserved()) {
+                    if (!reservation.isCanceled()) {
                         if (startTime.isAfter(reservation.getStartTime()) &&
                                 startTime.isBefore(reservation.getEndTime()) &&
                                 endTime.isBefore(reservation.getEndTime()))
@@ -211,6 +213,18 @@ public class ReservationService {
         return res;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void test() {
+        List<Reservation> reservations = reservationRepository.getAllResForNewRes(5l);
+        /*try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+           System.out.println("Glupost");
+        }
+        */
+    }
+
+    //@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public Reservation addNewRegularRes(RegularResDTO regularResDTO, CottageOwner cottageOwner, Client client, boolean isUnvailable) {
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId().equals(regularResDTO.getRentalId())){

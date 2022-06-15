@@ -93,6 +93,9 @@ export default {
                             else if (err.response.status === 422) {
                                 this.errMessage = "Regular reservation cannot overlap with other reservations and client's current reservation must be in progress! Check all input data.";
                                 this.errorPopUpVisible = true;
+                            } else if (err.response.status == 409){
+                                this.errMessage = "Conflict situation.";
+                                this.errorPopUpVisible = true;
                             } else {
                                 this.errMessage = "Uups! Something went wrong...";
                                 this.errorPopUpVisible = true;

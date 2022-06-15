@@ -174,7 +174,7 @@
                         profilePicture: this.profilePicture
                     }
                     axios.post("api/unauth/register/client", requestBody).then((response) => {
-                        axios.get("api/unauth/send-confirmation-mail/" + this.email).then(response => {console.log("Uspeoooooooooooooooo")});
+                        //axios.get("api/unauth/send-confirmation-mail/" + this.email).then(response => {console.log("Uspeoooooooooooooooo")});
                         this.succMessage = "Your account has been successfully registered, and confirmation email has been sent to " 
                                                 + this.email + 
                                             ". To activate your account please click link in the email message!"

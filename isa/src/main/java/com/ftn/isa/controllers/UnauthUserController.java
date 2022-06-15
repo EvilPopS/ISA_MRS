@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.*;
 public class UnauthUserController {
     @Autowired
     private ClientService clientService;
-    @Autowired
-    private EmailService emailService;
+    //@Autowired
+    //private EmailService emailService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -56,6 +56,7 @@ public class UnauthUserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /*
     @GetMapping(value="/send-confirmation-mail/{email}")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @Async
@@ -69,6 +70,7 @@ public class UnauthUserController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+     */
 
     @GetMapping(value="/confirm-mail/{email}")
     public ResponseEntity<HttpStatus> activateClientAccount(@PathVariable String email){
