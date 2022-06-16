@@ -6,28 +6,37 @@
                 <div class="row">
                     <div class="col-8">
                         <span>Calendar</span>
-                        <p>CALENDAR GOES HERE</p>
+                            <div>
+                                <CalendarComponent :reservations="this.reservations" :key="this.reservations"/>
+                            </div>
+                            
                     </div>
                     <div class="col-4">
                         <div id="optionsBar" class="card flex-card">
                             <TabNav
-                                :tabs="['Regular', 'Action', 'Unvailability']"
+                                :tabs="['Regular', 'Action', 'Unavailability']"
                                 :selected="selected"
                                 @selected="setSelected"
                             >
                                 <Tab :isSelected="selected === 'Regular'">
-                                    <p>Regular</p>
+                                    <AddRegularRes
+                                        @modal-closed = "closeWindow()"
+                                        :rental="choosenRental"
+                                    ></AddRegularRes>
                                 </Tab>
 
                                 <Tab :isSelected="selected === 'Action'">
                                     <AddActionRes
                                         @modal-closed = "closeWindow()"
-                                        :rental="calendarForRental"
+                                        :rental="choosenRental"
                                     ></AddActionRes>
                                 </Tab>
 
-                                <Tab :isSelected="selected === 'Unvailability'">
-                                    <p>Unvailable period</p>
+                                <Tab :isSelected="selected === 'Unavailability'">
+                                    <AddUnvailablePeriod
+                                        @modal-closed = "closeWindow()"
+                                        :rental="choosenRental"
+                                    ></AddUnvailablePeriod>
                                 </Tab>
 
                             </TabNav>
@@ -40,21 +49,42 @@
 </template>
 
 <script>
+
+// import '@fullcalendar/core/vdom'
+// import FullCalendar from '@fullcalendar/vue3'
+// import dayGridPlugin from '@fullcalendar/daygrid'
+// import interactionPlugin from '@fullcalendar/interaction'
+
+
+import CalendarComponent from '../components/CalendarComponent.vue'
 import Tab from '../components/Tab'
 import TabNav from '../components/TabNav'
 import AddActionRes from '../components/AddActionRes.vue'
+import AddRegularRes from '../components/AddRegularRes.vue'
+import AddUnvailablePeriod from '../components/AddUnvailablePeriod.vue'
+import axios from 'axios'
 
 export default {
     name: "NewReservationsComponent",
     components: {
-        Tab, TabNav, AddActionRes
+        Tab, TabNav, AddActionRes, AddRegularRes, AddUnvailablePeriod, CalendarComponent
     },
     props: {
-        calendarForRental: Object
+        choosenRental: Object
     },
     data(){
         return {
-            selected: "Regular"
+            reservations : [],
+            selected: "Regular",
+    //         calendarOptions: {
+    //     plugins: [ dayGridPlugin, interactionPlugin ],
+    //     initialView: 'dayGridMonth',
+    //     events: []
+    //   },
+            
+            
+      
+
         }
     },
     methods: {
@@ -64,6 +94,17 @@ export default {
         setSelected(tab) {
             this.selected = tab;
         }
+    },
+
+    mounted(){
+        axios.get('api/rental/get-reservations-by-rental/' + this.choosenRental.id, {headers: {'authorization': window.localStorage.getItem("token") }})
+                    .then((response) => {
+                        this.reservations = response.data;
+                    }
+                ).catch((e) => {
+                    console.log(e);
+                });
+        
     }
 }
 </script>

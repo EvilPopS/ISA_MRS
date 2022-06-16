@@ -20,6 +20,7 @@ public class ReservationDTO {
 
     }
 
+
     public ReservationDTO(Long reservationId, Long rentalId, String clientEmail,
                           String rentalName, LocalDateTime startTime,
                           LocalDateTime endTime, double price, boolean isAction, boolean isReserved, String clientProfilePhoto, String clientFullName) {

@@ -7,13 +7,13 @@ INSERT INTO role (name) VALUES ('ROLE_CLIENT'),
 
 
 insert into address (country, place_name, street, lon, lat)
-    values ('Srbija', 'Sabac', 'Karadjordjeva 26', null, null ),
-            ('Srbija', 'Novi Sad', 'Zeleznicka 36', null, null),
-            ('Srbija', 'Novi Sad', 'Sonje Marinkovic 5', null, null),
+    values ('Srbija', 'Sabac', 'Karadjordjeva 26', '19.83383399956332', '45.25697997579121' ),
+            ('Srbija', 'Novi Sad', 'Zeleznicka 36', '19.83383399956332', '45.25697997579121'),
+            ('Srbija', 'Novi Sad', 'Sonje Marinkovic 5', '19.83383399956332', '45.25697997579121'),
             ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '19.83383399956332', '45.25697997579121'),
             ('Srbija', 'Novi Sad', 'Vase Pelagic 1', '19.840324439532647', '45.251395995531226'),
             ('Srbija', 'Sremska Kamenica', 'Karadjordjeva 33', '19.835541721737165', '45.22357844341107'),
-            ('Srbija', 'Kula', 'Marsala Tita 200', null, null),
+            ('Srbija', 'Kula', 'Marsala Tita 200', '19.83383399956332', '45.25697997579121'),
             ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '19.652715410573126', '43.66153258311601'),
            ('Srbija', 'Novi Sad', 'Partizanski put 2', '19.819806290382964', ' 45.15281270382178'),
            ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '19.83383399956332', '45.25697997579121');
@@ -109,19 +109,23 @@ insert into review (id, is_answered, message, sent_time, grade, reciever_id, ren
 insert into subscription(owner_id, client_id, is_active_subscription)
     values (5, 4, true);
 
-insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services)
-    values ('11/4/2022', '29/4/2022', false, true, 30, 7, 4, false, null),
-            ('1/5/2022', '11/5/2022', false, true, 30, 8, 4, false, null),
-            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null),
-            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null),
-            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null),
-            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null),
-            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null),
-            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null),
-            ('10/6/2022', '12/6/2022', true, false, 40, 4, null, false, 'klima rostilj'),
-            ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null),
-            ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null),
-            ('21/6/2022', '25/6/2022', true, false, 60, 4, null, false, 'klima wifi rostilj');
+insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
+    values ('11/4/2022', '29/4/2022', false, true, 30, 7, 4, false, null, false),
+            ('1/5/2022', '11/5/2022', false, true, 30, 8, 4, false, null, false),
+            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null, false),
+            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null, false),
+            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null, false),
+            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null, false),
+            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null, false),
+            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null, false),
+            ('10/6/2022', '12/6/2022', false, false, 40, 4, null, false, 'klima rostilj', false),
+            ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null, false),
+            ('18/6/2022', '21/6/2022', false, true, 40, 8, 4, false, null, false),
+           ('25/6/2022', '27/6/2022', false, true, 40, 8, 4, false, null, false),
+           ('29/6/2022', '30/6/2022', false, true, 40, 8, 4, false, null, false),
+           ('2/7/2022', '11/7/2022', false, true, 40, 8, 4, false, null, false),
+           ('28/7/2022', '11/8/2022', false, true, 40, 8, 4, false, null, false),
+            ('21/6/2022', '25/6/2022', true, false, 60, 7, null, false, 'klima wifi rostilj', false);
 
 insert into report(id, is_answered, message, sent_time, has_showed_up, is_negative, client_id, owner_id)
     values (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekli', '05/06/2022 11:11', true, true , 4, 6),

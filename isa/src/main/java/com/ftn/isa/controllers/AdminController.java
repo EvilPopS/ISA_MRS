@@ -118,17 +118,13 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<LoyaltyProgram>> configureLoyaltyProgram(HttpServletRequest request, @RequestBody  List<LoyaltyProgram> loyaltyPrograms){
         loyaltyProgramService.updateLoyaltyProgram(loyaltyPrograms);
-
-
         return new ResponseEntity<>(loyaltyProgramService.getCompleteLoyaltyProgram(), HttpStatus.OK);
-
     }
 
     @GetMapping(value="/get-loyalty-program")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<LoyaltyProgram>> getLoyaltyProgram(){
-
         return new ResponseEntity<>(loyaltyProgramService.getCompleteLoyaltyProgram(), HttpStatus.OK);
     }
 
