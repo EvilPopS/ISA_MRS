@@ -290,7 +290,13 @@ public class CottageOwnerController  {
         if (!cottageOwnerService.checkIfCottageExists(cottageOwner, actionResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewActionRes(actionResDTO, cottageOwner);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewActionRes(actionResDTO);
+        } catch (PessimisticEntityLockException e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
@@ -336,7 +342,7 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Client client = clientService.findByEmail(regularResDTO.getClientEmail());
-        if (client == null)
+        if (client == null || client.getNumOfPenalties() >= 3)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         if (!regularResDTO.arePropsValidAdding())
@@ -347,9 +353,10 @@ public class CottageOwnerController  {
 
         if (!clientService.checkIfCurrentResInProgress(client))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, client, false);
+            newRes = reservationService.addNewRegularRes(regularResDTO, client, false);
         } catch(PessimisticEntityLockException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -385,7 +392,13 @@ public class CottageOwnerController  {
         if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, null, true);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewRegularRes(regularResDTO, null, true);
+        } catch (PessimisticEntityLockException e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 

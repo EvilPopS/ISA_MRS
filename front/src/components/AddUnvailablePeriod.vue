@@ -91,6 +91,10 @@ export default {
                             else if (err.response.status === 422) {
                                 this.errMessage = "Unvailable period cannot overlap with other reservations! Check all input data.";
                                 this.errorPopUpVisible = true;
+                            }
+                            else if (err.response.status == 409){
+                                this.errMessage = "Conflict situation. Please try again later..";
+                                this.errorPopUpVisible = true;
                             } else {
                                 this.errMessage = "Uups! Something went wrong...";
                                 this.errorPopUpVisible = true;
