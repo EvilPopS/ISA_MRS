@@ -8,7 +8,9 @@ import com.ftn.isa.model.*;
 import com.ftn.isa.repository.CottageOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,6 +44,7 @@ public class CottageOwnerService {
         cottageOwnerRepository.save(cottageOwner);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void save(CottageOwner cottageOwner, CottageDTO cottageDTO, Set<Photo> photos){
         for (Cottage cottage : cottageOwner.getCottages()){
             if (cottage.getId() == cottageDTO.getId()) {
