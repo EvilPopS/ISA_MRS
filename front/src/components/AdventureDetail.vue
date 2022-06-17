@@ -1,251 +1,135 @@
+
 <template>
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <button id="close_btn" @click="closeWindow" class="close">X</button>
+            <button id="close_btn" @click="closeWindow()" class="close">X</button>
             <div class="container">
+                <h1>{{adventure.name}}</h1>
                 <div class="row">
-                    <div class="col-4">
-                        <span class="span-text">Adventure</span>
-                        <hr class="solid">
-                        <label class="label" for="name">Adventure name</label>
-                        <input type="text" id="name" class="form-control" :value="adventure.name">
-                        <label class="label" for="description">Description</label>
-                        <input type="text" id="description" class="form-control" :value="adventure.description">
-                        <label class="label" for="rules">Rules:</label>
-                        <input type="text" id="rules" class="form-control" :value="adventure.rules">
-                        <span>
-                            <div class="inline-inputs">
-                                <label class="label" for="price">Price</label>
-                                <input type="number" id="price" class="form-control rating" :value="adventure.price">
-                            </div>
-                            <div class="inline-inputs">
-                                <label class="label" for="canc-cond">Cancellation conditions</label>
-                                <input type="number" id="canc-cond" class="form-control rating" :value="adventure.cancellationConditions">
-                            </div>
-                        </span>
-                        <label class="label" for="biography"> Biography </label>
-                        <input type="text" class="form-control" id="biography" v-model="adventure.biography">
-                        <label class="label" for="additionalServices">Fishing equipment(press alt + , to add):</label>
-                        <input type="text" id="fish-eq" class="form-control" v-model="tempFihingEqu" @keyup.alt="addFishingEqu">
-                        <div v-for="fishingEqu in this.localFishingEquipment" :key="fishingEqu" class="pill">
-                            <span  @click="deleteFishingEqu(fishingEqu)">{{fishingEqu}}</span>
+                    <div class="col-6">
+                        <div class="start-data">
+                            <h4>Basic data</h4>
+                            <p class="d-flex justify-content-left"><b>Adventure name: </b> {{adventure.name}}</p>
+                            <p class="d-flex justify-content-left"><b>Description: </b> {{adventure.description}}</p>
+                            <p class="d-flex justify-content-left"><b>Rules: </b> {{adventure.rules}}</p>
+                            <p class="d-flex justify-content-left"><b>Biography: </b> {{adventure.biography}}</p>
                         </div>
-
-                    </div>
-                    <div class="col-4">
-                        <span class="span-text">Address</span>
-                        <hr class="solid">
-                        <label class="label" for="zip-code">Country:</label>
-                        <input type="text" id="zip-code" class="form-control" v-model="adventure.country">
-                        <label class="label" for="city">City:</label>
-                        <input type="text" id="city" class="form-control" v-model="adventure.city">
-                        <label class="label" for="street">Street:</label>
-                        <input type="text" id="street" class="form-control" v-model="adventure.street">
-                        <p>&nbsp;</p>
-                        <p>&nbsp;</p>
-                        <p>&nbsp;</p>
-                        <span class="span-text">Rating</span>
-                        <hr class="solid">
-                        <span>
-                            <div class="inline-inputs">
-                                <label class="label" for="rating">Rating:</label>
-                                <input type="text" id="rating" class="form-control rating" v-model="adventure.rating" disabled>
-                            </div>
-                            <div class="inline-inputs">
-                                <label class="label" for="num-ratings">No. ratings:</label>
-                                <input type="text" id="num-ratings" class="form-control rating" v-model="adventure.noRatings" disabled>
-                            </div>
-                        </span>
-                    </div>
-                    <div class="col-4">
                         <div>
-                            <span class="span-text">Photos</span>
-                            <hr class="solid">
-                            <label id="popupLabel">Choose new picture: </label>
-                            <input ref="picInp" class="form-control form-control-sm" type="file" @change="newPicAdded" accept="image/*"/>
-                            <img id="imgPreview" :src="require('@/assets/' + newPicture)"/>
+                            <div class="start-data">
+                                <h4>Fishing equipment:</h4>
+                                <div v-for="fe in fishingEqu" :key="fe" class="pill">
+                                    <span >{{fe}}</span>
+                                </div>
+                             </div>
                         </div>
-                        <div v-for="pic in this.localPhotos" :key="pic" class="pillPic">
-                            <span  @click="deletePic(pic)"><img id="picGallery" :src="require('@/assets/' + pic)"/></span>
+                        <div id="photo-gallery">
+                            <carousel :items-to-show="1" autoplay="5000" wrapAround="true">
+                                <slide v-for="photo in adventure.photos" :key="photo">
+                                    <img :src="setPicture(photo)">
+                                </slide>
+                                <template #addons>
+                                    <navigation />
+                                    <pagination />
+                                </template>
+                            </carousel>
                         </div>
-                        <button type="button" class="btn btn-success">Add photo</button>
+                    </div>
+                    <div class="col-6">
+                        <div class="start-data">
+                            <h4>Address</h4>
+                            <p class="d-flex justify-content-left"><b>Country: </b> {{adventure.country}}</p>
+                            <p class="d-flex justify-content-left"><b>City: </b> {{adventure.city}}</p>
+                            <p class="d-flex justify-content-left"><b>Street: </b> {{adventure.street}}</p>
+                            <p>&nbsp;</p>
+
+                        </div>
+                        <div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                Price: {{adventure.price}}€
+                            </div>
+                        </div>
+                        <div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                Rate: {{adventure.rating > 0 ? adventure.rating : 'Not yet rated'}}★
+                            </div>
+                            <div class="badge bg-success text-wrap rounded-pill status" style="width: 10rem;">
+                                No ratings: {{adventure.noRatings}}
+                            </div>
+                        </div>
+                        <div id="map-container">
+                            <MapContainer
+                                :coordinates = "[adventure.lon, adventure.lat]"
+                                :map-height = "200"
+                                :mapEditable="false"
+                                @changed-location = "changedLocationFunc"
+                            >
+                            </MapContainer>
+                        </div>
                     </div>
                 </div>
+                <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
+                    <button type="button" class="btn btn-success" @click="addNewReservation()">Calendar <img id="btn-calendar" src="../assets/icons8-calendar.png"></button>
+                    <button type="button" class="btn btn-success" @click="closeWindow">Cancel</button>
+                </div>
             </div>
-            <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
-                <button @click="updateAdventure(adventure)" type="button" class="btn btn-secondary">Save changes</button>
-                <button type="button" class="btn btn-outline-secondary" @click="closeWindow">Cancel</button>
+            <div v-if="showAddNewRes">
+            <NewReservationsComponent
+                @modal-closed = "showAddNewRes = false"
+                :choosenRental="adventure"
+            />
             </div>
         </div>
-        <ErrorPopUp v-show="errorPopUpVisible" 
-            @close = closePopUp
-            :mess = errMessage
-        /> 
-    
-        <SuccessPopUp v-show="localSuccPopUpVisible"
-            @close = closeSuccPopUp
-            :mess = succMessage
-        />
-
     </div>
 </template>
 
 <script>
-import axios from 'axios';
-import ErrorPopUp from '../components/ErrorPopUp.vue'
-import SuccessPopUp from '../components/SuccessPopUp.vue'
+import 'vue3-carousel/dist/carousel.css';
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+import MapContainer from "./MapContainer.vue"
+import NewReservationsComponent from '../components/NewReservationsComponent.vue'
+
 export default {
     name: "AdventureDetail",
     components: {
-        ErrorPopUp,
-        SuccessPopUp
-
+        Carousel, Slide, Pagination, Navigation, MapContainer, NewReservationsComponent
     },
     props: {
-        adventure: Object,
-        showDetails: Boolean,
+        adventure: Object
     },
     data(){
         return {
+            fishingEqu: [],
+            showAddNewRes: false,
 
-            errMessage : '',
-            succMessage : 'Adventure details updated successfully!',
-            errorPopUpVisible : false,
-            localSuccPopUpVisible : false,
-            updatedData : {
-                id : '',
-                description : '',
-                name : '',
-                rules : '',
-                price : '',
-                cancellationConditions : '',
-                biography : '',
-                fishingEquipment : '',
-                city : '',
-                street : '',
-                country : '',
-                capacity :  '',
-                rating : '',
-                noRatings : '',
-                photos : '',
-
-
-            },
-
-            tempFihingEqu: '',
-            newPicture: 'addPhoto.png',
-
-            localPhotos: [],
-            localFishingEquipment: []
         }
     },
     methods: {
         closeWindow : function(){
             this.$emit('modal-closed');
         },
-
-        closePopUp() {
-            this.errorPopUpVisible = false;
+        setPicture(photo) {
+                try{
+                    return require('../assets/' + photo);
+                } catch(e) {}
         },
-        closeSuccPopUp(){
-            this.$emit('succ-popup-close');
-            this.$router.go();
+        changedLocationFunc(){
+            //do nothing
         },
-
-        addFishingEqu(e){
-            //uvek je ocpiono prvi parametar event
-            //key up je recimo kada se svaki put klikne nesto pojedinacno na tastaturi
-            if (e.key === ',' && this.tempService){
-                if (!this.localFishingEquipment.includes(this.tempFihingEqu)){
-                    this.localFishingEquipment.push(this.tempFihingEqu)    //zbog duplikata
-                }
-                
-                this.tempFihingEqu = ''     //resetuje se trenutni
-            }
-
-        },
-        deleteFishingEqu(fe){
-        //parametar je skill koji se brise
-        //uzimamo trenutni item kad filter iterira i ako je to taj brisemo
-        this.localFishingEquipment = this.localFishingEquipment.filter((item) => {
-            return fe !== item       //ako vratimo true isti su
-            //kad se uslov ispuni filtrira sta je stisnuto iz liste
-        })
-    },
-
-        updateAdventure(adventure){
-            
-
-            this.adventure.photos = this.localPhotos;
-            this.adventure.fishingEquipment = [];
-            let counter = 0
-            for (let fe in this.localFishingEquipment){
-                counter++
-                this.data.fishingEquipment += this.localFishingEquipment[fe]
-                if (counter < this.localFishingEquipment.length) this.adventure.fishingEquipment += ','
-            }
-
-
-            axios.put('api/fishingInstructor/' + window.sessionStorage.getItem("email") 
-            + '/adventureUpdate/' + adventure.id, adventure).then((response) => {
-
-
-            }).catch((e)=>{
-                console.log(e.response)
-                console.log(e.request)
-                console.log(e.message)
-            })
-
-        },
-
-        addFishingEqu(e) {
-            //uvek je ocpiono prvi parametar event
-            //key up je recimo kada se svaki put klikne nesto pojedinacno na tastaturi
-
-            if (e.key === ',' && this.tempFihingEqu){
-                if (!this.localFishingEquipment.includes(this.tempFihingEqu)){
-                    this.localFishingEquipment.push(this.tempFihingEqu)    //zbog duplikata
-                }
-                
-                this.tempFihingEqu = ''     //resetuje se trenutni
-            }
-        },
-        deleteFishingEqu(service){
-            //parametar je skill koji se brise
-            //uzimamo trenutni item kad filter iterira i ako je to taj brisemo
-            this.localFishingEquipment = this.localFishingEquipment.filter((item) => {
-                return service !== item       //ako vratimo true isti su
-                //kad se uslov ispuni filtrira sta je stisnuto iz liste
-            })
-        },
-        newPicAdded(){
-            this.newPicture = this.$refs.picInp.value.split("\\")[2]
-        },
-        deletePic(pic) {
-            this.localPhotos = this.localPhotos.filter((item) => {
-                return pic !== item       //ako vratimo true isti su
-                //kad se uslov ispuni filtrira sta je stisnuto iz liste
-            })
-        },
-        addNewPhoto(){
-            this.localPhotos.push(this.newPicture);
+        addNewReservation() {
+            this.showAddNewRes = true
         }
     },
-    created(){
-            try {
-                this.localFishingEquipment = this.adventure.fishingEquipment.split(',')
-                this.localPhotos = this.adventure.photos
-            }catch (err){
-                this.localFishingEquipment = this.adventure.fishingEquipment //ako ne uspe split znaci da ima samo jedna
-                this.localPhotos = this.adventure.photos
-            }
-   }
-
+    mounted() {
+        try {
+            this.fishingEqu = this.adventure.fishingEquipment.split(',')
+        } catch (err){
+            this.fishingEqu = this.adventure.fishingEquipment //ako ne uspe split znaci da ima samo jedna
+        }
+    }
 }
 </script>
 
 <style scoped>
-
     b{
         color: black;
     }
@@ -256,83 +140,91 @@ export default {
     }
 
     .modal {
-    display: block; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    }
-
-    .span-text {
-        color : #198754;
-    }
-
-    label {
-        color : #198754;
+        display: block; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
 
     /* Modal Content */
     .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 30px;
+        border: 1px solid #888;
+        width: 80%;
     }
 
     /* The Close Button */
     .close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 16px;
-    font-weight: bold;
+        color: #aaaaaa;
+        float: right;
+        font-size: 16px;
+        font-weight: bold;
     }
 
     .close:hover,
     .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
     }
 
-    #options-btns{
+    img {
+        width: auto;
+        height: 200px;
+        border-radius: 20px;
+    }
+
+    #photo-gallery {
+        margin: 5% 10% 10% 10%;
+    }
+
+    h1 {
         margin-top: 5%;
+        color: rgba(51, 92, 80, 0.8);
     }
 
-    #options-btns button {
-        background-color: #198754;
-        color: white;
+    .start-data {
+        margin-top: 5%;
+        margin-bottom: 5%;
+        border-radius: 15px;
+        background-color: rgb(146, 179, 146);
+        padding-top: 2%;
+        padding-bottom: 2%;
     }
 
-    .rating {
-        width: 60px;
+    p {
+        margin: 5%;
+        font-size: 16px;
     }
 
-    .inline-ratings {
-        margin: 3%;
-    }
-
-    .inline-inputs {
-        display: inline-block;
-        margin: 0 10%;
+    div.status{
+        align-content: center;
+        text-align: center;
+        margin: 2%;
+        font-size: 18px;
+        background-color: rgb(146, 179, 146) !important;
+        color: black;
     }
 
     div .pill {
         display: inline-block;
         margin: 20px 10px 0 0;
         padding: 6px 12px;
-        background: #198754;
+        background: white;
         border-radius: 20px;
         font-size: 12px;
         letter-spacing: 1px;
         font-weight: bold;
-        color: white;
+        color: black;
         cursor: pointer;
     }
 
@@ -344,30 +236,25 @@ export default {
         cursor: pointer;
     }
 
-    #picGallery {
-        height: 80px;
-        width: auto;
-        border-radius: 5px;
+    #map-container {
+        margin:5% 10% 10% 10%;
     }
 
-    #picGallery:hover {
-        border-radius: 10px;
-        border: #198754 solid 3px;
+    #options-btns{
+        margin-top: 5%;
+    }
+
+    #options-btns button {
+        color: white;
+    }
+
+    #options-btns button:hover {
+        background-color: rgb(6, 94, 40);
+    }
+
+    #btn-calendar {
+        width: 30px;
+        height: 30px;
     }
     
-    #imgPreview:hover {
-        border-radius: 5px;
-        height: 150px;
-        width: auto;
-    }
-
-    #imgPreview {
-        border: solid 1px black;
-        border-radius: 20px;
-        margin-top: 5%;
-        height: 70px;
-        width: auto;
-        padding: 5px;
-    }
-
 </style>

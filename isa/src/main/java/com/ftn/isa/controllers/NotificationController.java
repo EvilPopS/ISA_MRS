@@ -6,10 +6,12 @@ import com.ftn.isa.DTO.RentalReviewDTO;
 import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.model.Client;
 import com.ftn.isa.model.CottageOwner;
+import com.ftn.isa.model.FishingInstructor;
 import com.ftn.isa.model.User;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.ClientService;
 import com.ftn.isa.services.CottageOwnerService;
+import com.ftn.isa.services.FishingInstructorService;
 import com.ftn.isa.services.ReportService;
 import com.ftn.isa.services.UserService;
 import com.ftn.isa.model.*;
@@ -50,6 +52,9 @@ public class NotificationController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    FishingInstructorService fishingInstructorService;
+
     @PostMapping(value = "/add-report")
     @PreAuthorize("hasRole('COTTAGE_OWNER') || hasRole('INSTRUCTOR') || hasRole('BOAT_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
@@ -60,16 +65,18 @@ public class NotificationController {
 
         User owner = userService.getUserByEmailAndRole(ownerEmail, reportDTO.getOwnerRole());
         Client client = clientService.findByEmail(reportDTO.getClientEmail());
-        if (owner == null || client == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
+        
         if (!reportDTO.arePropsValid())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
+        if (owner == null || client == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        
         reportService.addNewReport(owner, client, reportDTO);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 
     @GetMapping(value = "/get-rental-reviews/{rentalId}")
     @PreAuthorize("hasRole('CLIENT')")

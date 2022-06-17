@@ -261,8 +261,8 @@
     }
     function uncheckSortButtons(btns) {
         btns.nameSortBtnClicked = false;
-        btns.startDateSortBtnClicked = false;
-        btns.endDateSortBtnClicked = false;
+        btns.locationSortBtnClicked = false;
+        btns.ratingSortBtnClicked = false;
         btns.priceSortBtnClicked = false;
     }
 

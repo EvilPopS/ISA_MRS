@@ -71,9 +71,11 @@
                     phoneNumber: data.phoneNumber,
                     profilePicture: data.profilePicture
                 }
-                axios.put("api/fishingInstructor/data-update", requestBody)
+                axios.put("api/fishingInstructor/data-update", requestBody,  {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(() => {
                         this.succPopUpVisible = true;
+                    }).catch(function (error){
+                        alert(error.name);
                     });
             },
             setNewProfilePic(newPic) {
@@ -84,7 +86,7 @@
             }
         },
         created() {
-            axios.get("api/fishingInstructor/" + window.sessionStorage.getItem("email"))
+            axios.get("api/fishingInstructor/", {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     let data = response.data;
 

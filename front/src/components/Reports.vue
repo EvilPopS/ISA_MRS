@@ -4,17 +4,19 @@
                 <div v-if="!review.isAnswered" class="card mb-3" style="max-width: 740px;">
                     <div class="row no-gutters">
                         <div class="col-md-4">
-                            <img :src="setPicture(review)" style="height : 100px;" alt="...">
-                            <p>{{review.senderName}}</p>
+                            <img :src="setPicture(request)" style="height : 100px;" alt="...">
+                            <p>{{review.clientName}}</p>
                         </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h5 class="card-title badge bg-success text-wrap rounded-pill status">Rental: {{review.rentalServiceName}}</h5>
-                            <p class="card-text"> Review grade: {{review.grade}}</p>
+                            <h5 class="card-title badge text-wrap rounded-pill status"
+                                :class="review.isNegative ? 'bg-danger' : 'bg-success'"
+                            >{{ review.isNegative ? 'NEGATIVE REPORT' : 'POSITIVE REPORT' }}</h5>
+                            <p class="card-text"> Request message: {{review.message}}</p>
                             <p class="card-text"><small class="text-muted">{{review.sendTime}}</small></p>
                             <span>
-                                <button class="btn btn-success" @click="$emit('show-confirm-allowing-dialog', review)">Allow</button>
-                                <button class="btn btn-danger"  @click="$emit('show-confirm-rejection-dialog',review)">Reject</button>
+                                <button class="btn btn-success" @click="$emit('show-confirm-allowing-dialog', review)">Answer</button>
+                                <button class="btn btn-danger"  @click="$emit('show-confirm-rejection-dialog',review)">Ignore</button>
                             </span> 
                         </div>
                     </div>
@@ -28,17 +30,17 @@
 <script>
 
 export default {
-    name : 'RentalReviews',
+    name : 'DeletionRegistrationNotifications',
 
     props : {data : Array,},
 
 
     methods : {
-                    setPicture(review) {
+            setPicture(request) {
                 try{
-                    return require('../assets/' + review.senderProfilePhoto); // ovde promeniti da ucita sliku koju stvarno treba da ucita
+                    return require('../assets/' + 'default.jpg'); // ovde promeniti da ucita sliku koju stvarno treba da ucita
                 } catch(e) {}
-        },
+        }
     }
 
 }

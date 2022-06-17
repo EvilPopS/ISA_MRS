@@ -53,7 +53,7 @@ public class RegularResDTO {
     public void setPrice(Double price) {
         this.price = price;
     }
-    
+
     public LocalDateTime getStartTime() {
         return startTime;
     }

@@ -12,4 +12,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query(nativeQuery = true, value = "select * from request")
     public List<Request> getAllRequests();
+
+
+
 }

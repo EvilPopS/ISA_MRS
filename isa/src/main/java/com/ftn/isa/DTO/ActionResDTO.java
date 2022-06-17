@@ -72,4 +72,5 @@ public class ActionResDTO {
     public void setActionServices(String actionServices) {
         this.actionServices = actionServices;
     }
+
 }
