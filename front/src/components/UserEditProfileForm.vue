@@ -38,6 +38,11 @@
                             <img id="profilePic" @click="changeProfilePhoto()" :src="setProfPic()" alt="Client profile picture should be here...">
                         </div>    
                     </div>
+                    
+                    <div v-if="userType !== 'client'" class="row">
+                        <label>Penalties: </label>
+                        <input id="penal-inp" type="text" class= "form-control" v-bind:class="{ warning_inp: penaltiesWarning }" v-model="penalties" disabled>
+                    </div>
 
                     <div class="inline-inputs">
                         <label>Password: </label>
@@ -145,8 +150,9 @@
             street : String,
             phoneNumber : String,
             type : String,
-            points : String,
+            points : Number,
             loyalty : String,
+            penalties: Number,
 
             currentProfilePic: String,
             currentName: String,
@@ -158,6 +164,8 @@
         },
         data() {
             return {
+                penaltiesWarning: this.penalties > 2,
+
                 picPopUpVisible: false,
                 errMessage : '',
                 errorPopUpVisible: false,
@@ -444,10 +452,19 @@
     }
 
     #right-col {
-        margin-right: 320px;
+        margin-right: 100px;
     }
 
     #left-col {
-        margin-left: 320px;
+        margin-left: 100px;
+    }
+
+    #penal-inp {
+        width: 95px;
+        margin: 0 auto;
+    }
+
+    .warning_inp {
+        background: rgba(235, 80, 80, 0.699) !important; 
     }
 </style>

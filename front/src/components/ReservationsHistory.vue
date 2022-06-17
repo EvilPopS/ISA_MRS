@@ -5,18 +5,24 @@
             <span id="fa-search-id">
                 <input type="text" placeholder="Search..." id="search-input" v-model="searchedReservation"/>
                 <i class="fa fa-search" id="search-icon-color" aria-hidden="true"></i>
+                <div class="d-flex justify-content-center" id="sort-bar">
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: rentalNameSortBtnClicked }" @click="sortByRentalName();">&#8645; Rental Name</button>
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: clientNameSortBtnClicked }" @click="sortByClientName();">&#8645; Client Name</button>
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: startDateSortBtnClicked }" @click="sortByStartDate();">&#8645; Start date</button>
+                        <button class=" btn btn-success" v-bind:class="{ btn_clicked: endDateSortBtnClicked }" @click="sortByEndDate();">&#8645; End date</button>
+                </div>
             </span>
             <div class="row">
                 <div class="col-12 col-md-5 col-lg-4" v-for="reservation in filteredReservations" :key="reservation.reservationId">
                     <div class="card" style="width: 18rem; margin-top: 5%" id="card-body-id">
-                        <img :src="setPicture(reservation.clientProfilePhoto)" id="cottage-img" class="card-img-top" alt="This is a reservation picture." @click="showClient(reservation.clientEmail)">
+                        <img :src="setPicture(reservation.clientProfilePhoto)" id="cottage-img" class="card-img-top" alt="This is a reservation picture." @click="showClient(reservation.clientEmail, reservation)">
                         <div class="card-body">
                             <h5 class="card-title" id="heading-cottage">Reservation #{{reservation.reservationId}}</h5>
                             <p class="card-text"><b>Rental:</b> {{reservation.rentalName}}</p>
                             <p class="card-text"><b>Client:</b> {{reservation.clientFullName}}</p>
                             <p class="card-text"><b>Start:</b> {{reservation.startTime.split('T')[0]}} <b>at</b> {{(reservation.startTime.split('T')[1]).split(':')[0]}}:{{(reservation.startTime.split('T')[1]).split(':')[1]}}</p>
                             <p class="card-text"><b>End:</b> {{reservation.endTime.split('T')[0]}} <b>at</b> {{(reservation.endTime.split('T')[1]).split(':')[0]}}:{{(reservation.endTime.split('T')[1]).split(':')[1]}}</p>
-                            <p class="card-text"><b>Action:</b> {{reservation.Action ? 'Yes' : 'No'}}</p>
+                            <p class="card-text"><b>Action:</b> {{reservation.action ? 'Yes' : 'No'}}</p>
                             <span>
                                 <button class="btn btn-success" @click="makeReport(reservation.reservationId, reservation.clientEmail, reservation.clientFullName)">Make report</button>
                             </span>    
@@ -32,6 +38,7 @@
     <div v-if="basicClientProfileShow">
         <BasicClientProfile
             :clientEmail = "selectedClient"
+            :reservation = "sendResObj"
             @modal-closed = "basicClientProfileShow = false"
         />
     </div>
@@ -65,7 +72,13 @@ export default {
 
             makeReportShow: false,
             selectedReservation: '',
-            selectedClientFullName: ''
+            selectedClientFullName: '',
+
+            rentalNameSortBtnClicked: false,
+            clientNameSortBtnClicked: false,
+            startDateSortBtnClicked: false,
+            endDateSortBtnClicked: false,
+            sendResObj: {}
         }
     },
     methods: {
@@ -74,15 +87,98 @@ export default {
                     return require('../assets/' + picture);
                 } catch(e) {console.log(e)}
         },
-        showClient(email) {
+        showClient(email, reservation) {
             this.basicClientProfileShow = true
             this.selectedClient = email
+            this.sendResObj = reservation
         },
         makeReport(resId, cliEmail, cliFullName) {
             this.selectedClient = cliEmail
             this.selectedReservation = resId
             this.makeReportShow = true
             this.selectedClientFullName = cliFullName
+        },
+        sortByRentalName() {
+            if (this.rentalNameSortBtnClicked)
+                this.data.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.rentalNameSortBtnClicked = true;
+
+                this.data.sort(function(left, right) { 
+                    let lName = left.rentalName.toUpperCase();
+                    let rName = right.rentalName.toUpperCase();
+                    if (lName < rName) 
+                        return -1;
+                    else if (lName > rName)
+                        return 1;
+                    
+                    return 0;
+                });
+            }
+        },
+        sortByClientName() {
+            if (this.clientNameSortBtnClicked)
+                this.data.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.clientNameSortBtnClicked = true;
+
+                this.data.sort(function(left, right) { 
+                    let lName = left.clientFullName.toUpperCase();
+                    let rName = right.clientFullName.toUpperCase();
+                    if (lName < rName) 
+                        return -1;
+                    else if (lName > rName)
+                        return 1;
+                    
+                    return 0;
+                });
+            }
+        },
+        sortByStartDate() {
+            if (this.startDateSortBtnClicked)
+                this.data.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.startDateSortBtnClicked = true;
+
+                this.data.sort(function(left, right) {
+                    let lDate = new Date(left.startTime).toISOString();
+                    let rDate = new Date(right.startTime).toISOString();
+                    if (lDate < rDate) 
+                        return -1;
+                    else if (lDate > rDate)
+                        return 1;
+
+                    return 0;
+                });
+            }
+        },
+        sortByEndDate() {
+            if (this.endDateSortBtnClicked)
+                this.data.reverse();
+            else {
+                this.uncheckSortButtons();
+                this.endDateSortBtnClicked = true;
+
+                this.data.sort(function(left, right) { 
+                    let lDate = new Date(left.endTime).toISOString();
+                    let rDate = new Date(right.endTime).toISOString();
+                    if (lDate < rDate) 
+                        return -1;
+                    else if (lDate > rDate)
+                        return 1;
+
+                    return 0;
+                });
+            }
+        },
+        uncheckSortButtons() {
+            this.rentalNameSortBtnClicked = false
+            this.clientNameSortBtnClicked = false
+            this.startDateSortBtnClicked = false
+            this.endDateSortBtnClicked = false
         }
     },
     computed: {
@@ -150,6 +246,19 @@ export default {
         height: 170px;
         border-radius: 20px;
         background: linear-gradient(rgb(255, 253, 253), rgb(241, 239, 239));
+    }
+
+    #sort-bar button {
+        margin: 0 5px;
+        border-radius: 10px;
+        font-weight: bold;
+        padding: 4px 15px;
+        border: 1px rgb(71, 69, 69) solid;
+        color: white;
+    }
+
+    #sort-bar button:hover {
+        background-color: rgb(6, 94, 40);
     }
 
 </style>

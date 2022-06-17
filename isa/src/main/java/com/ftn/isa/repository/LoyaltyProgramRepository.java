@@ -9,4 +9,7 @@ import java.util.List;
 public interface LoyaltyProgramRepository extends JpaRepository<LoyaltyProgram, Long> {
     @Query(nativeQuery = true, value="select * from loyalty_program")
     public List<LoyaltyProgram> getCompleteLoyaltyProgram();
+
+    @Query(nativeQuery = true, value = "select * from loyalty_program")
+    public List<LoyaltyProgram> getAllLoyaltyPrograms();
 }

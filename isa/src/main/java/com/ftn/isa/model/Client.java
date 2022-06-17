@@ -5,17 +5,23 @@ import com.ftn.isa.DTO.ClientProfileDTO;
 import com.ftn.isa.DTO.UserRegDTO;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 public class Client extends User {
-    @Column(name = "no_penalties", nullable = false)
-    private int noPenalties;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Set<Reservation> reservations;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    private List<Subscription> subscriptions;
+
+    @Column(name = "num_of_penalties")
+    private int numOfPenalties;
 
     public Client() {
     }
@@ -29,12 +35,13 @@ public class Client extends User {
             this.setProfilePicture(new Photo(data.getProfilePicture()));
             this.setPassword(data.getPassword());
             this.setDeleted(false);
-            this.setActive(false);
+            this.setActive(true);
             this.setRole(new Role("ROLE_CLIENT"));
             this.setLoyaltyPoints(0);
             this.setLoyaltyType(LoyaltyType.REGULAR);
-            this.noPenalties = 0;
+            this.numOfPenalties = 0;
             this.reservations = new HashSet<>();
+            this.subscriptions = new ArrayList<>();
     }
 
     public void updatePersonalInfo(ClientProfileDTO data) {
@@ -50,12 +57,8 @@ public class Client extends User {
         this.setPhoneNumber(data.getPhoneNumber());
     }
 
-    public int getNoPenalties() {
-        return noPenalties;
-    }
-
-    public void setNoPenalties(int noPenalties) {
-        this.noPenalties = noPenalties;
+    public void incLoyaltyPoints(int points) {
+        this.setLoyaltyPoints(this.getLoyaltyPoints() + points);
     }
 
     public Set<Reservation> getReservations() {
@@ -64,5 +67,21 @@ public class Client extends User {
 
     public void setReservations(Set<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(List<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
+
+    public int getNumOfPenalties() {
+        return numOfPenalties;
+    }
+
+    public void setNumOfPenalties(int numOfPenalties) {
+        this.numOfPenalties = numOfPenalties;
     }
 }

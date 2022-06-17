@@ -38,5 +38,9 @@ public class ReportService {
         }
         return null;
     }
+  
+    public void makeNewReport(String message, Client client, User owner) {
+        reportRepository.save(new Report(message, client, owner, true));
+    }
 
 }

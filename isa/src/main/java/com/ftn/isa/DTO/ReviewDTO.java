@@ -29,7 +29,7 @@ public class ReviewDTO {
         this.message = review.getMessage();
         this.sentTime = review.getSentTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
         this.grade = review.getGrade();
-        this.recieverId = review.getReciever().getId();
+        this.recieverId = review.getReceiver().getId();
         this.rentalServiceId = review.getRentalService().getId();
         this.rentalServiceName = review.getRentalService().getName();
         this.rentalServiceType = review.getRentalService().getRentalType().ordinal();

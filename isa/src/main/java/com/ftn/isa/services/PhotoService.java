@@ -1,9 +1,7 @@
 package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.CottageDTO;
-import com.ftn.isa.model.Cottage;
-import com.ftn.isa.model.CottageOwner;
-import com.ftn.isa.model.Photo;
+import com.ftn.isa.model.*;
 import com.ftn.isa.repository.PhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,12 +26,12 @@ public class PhotoService {
         return newPhotos;
     }
 
-    public Set<Photo> addOrDeletePhoto(Cottage cottage, CottageDTO cottageDTO){
+    public Set<Photo> addOrDeletePhoto(RentalService rental, Long dtoId, Set<String> dtoPhotos){
         Set<Photo> photos = new HashSet<Photo>();
 
-        for (String path : cottageDTO.getPhotos()) {
+        for (String path : dtoPhotos) {
             boolean newPhoto = true;
-            for (Photo p : cottage.getPhotos()) {
+            for (Photo p : rental.getPhotos()) {
                 if (p.getPhotoPath().equals(path)) {
                     photos.add(p);
                     newPhoto = false;
@@ -42,9 +40,9 @@ public class PhotoService {
             if (newPhoto) {photos.add(new Photo(path));}
         }
 
-        for (Photo p : cottage.getPhotos()){
+        for (Photo p : rental.getPhotos()){
             boolean deleted = true;
-            for (String path : cottageDTO.getPhotos()){
+            for (String path : dtoPhotos){
                 if (path.equals(p.getPhotoPath())){deleted = false; break;}
             }
             if (deleted){photoRepository.deleteById(p.getId());}
@@ -53,11 +51,23 @@ public class PhotoService {
         return photos;
     }
 
-    public Set<Photo> changeCottagePhotos(CottageOwner cottageOwner, CottageDTO cottageDTO) {
+    public Set<Photo> changeCottagePhotos(CottageOwner cottageOwner, Long id, Set<String> dtoPhotos) {
         Set<Photo> photos = new HashSet<>();
         for (Cottage c : cottageOwner.getCottages()){
-            if (c.getId() == cottageDTO.getId()){
-                photos = this.addOrDeletePhoto(c, cottageDTO);
+            if (c.getId() == id){
+                photos = this.addOrDeletePhoto(c, id, dtoPhotos);
+                break;
+            }
+        }
+
+        return photos;
+    }
+
+    public Set<Photo> changeBoatPhotos(BoatOwner boatOwner, Long id, Set<String> dtoPhotos) {
+        Set<Photo> photos = new HashSet<>();
+        for (Boat c : boatOwner.getBoats()){
+            if (c.getId() == id){
+                photos = this.addOrDeletePhoto(c, id, dtoPhotos);
                 break;
             }
         }

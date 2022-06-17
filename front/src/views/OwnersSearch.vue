@@ -8,7 +8,7 @@
                 Search resulted in... no result, don't be so strict with that criterion!
             </p>
             <div v-for="res in this.searchResult" :key="res.id"> 
-                <div class="card"> 
+                <div class="card" @click="showDetailRental(res.id)"> 
                     <p class="entity-name">{{res.name}}</p>
                     <img v-if="res.type == 'Adventure'" class="card-icon" src="@/assets/adventure_icon.png">
                     <img v-else-if="res.type == 'Cottage'" class="card-icon" src="@/assets/cottage_icon.png">
@@ -58,21 +58,41 @@
     <div v-else>
         <h3>You don't have permission to visit this page!</h3>
     </div>
-
+    <div v-if="showDetailsCottage">
+        <DetailCottageModal
+        :cottage = "detailRental"
+        @modal-closed = "showDetailsCottage = false"
+        @succ-popup-close = "succPopUpClose"
+        />
+    </div>
+    <div v-if="showDetailsBoat">
+        <DetailBoatModal
+        :boat = "detailRental"
+        @modal-closed = "showDetailsBoat = false"
+        @succ-popup-close = "succPopUpClose"
+        />
+    </div>
     <ErrorPopUp v-show="errorPopUpVisible" 
         @close = closePopUp
         :mess = errMessage
-    /> 
+    />
+    <SuccessPopUp v-show="succPoupUp"
+        @close = "succPoupUp = false"
+        :mess = succMessage
+    />
 </template>
 
 <script>
     import ErrorPopUp from "@/components/ErrorPopUp.vue"
+    import DetailCottageModal from '../components/DetailCottageModal.vue'
+    import DetailBoatModal from '../components/DetailBoatModal.vue'
+    import SuccessPopUp from '../components/SuccessPopUp.vue'
     import axios from 'axios';
 
     export default {
         name: "OwnersSearch",
         components: {
-            ErrorPopUp
+            ErrorPopUp, DetailCottageModal, DetailBoatModal, SuccessPopUp
         },
         data() {
             return {
@@ -84,9 +104,13 @@
                 showSearh: false,
                 roleURL: '',
                 searchRole: '',
-
+                detailRental: {},
+                showDetailsCottage: false,
+                showDetailsBoat: false,
                 errMessage : '',
                 errorPopUpVisible: false,
+                succPoupUp: false,
+                succMessage: '',
                 toShowNoResultsMess: false,
                 showInitSearchResMess: true,
 
@@ -96,6 +120,9 @@
         methods: {
             closePopUp() {
                 this.errorPopUpVisible = false;
+            },
+            succPopUpClose() {
+                this.succPopUpVisible = false;
             },
             submitSearchForm() {
                 let formData = {
@@ -125,9 +152,49 @@
                         response.data.length === 0 ? this.toShowNoResultsMess = true : this.toShowNoResultsMess = false    
 
                         this.searchResult = response.data;
-                   }).catch((error) => {
-                        this.errMessage = "Error happened: " + error.data
-                        this.errorPopUpVisible = true
+                   }).catch(err => {
+                        if (err.response.status === 404){
+                            this.errMsg = "Client or owner with given email address is not found!";
+                            this.errorPoup = true;
+                        } 
+                        else if (err.response.status === 401) {
+                            this.errMsg = "You are not authorized!";
+                            this.errorPoup = true;
+                        }
+                        else if (err.response.status === 422) {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        } else {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        }
+                    });
+            },
+            showDetailRental(rentalId) {
+                axios.get('api/' + this.roleURL + '/find-one-rental/' + rentalId, {headers: {'authorization': window.localStorage.getItem("token") }})
+                .then((response) => {
+                    this.detailRental = response.data
+                    if (this.searchRole === "COTTAGE_OWNER")
+                        this.showDetailsCottage = true
+                    else if (this.searchRole === "BOAT_OWNER")
+                        this.showDetailsBoat = true
+                    //poslednje ce biti else if za instruktora
+                    }).catch(err => {
+                        if (err.response.status === 404){
+                            this.errMsg = "Client or owner with given email address is not found!";
+                            this.errorPoup = true;
+                        } 
+                        else if (err.response.status === 401) {
+                            this.errMsg = "You are not authorized!";
+                            this.errorPoup = true;
+                        }
+                        else if (err.response.status === 422) {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        } else {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        }
                     });
             }
         },
@@ -139,8 +206,11 @@
             } else if (this.searchRole === "INSTRUCTOR"){
                 this.roleURL = "fishingInstructor"
                 this.showSearh = true
+            } else if (this.searchRole === "BOAT_OWNER"){
+                this.roleURL = "boat-owner"
+                this.showSearh = true
             } else {
-                //za boat
+                this.showSearh = false
             }
         }
     }
@@ -284,4 +354,9 @@
     h3 {
         margin-top: 10%;
     }
+
+    button {
+        margin-top: 5%;
+    }
+
 </style>

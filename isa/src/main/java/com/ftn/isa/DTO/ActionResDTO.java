@@ -33,6 +33,14 @@ public class ActionResDTO {
                 && startTime.isBefore(endTime);
     }
 
+    public Long getRentalId() {
+        return rentalId;
+    }
+
+    public void setRentalId(Long rentalId) {
+        this.rentalId = rentalId;
+    }
+
     public LocalDateTime getStartTime() {
         return startTime;
     }

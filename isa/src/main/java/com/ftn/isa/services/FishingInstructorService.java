@@ -25,6 +25,9 @@ public class FishingInstructorService {
         fishingInstructorRepo.save(fishingInstructor);
     }
 
+    public FishingInstructor getOwnerByAdventureId(Long advId) {
+        return fishingInstructorRepo.getOwnerByAdventureId(advId);
+    }
     public void save(FishingInstructor fishingInstructor){ fishingInstructorRepo.save(fishingInstructor);};
 
     public void updateAdventure(FishingInstructor fishingInstructor, AdventureDTO adventureData) {

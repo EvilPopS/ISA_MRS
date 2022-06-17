@@ -200,6 +200,6 @@ public class CottageDTO {
                 Validate.validateWords(this.country) &&
                 Validate.validateStreet(this.street) &&
                 this.price > 0 && this.noRooms > 0 && this.capacity > 0 &&
-                this.photos.size() > 0 && this.noRatings == 0 && this.averageRating == 0;
+                this.photos.size() > 0;
     }
 }

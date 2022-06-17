@@ -1,6 +1,7 @@
 package com.ftn.isa.DTO;
 
 import com.ftn.isa.model.Boat;
+import com.ftn.isa.model.User;
 
 public class DetailedBoatInfoDTO extends DetailedEntityInfoDTO{
     private final String boatType;
@@ -11,8 +12,8 @@ public class DetailedBoatInfoDTO extends DetailedEntityInfoDTO{
     private final String navigationEquipment;
     private final String fishingEquipment;
 
-    public DetailedBoatInfoDTO(Boat boat) {
-        super(boat);
+    public DetailedBoatInfoDTO(Boat boat, User user) {
+        super(boat, user);
         this.boatType = boat.getType();
         this.boatLength = boat.getBoatLength();
         this.engineNumber = boat.getEngineNumber();

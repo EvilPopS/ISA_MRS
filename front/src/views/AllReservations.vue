@@ -78,7 +78,8 @@ export default {
             this.roleURL = "fishingInstructor"
             this.showSearh = true
         } else if (this.searchRole === "BOAT_OWNER") {
-            //za boat
+            this.roleURL = "boat-owner"
+            this.showSearh = true
         } else {
             this.showSearch = false
         }
@@ -96,5 +97,9 @@ export default {
 </script>
 
 <style scoped>
+
+h3 {
+    margin-top: 10%;
+}
 
 </style>

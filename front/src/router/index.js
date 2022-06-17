@@ -17,6 +17,11 @@ import ClientReservationHistory from '../views/ClientReservationHistory';
 import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
 import AdminReports from '../views/AdminReports'
 import AdminLoyaltyProgram from '../views/AdminLoyaltyProgram.vue'
+import ClientSubscriptionsView from '@/views/ClientSubscriptionsView';
+import OwnersReportPage from '@/views/OwnersReportPage';
+import ClientLoyaltyProgramView from '@/views/ClientLoyaltyProgramView';
+import BoatOwnerHome from '../views/BoatOwnerHome.vue';
+import AllBoatsView from '../views/AllBoatsView.vue';
 
 const routes = [
   {
@@ -110,7 +115,33 @@ const routes = [
     path: '/ClientUpcomingReservations',
     name: 'ClientUpcomingReservations',
     component: ClientUpcomingReservations
+  },
+  {
+    path: '/ClientSubscriptionsView',
+    name: 'ClientSubscriptionsView',
+    component: ClientSubscriptionsView
+  },
+  {
+    path: '/OwnersReportPage',
+    name: 'OwnersReportPage',
+    component: OwnersReportPage
+  },
+  {
+    path: '/ClientLoyaltyProgramView',
+    name: 'ClientLoyaltyProgramView',
+    component: ClientLoyaltyProgramView
+  },
+  {
+    path: '/BoatOwnerHome',
+    name: 'BoatOwnerHome',
+    component: BoatOwnerHome
+  },
+  {
+    path: '/AllBoatsView',
+    name: 'AllBoatsView',
+    component: AllBoatsView
   }
+
 ]
 
 const router = createRouter({

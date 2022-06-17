@@ -6,6 +6,7 @@ import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
+import org.hibernate.dialect.lock.PessimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +44,11 @@ public class CottageOwnerController  {
     @Autowired
     private SubscriptionService subscriptionService;
 
+    //@Autowired
+    //private EmailService emailService;
+
     @Autowired
-    private EmailService emailService;
+    private LoyaltyProgramService loyaltyProgramService;
 
     @GetMapping
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
@@ -102,13 +106,29 @@ public class CottageOwnerController  {
     }
 
 
+    @GetMapping(value="/find-one-rental/{id}")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<CottageDTO> getOneWithId(@PathVariable Long id, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+        Set<Cottage> cottages = cottageOwner.getCottages();
+        CottageDTO returnCottage = null;
+        for (Cottage c : cottages) {
+            if (!c.isDeleted() && c.getId().equals(id)) returnCottage = new CottageDTO(c);
+        }
 
+        if (returnCottage == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-
-
-
+        return new ResponseEntity<CottageDTO>(returnCottage, HttpStatus.OK);
+    }
 
     @PostMapping(value = "/add-cottage")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
@@ -141,7 +161,12 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
+        try {
+            cottageOwnerService.deleteCottage(cottageOwner, Long.parseLong(id));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
@@ -162,7 +187,7 @@ public class CottageOwnerController  {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Set<Photo> photos = new HashSet<>();
-        photos = photoService.changeCottagePhotos(cottageOwner, cottageDTO);
+        photos = photoService.changeCottagePhotos(cottageOwner, cottageDTO.getId(), cottageDTO.getPhotos());
         cottageOwnerService.save(cottageOwner, cottageDTO, photos);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -277,12 +302,12 @@ public class CottageOwnerController  {
             }
         }
         cottageOwnerService.save(cottageOwner);
-        notifySubscribers(cottageOwner, actionResDTO);
+        //notifySubscribers(cottageOwner, actionResDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    /*@PreAuthorize("hasRole('COTTAGE_OWNER')")
     private void notifySubscribers(CottageOwner cottageOwner, ActionResDTO actionResDTO) {
         for (Subscription s : subscriptionService.getAllSubscriptions()){
             if (s.getOwner().getId().equals(cottageOwner.getId()) && s.isActiveSubscription()){
@@ -297,6 +322,100 @@ public class CottageOwnerController  {
                 }
             }
         }
+    }
+     */
+
+    @PostMapping(value = "/add-regular-reservation")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addRegularRes(HttpServletRequest request, @RequestBody RegularResDTO regularResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Client client = clientService.findByEmail(regularResDTO.getClientEmail());
+        if (client == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!regularResDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!clientService.checkIfCurrentResInProgress(client))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, client, false);
+        } catch(PessimisticEntityLockException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId().equals(regularResDTO.getRentalId())){
+                c.getReservations().add(newRes);
+                break;
+            }
+        }
+        cottageOwnerService.save(cottageOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/add-unvailable-period")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addUnvailablePeriod(HttpServletRequest request, @RequestBody RegularResDTO regularResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!regularResDTO.checkOnlyDate())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, null, true);
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Cottage c : cottageOwner.getCottages()){
+            if (c.getId().equals(regularResDTO.getRentalId())){
+                c.getReservations().add(newRes);
+                break;
+            }
+        }
+        cottageOwnerService.save(cottageOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get-chart-data/{selectedGraph}/{selectedPeriod}/{selectedMonth}")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<List<String>>> getChartData(@PathVariable String selectedGraph, @PathVariable String selectedPeriod, @PathVariable String selectedMonth, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        CottageOwner cottageOwner = cottageOwnerService.findByEmail(email);
+        if (cottageOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<List<String>> data = cottageOwnerService.getChartData(cottageOwner, selectedGraph, selectedPeriod, selectedMonth, loyaltyProgramService.getAllLoyaltyPrograms());
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
 }

@@ -13,6 +13,7 @@ public class ReservationDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private double price;
+    private String actionServices = "";
     private boolean isAction;
     private boolean isReserved;
 
@@ -23,7 +24,7 @@ public class ReservationDTO {
 
     public ReservationDTO(Long reservationId, Long rentalId, String clientEmail,
                           String rentalName, LocalDateTime startTime,
-                          LocalDateTime endTime, double price, boolean isAction, boolean isReserved, String clientProfilePhoto, String clientFullName) {
+                          LocalDateTime endTime, double price, boolean isAction, boolean isReserved, String clientProfilePhoto, String clientFullName, String actionServices) {
         this.reservationId = reservationId;
         this.rentalId = rentalId;
         this.clientEmail = clientEmail;
@@ -35,12 +36,13 @@ public class ReservationDTO {
         this.isReserved = isReserved;
         this.clientProfilePhoto = clientProfilePhoto;
         this.clientFullName = clientFullName;
+        this.actionServices = actionServices;
     }
 
     public ReservationDTO(Long reservationId, Long rentalId,
                           String rentalName, LocalDateTime startTime,
                           LocalDateTime endTime, double price,
-                          boolean isAction, boolean isReserved) {
+                          boolean isAction, boolean isReserved, String actionServices) {
         this.reservationId = reservationId;
         this.rentalId = rentalId;
         this.rentalName = rentalName;
@@ -49,6 +51,15 @@ public class ReservationDTO {
         this.price = price;
         this.isAction = isAction;
         this.isReserved = isReserved;
+        this.actionServices = actionServices;
+    }
+
+    public String getActionServices() {
+        return actionServices;
+    }
+
+    public void setActionServices(String actionServices) {
+        this.actionServices = actionServices;
     }
 
     public String getClientFullName() {

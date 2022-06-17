@@ -27,8 +27,15 @@ insert into photo (photo_path, rental_id)
            ('cottage1.jpg', 6),
            ('fishing_adventure1.jpg', 7),
            ('fishing_adventure2.jpg', 8),
+           ('home-page-pic-boat.jpg', 3),
+           ('home-page-pic-instructor.jpg', 1),
+           ('home-page-pic-instructor.jpg', 2),
            ('home-page-pic-boat.jpg', 1),
-           ('home-page-pic-boat.jpg', 2);
+           ('home-page-pic-boat.jpg', 2),
+           ('boat1.jpg', 3),
+           ('boat4.jpg', 3),
+           ('boat2.jpg', 9),
+           ('boat3.jpg', 10);
 
 insert into admin (id, email, password, name, surname, address_id, phone_number, is_deleted, loyalty_points,
                         is_active, photo_id, role_id, loyalty_type)
@@ -37,35 +44,43 @@ insert into admin (id, email, password, name, surname, address_id, phone_number,
            (nextval('my_seq_gen_user'), 'admin2@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Saban', 'Saulic', 3, '0614283764', false,100,
                 true, 2, 5, 0);
 
-insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
-                            rental_type, price, biography, fishing_equipment, cancellation_conditions)
-    values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
-                false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5),
-            (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
-                false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0);
-
-insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
-                      rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
-                      navigation_equipment, fishing_equipment, cancellation_conditions)
-    values (nextval('my_seq_gen_rental'), 'The Black Pearl', 'Crni brodic, velik i lep.', 8, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 50,
-                'Ribarski brodic', '20m', '46345754', '500ks', '30km/h', 'Neka navigaciona oprema ne razumem ti se ja u to.',
-                'Pecaroska oprema, ne znam sta sve ide tu.', 35.0);
-
 insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                            is_active, photo_id, role_id, loyalty_type, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', 'boat123', 'Bojan', 'Bojanic', 7, '06222332323', false, true, null,
-                3, 0, 10);
+                        is_active, photo_id, role_id, loyalty_type, loyalty_points)
+    values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Bojan', 'Bojanic', 7, '06222332323', false, true, 1,
+        3, 0, 10);
 
-insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted,
-                        is_active, photo_id, role_id, loyalty_type, no_penalties, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'client1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O',
-                        'Marko', 'Markovic', 1, '0601231231', false, true, 1, 1, 0, 0, 124);
+insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted, is_active,
+                     photo_id, role_id, loyalty_type, loyalty_points, num_of_penalties)
+     values (nextval('my_seq_gen_user'), 'client1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O',
+                         'Marko', 'Markovic', 1, '0601231231', false, true, 1, 1, 1, 224, 2);
 
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                            is_active, photo_id, role_id, loyalty_type, loyalty_points)
-
-values (nextval('my_seq_gen_user'), 'srdjan@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
+    values (nextval('my_seq_gen_user'), 'srdjan@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
         2, 0, 10);
+
+insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
+                                role_id, address_id, photo_id, loyalty_points)
+    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
+                'Instric', 4, 5, 1, 0),
+           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Instro2', 'sifra1223', '0619990009',
+        'Instriiiic', 4, 3, 1, 0);
+
+insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+                            rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
+    values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
+                false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5, 6),
+            (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
+                false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 6);
+
+
+insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+                      rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
+                      navigation_equipment, fishing_equipment, boat_owner_id)
+    values (nextval('my_seq_gen_rental'), 'The Black Pearl', 'Crni brodic, velik i lep.', 8, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 150,
+                'Ribarski brodic', '20', '46345754', '500', '30', 'radar,lidar,gps',
+                'stap,mreza,dupla mreza', 3);
+
 
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, additional_services, no_rooms,cottage_owner_id)
@@ -89,6 +104,7 @@ insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, n
            (nextval('my_seq_gen_user'), 'instructor2@gmail.com', false, false, 0, 'Instro2', 'sifra1223', '0619990009',
         'Instriiiic', 4, 3, 1, 0);
 
+
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
     values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
@@ -104,30 +120,45 @@ insert into request(id, is_answered, message, sent_time, request_type, sender_id
 insert into review (id, is_answered, message, sent_time, grade, reciever_id, rental_service_id, sender_id)
     values (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jako, ali klima ne radi.', '24/05/2022 20:33', 4.7, 2, 7, 4),
            (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jakoooooooooo, ali klima ne radi.', '24/05/2022 02:33', 4.3, 2, 7, 4);
+       (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
 
 
 insert into subscription(owner_id, client_id, is_active_subscription)
-    values (5, 4, true);
-
-insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
-    values ('11/4/2022', '29/4/2022', false, true, 30, 7, 4, false, null, false),
-            ('1/5/2022', '11/5/2022', false, true, 30, 8, 4, false, null, false),
-            ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null, false),
-            ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null, false),
-            ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null, false),
-            ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null, false),
-            ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null, false),
-            ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null, false),
-            ('10/6/2022', '12/6/2022', false, false, 40, 4, null, false, 'klima rostilj', false),
-            ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null, false),
-            ('18/6/2022', '21/6/2022', false, true, 40, 8, 4, false, null, false),
-           ('25/6/2022', '27/6/2022', false, true, 40, 8, 4, false, null, false),
-           ('29/6/2022', '30/6/2022', false, true, 40, 8, 4, false, null, false),
-           ('2/7/2022', '11/7/2022', false, true, 40, 8, 4, false, null, false),
-           ('28/7/2022', '11/8/2022', false, true, 40, 8, 4, false, null, false),
-            ('21/6/2022', '25/6/2022', true, false, 60, 7, null, false, 'klima wifi rostilj', false);
+    values (5, 4, true),
+            (3, 4, true),
+            (6, 4, true);
 
 insert into report(id, is_answered, message, sent_time, has_showed_up, is_negative, client_id, owner_id)
     values (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekli', '05/06/2022 11:11', true, true , 4, 6),
            (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekliiiiiiiiiiiii', '05/06/2022 22:22', true, true , 4, 6);
+
+
+insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
+                  rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
+                  navigation_equipment, fishing_equipment, boat_owner_id)
+values (nextval('my_seq_gen_rental'), 'The White King', 'Ekstra brod, rezervisi odmah!', 6, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 70,
+        'Ribarska jahta sa kabinom', '15', '46300754', '500', '20', 'radar,findfish,gps',
+        'stap,mreza,mreza za ajkulu', 3),
+       (nextval('my_seq_gen_rental'), 'Little boat', 'Mali brodic za manje rute!', 3, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 30,
+        'Ribarski brodic bez kabine', '5', '46350154', '200', '15', 'radar',
+        'stap,mreza', 3);
+
+insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
+values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null, false),
+       ('1/5/2022', '11/5/2022', false, true, 30, 1, 4, false, null, false),
+       ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null, false),
+       ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null, false),
+       ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null, false),
+       ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null, false),
+       ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null, false),
+       ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null, false),
+       ('10/6/2022', '12/6/2022', false, true, 40, 4, 4, false, null, false),
+       ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null, false),
+       ('14/5/2022 11:00', '18/5/2022 11:00', false, true, 40, 6, 4, false, null, false),
+       ('24/5/2022 11:00', '28/5/2022 11:00', true, true, 70, 5, 4, false, 'spa,table tennis', false),
+       ('29/5/2022 11:00', '30/5/2022 11:00', false, true, 40, 5, 4, false, null, false),
+       ('14/6/2022 11:00', '15/6/2022 11:00', false, true, 150, 9, 4, false, null, false),
+       ('04/7/2022 11:00', '11/7/2022 18:00', false, true, 50, 10, 4, false, null, false),
+       ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null, false),
+       ('21/6/2022', '25/6/2022', false, true, 60, 4, 4, false, null, false)
 

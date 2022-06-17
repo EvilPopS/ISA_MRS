@@ -75,8 +75,8 @@
                         this.$router.push({ name: "ClientProfilePage" });
                     else if (userType === "COTTAGE_OWNER")
                         this.$router.push({ name: "CottageOwnerHomePage" });
-                    // else if (userType === "BOAT_OWNER")
-                    //     this.$router.push({ name: viewName });
+                    else if (userType === "BOAT_OWNER")
+                        this.$router.push({ name: "BoatOwnerHome" });
                     else if (userType === "INSTRUCTOR")
                         this.$router.push({ name: "InstructorProfilePage" });
                     else if (userType === "ADMIN")

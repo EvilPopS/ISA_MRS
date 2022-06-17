@@ -19,6 +19,8 @@
             <a @click="searchPageRedirect()" class="homeNav">Search</a>
             <a @click="clientReservHistoryRedirect()" class="homeNav">Reservation History</a>
             <a @click="clientUpcomingReservsRedirect()" class="homeNav">Upcoming Reservations</a>
+            <a @click="clientSubscriptionsViewRedirect()" class="homeNav">Subscriptions</a>
+            <a @click="clientLoyaltyProgramViewRedirect()" class="homeNav">Loyalty Program</a>
         </div>
 
         <div v-else-if="userRole === 'COTTAGE_OWNER'">
@@ -26,6 +28,15 @@
             <a @click="allCottagesRedirect()" class="homeNav">Cottages</a>
             <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
             <a @click="ownersSearch()" class="homeNav">Search</a>
+            <a @click="ownersReport()" class="homeNav">Reports</a>
+        </div>
+
+        <div v-else-if="userRole === 'BOAT_OWNER'">
+            <a @click="boatOwnerHomeRedirect()" class="homeNav">Profile</a>
+            <a @click="allBoatsRedirect()" class="homeNav">Boats</a>
+            <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
+            <a @click="ownersSearch()" class="homeNav">Search</a>
+            <a @click="ownersReport()" class="homeNav">Reports</a>
         </div>
 
         <div v-else-if="userRole === 'INSTRUCTOR'">
@@ -118,6 +129,21 @@
             },
             clientUpcomingReservsRedirect: function() {
                 pushView(this, "ClientUpcomingReservations");
+            },
+            clientSubscriptionsViewRedirect: function() {
+                pushView(this, "ClientSubscriptionsView");
+            },
+            ownersReport: function(){
+                pushView(this, "OwnersReportPage");
+            },
+            clientLoyaltyProgramViewRedirect: function() {
+                pushView(this, "ClientLoyaltyProgramView");
+            },
+            boatOwnerHomeRedirect : function () {
+                pushView(this, "BoatOwnerHome");
+            },
+            allBoatsRedirect: function() {
+                pushView(this, "AllBoatsView")
             }
         }
     }
