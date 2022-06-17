@@ -242,7 +242,7 @@ public class FishingInstructorController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewRegularRes(regularResDTO, fishingInstructor, client, false);
+            newRes = reservationService.addNewRegularRes(regularResDTO, client, false);
         } catch(PessimisticEntityLockException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -278,7 +278,13 @@ public class FishingInstructorController {
         if (!fishingInstructorService.checkIfAdventureExists(fishingInstructor, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, fishingInstructor, null, true);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewRegularRes(regularResDTO, null, true);
+        } catch (PessimisticEntityLockException e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
@@ -314,7 +320,13 @@ public class FishingInstructorController {
         if (!fishingInstructorService.checkIfAdventureExists(fishingInstructor, actionResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewActionResAdventure(actionResDTO, fishingInstructor);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewActionRes(actionResDTO);
+        } catch (PessimisticEntityLockException e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
@@ -330,7 +342,7 @@ public class FishingInstructorController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     private void notifySubscribers(FishingInstructor fishingInstructor, ActionResDTO actionResDTO) {
         for (Subscription s : subscriptionService.getAllSubscriptions()){
             if (s.getOwner().getId().equals(fishingInstructor.getId()) && s.isActiveSubscription()){
