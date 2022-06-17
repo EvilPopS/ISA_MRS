@@ -4,9 +4,11 @@ import com.ftn.isa.DTO.NewReportDTO;
 import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.model.Client;
 import com.ftn.isa.model.CottageOwner;
+import com.ftn.isa.model.FishingInstructor;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.ClientService;
 import com.ftn.isa.services.CottageOwnerService;
+import com.ftn.isa.services.FishingInstructorService;
 import com.ftn.isa.services.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,9 @@ public class NotificationController {
     @Autowired
     private TokenUtils tokenUtils;
 
+    @Autowired
+    FishingInstructorService fishingInstructorService;
+
     @PostMapping(value = "/add-report")
     @PreAuthorize("hasRole('COTTAGE_OWNER') || hasRole('INSTRUCTOR') || hasRole('BOAT_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
@@ -42,13 +47,27 @@ public class NotificationController {
 
         CottageOwner cottageOwner = cottageOwnerService.findByEmail(ownerEmail);
         Client client = clientService.findByEmail(reportDTO.getClientEmail());
-        if (cottageOwner == null || client == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        FishingInstructor fishingInstructor;
+        if (cottageOwner == null){
+             fishingInstructor = fishingInstructorService.findByEmail(ownerEmail);
 
-        if (!reportDTO.arePropsValid())
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            if (client == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (!reportDTO.arePropsValid())
+                return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        reportService.addNewReport(cottageOwner, client, reportDTO);
+            reportService.addNewReport(fishingInstructor, client, reportDTO);
+        } else {
+            if (client == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (!reportDTO.arePropsValid())
+                return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+            reportService.addNewReport(cottageOwner, client, reportDTO);
+
+        }
+
+
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

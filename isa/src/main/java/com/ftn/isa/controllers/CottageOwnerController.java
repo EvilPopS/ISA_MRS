@@ -101,6 +101,15 @@ public class CottageOwnerController  {
         return new ResponseEntity<Set<CottageDTO>>(cottagesSet, HttpStatus.OK);
     }
 
+
+
+
+
+
+
+
+
+
     @PostMapping(value = "/add-cottage")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)

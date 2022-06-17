@@ -5,6 +5,7 @@ import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
+import org.hibernate.dialect.lock.PessimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -214,6 +215,86 @@ public class FishingInstructorController {
         Set<ReservationDTO> reservations = reservationService.createResDTO(fishingInstructor, clientService.getAllClients());
         return new ResponseEntity<Set<ReservationDTO>>(reservations, HttpStatus.OK);
     }
+
+
+    @PostMapping(value = "/add-regular-reservation")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addRegularRes(HttpServletRequest request, @RequestBody RegularResDTO regularResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Client client = clientService.findByEmail(regularResDTO.getClientEmail());
+        if (client == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!regularResDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!fishingInstructorService.checkIfAdventureExists(fishingInstructor, regularResDTO.getRentalId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!clientService.checkIfCurrentResInProgress(client))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewRegularRes(regularResDTO, fishingInstructor, client, false);
+        } catch(PessimisticEntityLockException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Adventure a : fishingInstructor.getAdventures()){
+            if (a.getId().equals(regularResDTO.getRentalId())){
+                a.getReservations().add(newRes);
+                break;
+            }
+        }
+        fishingInstructorService.save(fishingInstructor);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/add-unvailable-period")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> addUnvailablePeriod(HttpServletRequest request, @RequestBody RegularResDTO regularResDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!regularResDTO.checkOnlyDate())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (!fishingInstructorService.checkIfAdventureExists(fishingInstructor, regularResDTO.getRentalId()))
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, fishingInstructor, null, true);
+        if (newRes == null)
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        for (Adventure a : fishingInstructor.getAdventures()){
+            if (a.getId().equals(regularResDTO.getRentalId())){
+                a.getReservations().add(newRes);
+                break;
+            }
+        }
+        fishingInstructorService.save(fishingInstructor);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
 
     @PostMapping(value = "/add-action-reservation")
     @PreAuthorize("hasRole('INSTRUCTOR')")

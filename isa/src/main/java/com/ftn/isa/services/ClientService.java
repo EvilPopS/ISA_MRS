@@ -2,6 +2,7 @@ package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.ClientProfileDTO;
 import com.ftn.isa.DTO.ReservationDisplayDTO;
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.repository.AdventureRepository;
 import com.ftn.isa.repository.BoatRepository;
@@ -50,6 +51,15 @@ public class ClientService {
 
     public List<ReservationDisplayDTO> getUpcomingReservations(String email) {
         return getReservationsByFilter(email, false);
+    }
+
+    public boolean checkIfCurrentResInProgress(Client client) {
+        for (Reservation res : client.getReservations()){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime())
+                    && !res.isCanceled() && res.isReserved())
+                return true;
+        }
+        return false;
     }
 
     private List<ReservationDisplayDTO> getReservationsByFilter(String email, boolean isHistory) {
