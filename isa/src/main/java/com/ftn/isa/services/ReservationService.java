@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +29,20 @@ public class ReservationService {
         return reservationRepository.findById(id).orElse(null);
     }
 
+    public List<Reservation> getAllReservations(){return reservationRepository.getAllReservations();}
+
+    public List<Reservation> findUpcomingReservationsByRentalId(Long id, List<Reservation> reservations) {
+        List<Reservation> retVal = new ArrayList<>();
+        for (Reservation res : reservations){
+            if (res.getRental().getId().equals(id) && !res.isCanceled()
+                    && res.getEndTime().isAfter(LocalDateTime.now())
+            ){
+                retVal.add(res);
+            }
+        }
+
+        return retVal;
+    }
 
     public void cancelReservation(Long resId) {
         Reservation res = findById(resId);
