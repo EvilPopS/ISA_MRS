@@ -12,12 +12,12 @@
                 </div>
                 <div class="row">
                     <label>Password: </label>
-                    <input type="password" v-model="password">
+                    <input @keyup.enter="submitLogin()" type="password" v-model="password">
                 </div>
                 <div class="row">
                 </div>
             </form>    
-            <button id="log-btn" @click="submitLogin()">LOGIN</button>
+            <button id="log-btn"  @click="submitLogin()">LOGIN</button>
         </div>
         <div class="col"></div>
     </div>
@@ -47,6 +47,7 @@
             };
         },
         methods: {
+
             closePopUp() {
                 this.errorPopUpVisible = false;
             },

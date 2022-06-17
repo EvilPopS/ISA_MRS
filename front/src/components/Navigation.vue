@@ -10,6 +10,8 @@
         <div v-else-if="userRole === 'ADMIN'">
             <a @click="adminProfileRedirect()" class="homeNav">Profile</a>
             <a @click="AdminNotificationsRedirect()" class="homeNav">Notifications</a>
+            <a @click="AdminReportsRedirect()" class="homeNav">Reports</a>
+            <a @click="AdminLoyaltyProgramRedirect()" class="homeNav"> Loyalty Program </a>
         </div>
 
         <div v-else-if="userRole === 'CLIENT'">
@@ -59,6 +61,14 @@
             }
         },
         methods: {
+
+            AdminLoyaltyProgramRedirect : function(){
+                pushView(this, "AdminLoyaltyProgram");
+            },
+            
+            AdminReportsRedirect : function() {
+                pushView(this, "AdminReports");
+            },
 
             adminProfileRedirect : function () {
                 pushView(this, "AdminProfilePage");

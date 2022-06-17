@@ -13,14 +13,19 @@ public class RequestDTO {
     public String message;
     public String sentTime;
     public String requestType;
+    public String senderProfilePhoto;
+    public String senderName;
 
-    public RequestDTO(Long requestId, Long senderId, boolean isAnswered, String message, String sentTime, String requestType) {
+    public RequestDTO(Long requestId, Long senderId, boolean isAnswered, String message, String sentTime, String requestType, String photo, String senderName) {
         this.requestId = requestId;
         this.senderId = senderId;
         this.isAnswered = isAnswered;
         this.message = message;
         this.sentTime = sentTime;
         this.requestType = requestType;
+        this.senderProfilePhoto = photo;
+        this.senderName = senderName;
+
     }
 
     public RequestDTO(Request request){
@@ -30,7 +35,25 @@ public class RequestDTO {
         this.message = request.getMessage();
         this.sentTime = request.getSentTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
         this.requestType = (request.getRequestType() == RequestType.ACCOUNT_DELETION ) ? "ACCOUNT DELETION" : "ACCOUNT REGISTRATION";
+        this.senderProfilePhoto = request.getSender().getProfilePicture().getPhotoPath();
+        this.senderName = request.getSender().getName() + " " + request.getSender().getSurname();
 
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getSenderProfilePhoto() {
+        return senderProfilePhoto;
+    }
+
+    public void setSenderProfilePhoto(String senderProfilePhoto) {
+        this.senderProfilePhoto = senderProfilePhoto;
     }
 
     public Long getRequestId() {

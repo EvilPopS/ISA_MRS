@@ -15,6 +15,8 @@ import AdminNotifications from '../views/AdminNotifications.vue';
 import OwnersSearch from '../views/OwnersSearch.vue';
 import ClientReservationHistory from '../views/ClientReservationHistory';
 import ClientUpcomingReservations from '@/views/ClientUpcomingReservations';
+import AdminReports from '../views/AdminReports'
+import AdminLoyaltyProgram from '../views/AdminLoyaltyProgram.vue'
 import ClientSubscriptionsView from '@/views/ClientSubscriptionsView';
 import OwnersReportPage from '@/views/OwnersReportPage';
 import ClientLoyaltyProgramView from '@/views/ClientLoyaltyProgramView';
@@ -23,9 +25,19 @@ import AllBoatsView from '../views/AllBoatsView.vue';
 
 const routes = [
   {
+    path: '/AdminLoyaltyProgram',
+    name: 'AdminLoyaltyProgram',
+    component: AdminLoyaltyProgram
+  },
+  {
     path: '/CottageOwnerHomePage',
     name: 'CottageOwnerHomePage',
     component: CottageOwnerHomePage
+  },
+  {
+    path: '/AdminReports',
+    name: 'AdminReports',
+    component: AdminReports
   },
   {
     path : '/adminNotifications',

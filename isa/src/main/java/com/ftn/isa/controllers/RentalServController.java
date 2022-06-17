@@ -8,6 +8,7 @@ import com.ftn.isa.services.BoatOwnerService;
 import com.ftn.isa.services.CottageOwnerService;
 import com.ftn.isa.services.FishingInstructorService;
 import com.ftn.isa.services.RentalServService;
+import com.ftn.isa.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.SimpleFormatter;
 
 @RestController
@@ -32,6 +34,9 @@ public class RentalServController {
     @Autowired
     private BoatOwnerService boatOwnerService;
 
+
+    @Autowired
+    private ReservationService reservationService;
 
     @GetMapping(value="/search")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
@@ -85,6 +90,19 @@ public class RentalServController {
                     new DetailedCottageInfoDTO(cottage, cottageOwnerService.getOwnerByCottageId(id)),
                     HttpStatus.OK
         );
+    }
+
+    @GetMapping(value="/get-reservations-by-rental/{id}")
+    @PreAuthorize("hasRole('INSTRUCTOR')") // za pocetak samo ovak oposle dodati sve lagnao ce raditi
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<CalendarReservationDTO>> getReservationsByRental(@PathVariable Long id){
+        List<Reservation> reservations = reservationService.getAllReservations();
+        List<CalendarReservationDTO> calendarReservationDTOS = new ArrayList<>();
+        reservations = reservationService.findUpcomingReservationsByRentalId(id, reservations);
+        for (Reservation res : reservations){calendarReservationDTOS.add(new CalendarReservationDTO(res));}
+
+
+        return new ResponseEntity<>(calendarReservationDTOS, HttpStatus.OK);
     }
 
     @GetMapping(value="/boat/details/{id}")

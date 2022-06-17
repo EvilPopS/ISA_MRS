@@ -7,13 +7,13 @@ INSERT INTO role (name) VALUES ('ROLE_CLIENT'),
 
 
 insert into address (country, place_name, street, lon, lat)
-    values ('Srbija', 'Sabac', 'Karadjordjeva 26', null, null ),
-            ('Srbija', 'Novi Sad', 'Zeleznicka 36', null, null),
-            ('Srbija', 'Novi Sad', 'Sonje Marinkovic 5', null, null),
+    values ('Srbija', 'Sabac', 'Karadjordjeva 26', '19.83383399956332', '45.25697997579121' ),
+            ('Srbija', 'Novi Sad', 'Zeleznicka 36', '19.83383399956332', '45.25697997579121'),
+            ('Srbija', 'Novi Sad', 'Sonje Marinkovic 5', '19.83383399956332', '45.25697997579121'),
             ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '19.83383399956332', '45.25697997579121'),
             ('Srbija', 'Novi Sad', 'Vase Pelagic 1', '19.840324439532647', '45.251395995531226'),
             ('Srbija', 'Sremska Kamenica', 'Karadjordjeva 33', '19.835541721737165', '45.22357844341107'),
-            ('Srbija', 'Kula', 'Marsala Tita 200', null, null),
+            ('Srbija', 'Kula', 'Marsala Tita 200', '19.83383399956332', '45.25697997579121'),
             ('Srbija', 'Zlatibor', 'Milenko Zablacanski', '19.652715410573126', '43.66153258311601'),
            ('Srbija', 'Novi Sad', 'Partizanski put 2', '19.819806290382964', ' 45.15281270382178'),
            ('Srbija', 'Novi Sad', 'Bulevar Oslobodjenja 55', '19.83383399956332', '45.25697997579121');
@@ -25,6 +25,8 @@ insert into photo (photo_path, rental_id)
            ('cottage-inside.jpg', 4),
            ('cottage1.jpg', 5),
            ('cottage1.jpg', 6),
+           ('fishing_adventure1.jpg', 7),
+           ('fishing_adventure2.jpg', 8),
            ('home-page-pic-boat.jpg', 3),
            ('home-page-pic-instructor.jpg', 1),
            ('home-page-pic-instructor.jpg', 2),
@@ -90,11 +92,17 @@ insert into cottage (id, name, description, capacity, rules, is_deleted, address
             false, 10, 0, 0, 0, 60, 'wifi,klima,parking,rostilj', 4, 5);
 
 insert into loyalty_program (discount, increase, loyalty_type, price)
-    values (0, 0, 0, 0),
-            (4, 4, 1, 100),
-            (7, 7, 2, 200),
-            (10, 10, 3, 300);
+values (0, 0, 0, 0),
+       (4, 4, 1, 100),
+       (7, 7, 2, 200),
+       (10, 10, 3, 300);
 
+insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
+                                role_id, address_id, photo_id, loyalty_points)
+    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
+                'Instric', 4, 5, 1, 0),
+           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', false, false, 0, 'Instro2', 'sifra1223', '0619990009',
+        'Instriiiic', 4, 3, 1, 0);
 
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
@@ -106,16 +114,24 @@ insert into adventure (id, name, description, capacity, rules, is_deleted, addre
 
 insert into request(id, is_answered, message, sent_time, request_type, sender_id)
     values (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 111111111', '02/05/2022 23:44', 1, 6),
+       (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7),
+           (nextval('my_seq_gen_notification'), false, 'zelim da se registrujem jer mi se peca', '01/06/2022 13:14', 0, 7);
+
+insert into review (id, is_answered, message, sent_time, grade, reciever_id, rental_service_id, sender_id)
+    values (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jako, ali klima ne radi.', '24/05/2022 20:33', 4.7, 2, 7, 4),
+           (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jakoooooooooo, ali klima ne radi.', '24/05/2022 02:33', 4.3, 2, 7, 4);
        (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
 
-insert into review (id, is_answered, message, sent_time, grade, receiver_id, rental_id, sender_id)
-    values (nextval('my_seq_gen_notification'), true, 'Svidelo mi se jako, ali klima ne radi.', '24/05/2022 20:33', 4.7, 2, 4, 4),
-           (nextval('my_seq_gen_notification'), true, 'Svidelo mi se jakoooooooooo, ali klima ne radi.', '24/05/2022 02:33', 4.3, 2, 4, 4);
 
 insert into subscription(owner_id, client_id, is_active_subscription)
     values (5, 4, true),
             (3, 4, true),
             (6, 4, true);
+
+insert into report(id, is_answered, message, sent_time, has_showed_up, is_negative, client_id, owner_id)
+    values (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekli', '05/06/2022 11:11', true, true , 4, 6),
+           (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekliiiiiiiiiiiii', '05/06/2022 22:22', true, true , 4, 6);
+
 
 insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                   rental_type, price, type, boat_length, engine_number, engine_power, max_speed,

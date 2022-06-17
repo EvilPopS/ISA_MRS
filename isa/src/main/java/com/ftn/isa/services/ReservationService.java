@@ -8,6 +8,8 @@ import com.ftn.isa.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -19,6 +21,8 @@ import java.util.Set;
 public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
+
+    public List<Reservation> getAllReservations(){return reservationRepository.getAllReservations();}
 
     public void saveReservation(Reservation r) {
         reservationRepository.save(r);
@@ -177,7 +181,6 @@ public class ReservationService {
     }
 
     public Reservation addNewActionRes(ActionResDTO actionResDTO, CottageOwner cottageOwner) {
-
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId().equals(actionResDTO.getRentalId())){
                 if (checkOverlapingWithOtherRes(c.getReservations(), actionResDTO.getStartTime(), actionResDTO.getEndTime()))
@@ -213,15 +216,94 @@ public class ReservationService {
         return res;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void test() {
-        List<Reservation> reservations = reservationRepository.getAllResForNewRes(5l);
-        /*try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-           System.out.println("Glupost");
+    public Reservation addNewActionResAdventure(ActionResDTO actionResDTO, FishingInstructor fishingInstructor) {
+
+        for (Adventure a : fishingInstructor.getAdventures()) {
+            if (a.getId().equals(actionResDTO.getRentalId())) {
+                for (Reservation reservation : a.getReservations()) {
+                    if (actionResDTO.getStartTime().isAfter(reservation.getStartTime()) &&
+                            actionResDTO.getStartTime().isBefore(reservation.getEndTime()) &&
+                            actionResDTO.getEndTime().isBefore(reservation.getEndTime()))
+                        return null;
+                    else if (actionResDTO.getStartTime().isBefore(reservation.getStartTime()) &&
+                            actionResDTO.getStartTime().isBefore(reservation.getEndTime()) &&
+                            actionResDTO.getEndTime().isAfter(reservation.getEndTime()))
+                        return null;
+                    else if (actionResDTO.getStartTime().isAfter(reservation.getStartTime()) &&
+                            actionResDTO.getStartTime().isBefore(reservation.getEndTime()) &&
+                            actionResDTO.getEndTime().isAfter(reservation.getEndTime()))
+                        return null;
+                }
+            }
         }
-        */
+        if (checkIfIsInUnavailable(actionResDTO))
+            return null;
+        Reservation res = new Reservation(actionResDTO.getStartTime(), actionResDTO.getEndTime(),
+                true, actionResDTO.getPrice(), false, false, actionResDTO.getActionServices());
+
+        res = reservationRepository.save(res);
+        return res;
+    }
+
+    public List<Reservation> findUpcomingReservationsByRentalId(Long id, List<Reservation> reservations) {
+        List<Reservation> retVal = new ArrayList<>();
+        for (Reservation res : reservations){
+            if (res.getRental().getId().equals(id) && !res.isCanceled()
+                && res.getEndTime().isAfter(LocalDateTime.now())
+            ){
+                retVal.add(res);
+            }
+        }
+
+        return retVal;
+    }
+
+    public boolean checkOverlapingWithOtherRes(List<Reservation> reservations, LocalDateTime startTime, LocalDateTime endTime) {
+        for (Reservation reservation : reservations) {
+            if (!reservation.isCanceled()) {
+                if (startTime.isAfter(reservation.getStartTime()) &&
+                        startTime.isBefore(reservation.getEndTime()) &&
+                        endTime.isBefore(reservation.getEndTime()))
+                    return true;
+                else if (startTime.isBefore(reservation.getStartTime()) &&
+                        startTime.isBefore(reservation.getEndTime()) &&
+                        endTime.isAfter(reservation.getEndTime()))
+                    return true;
+                else if (startTime.isAfter(reservation.getStartTime()) &&
+                        startTime.isBefore(reservation.getEndTime()) &&
+                        endTime.isAfter(reservation.getEndTime()))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean checkIfIsInUnvailable(LocalDateTime startTime, LocalDateTime endTime, Long rentalId, Boolean isBoatOwner){
+        List<Reservation> reservations = reservationRepository.getAllReservations();
+        //ako je boat owner ide na nivou svih
+        for (Reservation res : reservations){
+            boolean stepIn = false;
+            if (isBoatOwner) stepIn = true;
+            else if (res.getRental().getId().equals(rentalId)) stepIn = true;
+            if (res.isUnavailable() && stepIn) {
+                //kada je unvailable period
+                if (startTime.isAfter(res.getStartTime()) &&
+                        startTime.isBefore(res.getEndTime()) &&
+                        endTime.isBefore(res.getEndTime()))
+                    return true;
+                else if (startTime.isBefore(res.getStartTime()) &&
+                        startTime.isBefore(res.getEndTime()) &&
+                        endTime.isAfter(res.getEndTime()))
+                    return true;
+                else if (startTime.isAfter(res.getStartTime()) &&
+                        startTime.isBefore(res.getEndTime()) &&
+                        endTime.isAfter(res.getEndTime()))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     //@Transactional(readOnly = true, propagation = Propagation.REQUIRED)

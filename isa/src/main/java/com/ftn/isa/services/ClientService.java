@@ -56,6 +56,15 @@ public class ClientService {
         return getReservationsByFilter(email, false);
     }
 
+    public boolean checkIfCurrentResInProgress(Client client) {
+        for (Reservation res : client.getReservations()){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime())
+                    && !res.isCanceled() && res.isReserved())
+                return true;
+        }
+        return false;
+    }
+
     private List<ReservationDisplayDTO> getReservationsByFilter(String email, boolean isHistory) {
         Set<Reservation> reservations = clientRepo.findByEmail(email).getReservations();
         List<Adventure> adventures = adventureRepo.findAll();

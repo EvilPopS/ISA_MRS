@@ -72,4 +72,12 @@ public class ActionResDTO {
     public void setActionServices(String actionServices) {
         this.actionServices = actionServices;
     }
+
+    public Long getRentalId() {
+        return rentalId;
+    }
+
+    public void setRentalId(Long cottageId) {
+        this.rentalId = cottageId;
+    }
 }
