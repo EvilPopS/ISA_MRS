@@ -88,6 +88,7 @@
                 </div>
                 <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
                     <button type="button" class="btn btn-success" @click="addNewReservation()">Calendar <img id="btn-calendar" src="../assets/icons8-calendar.png"></button>
+                    <button type="button" class="btn btn-success" @click="addNewReservation()">Reviews <img id="btn-calendar" src="../assets/icons8-reviews-64.png"></button>
                     <button type="button" class="btn btn-success" @click="closeWindow">Cancel</button>
                 </div>
             </div>
