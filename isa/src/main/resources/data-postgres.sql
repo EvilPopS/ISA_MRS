@@ -97,13 +97,6 @@ values (0, 0, 0, 0),
        (7, 7, 2, 200),
        (10, 10, 3, 300);
 
-insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
-                                role_id, address_id, photo_id, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
-                'Instric', 4, 5, 1, 0),
-           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', false, false, 0, 'Instro2', 'sifra1223', '0619990009',
-        'Instriiiic', 4, 3, 1, 0);
-
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
@@ -117,10 +110,9 @@ insert into request(id, is_answered, message, sent_time, request_type, sender_id
        (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7),
            (nextval('my_seq_gen_notification'), false, 'zelim da se registrujem jer mi se peca', '01/06/2022 13:14', 0, 7);
 
-insert into review (id, is_answered, message, sent_time, grade, reciever_id, rental_service_id, sender_id)
+insert into review (id, is_answered, message, sent_time, grade, receiver_id, rental_id, sender_id)
     values (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jako, ali klima ne radi.', '24/05/2022 20:33', 4.7, 2, 7, 4),
            (nextval('my_seq_gen_notification'), false, 'Svidelo mi se jakoooooooooo, ali klima ne radi.', '24/05/2022 02:33', 4.3, 2, 7, 4);
-       (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7);
 
 
 insert into subscription(owner_id, client_id, is_active_subscription)

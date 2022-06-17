@@ -44,6 +44,10 @@
             <a @click="adventuresRedirect()" class="homeNav">Adventures</a>
             <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
         </div>
+
+        <div v-if="userRole !== 'UNAUTH'">
+            <a id="logoutNav" @click="logout()" class="homeNav">Log Out</a>
+        </div>
     </div>
     
 </template>
@@ -144,6 +148,11 @@
             },
             allBoatsRedirect: function() {
                 pushView(this, "AllBoatsView")
+            },
+            logout: function() {
+                window.localStorage.removeItem("userRole");
+                window.localStorage.removeItem("token");
+                pushView(this, "LoginPage");
             }
         }
     }
@@ -181,15 +190,13 @@
         font-size: 17px;
         z-index: 999;
         max-height: 100%;
+        font-weight: bold;
     }
     .topnav div a:hover {
         background-color: rgb(8, 250, 177);
         color: rgba(51, 92, 80, 0.8);
     }
-    .topnav div a.active {
-        background-color: #272327;
-        color: white;
-    }
+
     #logoutNav {
         float: right;
     }

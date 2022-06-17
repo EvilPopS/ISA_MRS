@@ -160,23 +160,22 @@ public class ReservationService {
     }
 
     public boolean checkOverlapingWithOtherRes(List<Reservation> reservations, LocalDateTime startTime, LocalDateTime endTime) {
-                for (Reservation reservation : reservations) {
-                    if (!reservation.isCanceled()) {
-                        if (startTime.isAfter(reservation.getStartTime()) &&
-                                startTime.isBefore(reservation.getEndTime()) &&
-                                endTime.isBefore(reservation.getEndTime()))
-                            return true;
-                        else if (startTime.isBefore(reservation.getStartTime()) &&
-                                startTime.isBefore(reservation.getEndTime()) &&
-                                endTime.isAfter(reservation.getEndTime()))
-                            return true;
-                        else if (startTime.isAfter(reservation.getStartTime()) &&
-                                startTime.isBefore(reservation.getEndTime()) &&
-                                endTime.isAfter(reservation.getEndTime()))
-                            return true;
-                    }
-                }
-
+        for (Reservation reservation : reservations) {
+            if (!reservation.isCanceled()) {
+                if (startTime.isAfter(reservation.getStartTime()) &&
+                        startTime.isBefore(reservation.getEndTime()) &&
+                        endTime.isBefore(reservation.getEndTime()))
+                    return true;
+                else if (startTime.isBefore(reservation.getStartTime()) &&
+                        startTime.isBefore(reservation.getEndTime()) &&
+                        endTime.isAfter(reservation.getEndTime()))
+                    return true;
+                else if (startTime.isAfter(reservation.getStartTime()) &&
+                        startTime.isBefore(reservation.getEndTime()) &&
+                        endTime.isAfter(reservation.getEndTime()))
+                    return true;
+            }
+        }
         return false;
     }
 
@@ -217,7 +216,6 @@ public class ReservationService {
     }
 
     public Reservation addNewActionResAdventure(ActionResDTO actionResDTO, FishingInstructor fishingInstructor) {
-
         for (Adventure a : fishingInstructor.getAdventures()) {
             if (a.getId().equals(actionResDTO.getRentalId())) {
                 for (Reservation reservation : a.getReservations()) {
@@ -236,8 +234,6 @@ public class ReservationService {
                 }
             }
         }
-        if (checkIfIsInUnavailable(actionResDTO))
-            return null;
         Reservation res = new Reservation(actionResDTO.getStartTime(), actionResDTO.getEndTime(),
                 true, actionResDTO.getPrice(), false, false, actionResDTO.getActionServices());
 
@@ -256,54 +252,6 @@ public class ReservationService {
         }
 
         return retVal;
-    }
-
-    public boolean checkOverlapingWithOtherRes(List<Reservation> reservations, LocalDateTime startTime, LocalDateTime endTime) {
-        for (Reservation reservation : reservations) {
-            if (!reservation.isCanceled()) {
-                if (startTime.isAfter(reservation.getStartTime()) &&
-                        startTime.isBefore(reservation.getEndTime()) &&
-                        endTime.isBefore(reservation.getEndTime()))
-                    return true;
-                else if (startTime.isBefore(reservation.getStartTime()) &&
-                        startTime.isBefore(reservation.getEndTime()) &&
-                        endTime.isAfter(reservation.getEndTime()))
-                    return true;
-                else if (startTime.isAfter(reservation.getStartTime()) &&
-                        startTime.isBefore(reservation.getEndTime()) &&
-                        endTime.isAfter(reservation.getEndTime()))
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean checkIfIsInUnvailable(LocalDateTime startTime, LocalDateTime endTime, Long rentalId, Boolean isBoatOwner){
-        List<Reservation> reservations = reservationRepository.getAllReservations();
-        //ako je boat owner ide na nivou svih
-        for (Reservation res : reservations){
-            boolean stepIn = false;
-            if (isBoatOwner) stepIn = true;
-            else if (res.getRental().getId().equals(rentalId)) stepIn = true;
-            if (res.isUnavailable() && stepIn) {
-                //kada je unvailable period
-                if (startTime.isAfter(res.getStartTime()) &&
-                        startTime.isBefore(res.getEndTime()) &&
-                        endTime.isBefore(res.getEndTime()))
-                    return true;
-                else if (startTime.isBefore(res.getStartTime()) &&
-                        startTime.isBefore(res.getEndTime()) &&
-                        endTime.isAfter(res.getEndTime()))
-                    return true;
-                else if (startTime.isAfter(res.getStartTime()) &&
-                        startTime.isBefore(res.getEndTime()) &&
-                        endTime.isAfter(res.getEndTime()))
-                    return true;
-            }
-        }
-
-        return false;
     }
 
     //@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
@@ -325,6 +273,31 @@ public class ReservationService {
         else
             res = new Reservation(regularResDTO.getStartTime(), regularResDTO.getEndTime(), false,
             0.0, true, true, null);
+
+        res.setClient(client); //client ili null za slucaj da je unvailable period
+        res = reservationRepository.save(res);
+        return res;
+
+    }
+
+    public Reservation addNewRegularRes(RegularResDTO regularResDTO, FishingInstructor cottageOwner, Client client, boolean isUnvailable) {
+        for (Adventure a : cottageOwner.getAdventures()){
+            if (a.getId().equals(regularResDTO.getRentalId())){
+                if (checkOverlapingWithOtherRes(a.getReservations(), regularResDTO.getStartTime(), regularResDTO.getEndTime()))
+                    return null;
+            }
+        }
+
+        if (checkIfIsInUnvailable(regularResDTO.getStartTime(), regularResDTO.getEndTime(), regularResDTO.getRentalId(), false))
+            return null;
+
+        Reservation res = null;
+        if (!isUnvailable)
+            res = new Reservation(regularResDTO.getStartTime(), regularResDTO.getEndTime(),
+                    false, regularResDTO.getPrice(), true, false, null);
+        else
+            res = new Reservation(regularResDTO.getStartTime(), regularResDTO.getEndTime(), false,
+                    0.0, true, true, null);
 
         res.setClient(client); //client ili null za slucaj da je unvailable period
         res = reservationRepository.save(res);
