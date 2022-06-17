@@ -57,6 +57,10 @@ public abstract class RentalService {
     @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private List<Reservation> reservations;
 
+    @Version
+    @Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+    private Long version;
+
     public RentalService(String name, String description, Set<Photo> photos, int capacity, String rules, boolean isDeleted,
                          Address address, Double averageRate, int noRatings, RentalType rentalType, Double price) {
         this.name = name;
@@ -185,5 +189,13 @@ public abstract class RentalService {
 
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

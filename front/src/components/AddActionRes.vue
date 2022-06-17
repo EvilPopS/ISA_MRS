@@ -112,11 +112,14 @@ export default {
             }
 
             let counter = 0
+            this.actionData.actionServices = ''
             for (let s in this.choosenList){
                 counter++
                 this.actionData.actionServices += this.choosenList[s]
                 if (counter < this.choosenList.length) this.actionData.actionServices += ','
             }
+            this.choosenList = []
+            counter = 0 //nesto je bilo problema pa reset za svaki slucaj
             
             axios.post("api/" + this.roleURL + "/add-action-reservation", this.actionData, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
@@ -133,6 +136,10 @@ export default {
                             }
                             else if (err.response.status === 422) {
                                 this.errMessage = "Action reservation cannot overlap with other reservations! Check all input data.";
+                                this.errorPopUpVisible = true;
+                            }
+                            else if (err.response.status == 409){
+                                this.errMessage = "Conflict situation. Please try again later..";
                                 this.errorPopUpVisible = true;
                             } else {
                                 this.errMessage = "Uups! Something went wrong...";
