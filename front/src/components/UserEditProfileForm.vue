@@ -9,7 +9,7 @@
                         <input disabled type="text" class= "form-control" v-model="email">
                     </div>
                     
-                    <div v-if="userType !== 'admin'">
+                    <div v-if="userType !== 'ADMIN'">
                         <div class="inline-inputs">
                             <label style="display: block">Loyalty points: </label>
                             <input disabled type="text" class= "form-control" v-model="points">
@@ -39,7 +39,7 @@
                         </div>    
                     </div>
                     
-                    <div v-if="userType !== 'client'" class="row">
+                    <div v-if="userType === 'CLIENT'" class="row">
                         <label>Penalties: </label>
                         <input id="penal-inp" type="text" class= "form-control" v-bind:class="{ warning_inp: penaltiesWarning }" v-model="penalties" disabled>
                     </div>

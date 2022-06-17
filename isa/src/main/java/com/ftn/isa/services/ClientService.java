@@ -104,14 +104,7 @@ public class ClientService {
         return false;
     }
 
-    public boolean checkIfCurrentResInProgress(Client client) {
-        for (Reservation res : client.getReservations()){
-            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime())
-                && !res.isCanceled() && res.isReserved())
-                return true;
-        }
-        return false;
-    }
+
 
     public boolean checkIfSubscribed(Client client, Long ownerId) {
         for (Subscription sub : client.getSubscriptions())

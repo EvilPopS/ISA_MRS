@@ -22,9 +22,9 @@ public class LoyaltyProgramService {
     }
 
     public void updateLoyaltyProgram(List<LoyaltyProgram> loyaltyPrograms) {
-        for (LoyaltyProgram sentLP : loyaltyPrograms){
-            for (LoyaltyProgram dbLP : loyaltyProgramRepository.getCompleteLoyaltyProgram()){
-                if (dbLP.getLoyaltyType().equals(sentLP.getLoyaltyType())){
+        for (LoyaltyProgram sentLP : loyaltyPrograms) {
+            for (LoyaltyProgram dbLP : loyaltyProgramRepository.getCompleteLoyaltyProgram()) {
+                if (dbLP.getLoyaltyType().equals(sentLP.getLoyaltyType())) {
                     dbLP.setDiscount(sentLP.getDiscount());
                     dbLP.setIncrease(sentLP.getIncrease());
                     dbLP.setPrice(sentLP.getPrice());
@@ -32,6 +32,7 @@ public class LoyaltyProgramService {
                 }
             }
         }
+    }
 
     public Double getClientDiscount(Client client) {
         for (LoyaltyProgram lp : getAllLoyaltyPrograms())
