@@ -11,7 +11,8 @@ module.exports = defineConfig({
       },
     },
     hot: false,
-    liveReload: false
+    liveReload: false,
+    host: 'localHost',
   },
 
 })

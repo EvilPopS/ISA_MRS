@@ -1,69 +1,92 @@
 <template>
-  <div id="myModal" class="modal">
+    <div id="myModal" class="modal">
         <div class="modal-content">
             <button id="close_btn" @click="closeWindow" class="close">X</button>
             <div class="container">
                 <div class="row">
                     <div class="col-4">
-                        <span class="span-text">Adventure</span>
+                        <span>Adventure</span>
                         <hr class="solid">
-                        <label class="label" for="name">Adventure</label>
+                        <label class="label" for="name">Adventure name:</label>
                         <input type="text" id="name" class="form-control" v-model="data.name">
-                        <label class="label" for="description">Description</label>
+                        <label class="label" for="description">description:</label>
                         <input type="text" id="description" class="form-control" v-model="data.description">
-                        <label class="label" for="rules">Rules</label>
+                        <label class="label" for="rules">Rules:</label>
                         <input type="text" id="rules" class="form-control" v-model="data.rules">
-                        <span >
+                        <span>
                             <div class="inline-inputs">
-                                <label class="label" for="price">Price</label>
+                                <label class="label" for="price">Price/day €:</label>
                                 <input type="text" id="price" class="form-control rating" v-model="data.price">
                             </div>
                             <div class="inline-inputs">
-                                <label class="label" for="cancellationConditions">Cancellation conditions</label>
-                                <input type="text" id="cancellationConditions" class="form-control rating" v-model="data.cancellationConditions">
+                                <label class="label" for="no-rooms">No. rooms:</label>
+                                <input type="text" id="no-rooms" class="form-control rating" v-model="data.noRooms">
                             </div>
                         </span>
-                        <label class="label" for="fishingEquipment">Additional services(press alt + , to add):</label>
-                        <input type="text" class="form-control" v-model="tempFishingEquipment" @keyup.alt="addFishingEqu">
-                        <div v-for="fishingEqu in localFishingEquipment" :key="fishingEqu" class="pill">
-                            <span  @click="deleteFishingEqu(fishingEqu)">{{fishingEqu}}</span>
+                        <label class="label" for="additionalServices">Additional services(press alt + , to add):</label>
+                        <input type="text" class="form-control" v-model="tempService" @keyup.alt="addService">
+                        <div v-for="service in this.localServices" :key="service" class="pill">
+                            <span  @click="deleteService(service)">{{service}}</span>
                         </div>
                     </div>
                     <div class="col-4">
-                        <span class="span-text">Address</span>
+                        <span>Address</span>
                         <hr class="solid">
-                        <label class="label" for="zip-code">Country</label>
+                        <label class="label" for="zip-code">Country:</label>
                         <input type="text" id="zip-code" class="form-control" v-model="data.country">
-                        <label class="label" for="city">City</label>
+                        <label class="label" for="city">City:</label>
                         <input type="text" id="city" class="form-control" v-model="data.city">
-                        <label class="label" for="street">Street</label>
+                        <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" v-model="data.street">
-                        <label class="label" for="biography">Biography</label>
-                        <input type="text" id="biography" class="form-control" v-model="data.biography">
+                        <span>
+                            <div class="inline-inputs">
+                                <label class="label" for="rating">Rating:</label>
+                                <input type="text" id="rating" class="form-control rating" v-model="data.averageRating" disabled>
+                            </div>
+                            <div class="inline-inputs">
+                                <label class="label" for="num-ratings">No. ratings:</label>
+                                <input type="text" id="num-ratings" class="form-control rating" v-model="data.noRatings" disabled>
+                            </div>
+                        </span>
+                        <div>
+                            <label class="label" for="capacity">Capacity:</label>
+                            <input type="text" id="capacity" class="form-control" v-model="data.capacity">
+                        </div>
                     </div>
                     <div class="col-4">
                         <div>
-                            <span class="span-text">Photos</span>
+                            <span>Photos</span>
                             <hr class="solid">
                             <label id="popupLabel">Choose new picture: </label>
                             <input ref="picInp" class="form-control form-control-sm" type="file" @change="newPicAdded" accept="image/*"/>
                             <img id="imgPreview" :src="require('@/assets/' + newPicture)"/>
                         </div>
                         <div v-for="pic in this.localPhotos" :key="pic" class="pillPic">
-                            <span  @click="deletePic(pic)"><img id="picGallery" :src="require('@/assets/' + pic)"/></span>
+                            <span  @click="deletePic(pic)"><img class="picGallery" :src="require('@/assets/' + pic)"/></span>
                         </div>
-                        <button type="button" class="btn btn-success btn-added" @click="AddNewPhoto">Add photo</button>
+                        <div>
+                            <button type="button" class="btn btn-success" @click="AddNewPhoto">Add photo</button>
+                        </div>
+                        <div id="mapContainer">
+                            <MapContainer
+                                :coordinates = "[adventure.lon, adventure.lat]"
+                                :map-height = "200"
+                                :mapEditable="true"
+                                @changed-location = "changedLocationFunc"
+                            >
+                            </MapContainer>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
-                <button type="button" class="btn btn-secondary" @click="saveNewAdventure">Add adventure</button>
+                <button type="button" class="btn btn-secondary" @click="changeadventure">Save changes</button>
                 <button type="button" class="btn btn-outline-secondary" @click="closeWindow">Cancel</button>
             </div>
         </div>
         <ErrorPopUp v-show="errorPopUpVisible" 
-        @close = closePopUp
-        :mess = errMessage
+            @close = closePopUp
+            :mess = errMessage
         /> 
     
         <SuccessPopUp v-show="localSuccPopUpVisible"
@@ -77,51 +100,42 @@
 import ErrorPopUp from "./ErrorPopUp.vue"
 import SuccessPopUp from "./SuccessPopUp.vue"
 import axios from 'axios';
+import MapContainer from "./MapContainer.vue"
 
 export default {
-    name: "AddAdventure",
+    name: "EditAdventureModal",
     components: {
-        ErrorPopUp, SuccessPopUp
+        ErrorPopUp, SuccessPopUp, MapContainer
     },
     props: {
-        showAddNewAdventure: Boolean,
-        succPopUpVisible: Boolean
+        adventure: Object
     },
     data(){
         return {
-            localSuccPopUpVisible: this.succPopUpVisible, 
-            tempFishingEquipment: '',
+            tempService: '',
             newPicture: 'addPhoto.png',
 
             localPhotos: [],
-            localFishingEquipment: [],
+            localServices: [],
+
+            changedLocation: false,
 
             errMessage: '',
-            succMessage: 'New Adventure is added successfully!',
+            succMessage: 'adventure data is changed successfully!',
             errorPopUpVisible: false,
+            localSuccPopUpVisible: false,
 
-            data: {
-                name: '',
-                description: '',
-                rules: '',
-                price: '',
-                cancellationConditions: '',
-                fishingEquipment: '',
-                city: '',
-                street: '',
-                country: '',
-                rating: 0,
-                noRatings: 0,
-                biography: '',
-                photos: [],
-                lon: '',
-                lat: ''
-            }
+            data: Object
         }
     },
     methods: {
         closeWindow : function(){
             this.$emit('modal-closed');
+        },
+        changedLocationFunc(lon, lat){
+            this.changedLocation = true
+            this.data.lon = lon
+            this.data.lat = lat
         },
         closePopUp() {
             this.errorPopUpVisible = false;
@@ -130,26 +144,26 @@ export default {
                 this.$emit("succ-popup-close");
                 this.$router.go(); 
         },
-        addFishingEqu(e) {
+        addService(e) {
             //uvek je ocpiono prvi parametar event
             //key up je recimo kada se svaki put klikne nesto pojedinacno na tastaturi
-            if (e.key === ',' && this.tempFishingEquipment){
-                if (!this.localFishingEquipment.includes(this.tempFishingEquipment)){
-                    this.localFishingEquipment.push(this.tempFishingEquipment)    //zbog duplikata
+            if (e.key === ',' && this.tempService){
+                if (!this.localServices.includes(this.tempService)){
+                    this.localServices.push(this.tempService)    //zbog duplikata
                 }
                 
-                this.tempFishingEquipment = ''     //resetuje se trenutni
+                this.tempService = ''     //resetuje se trenutni
             }
         },
-        deleteFishingEqu(service){
+        deleteService(service){
             //parametar je skill koji se brise
             //uzimamo trenutni item kad filter iterira i ako je to taj brisemo
-            this.localFishingEquipment = this.localFishingEquipment.filter((item) => {
+            this.localServices = this.localServices.filter((item) => {
                 return service !== item       //ako vratimo true isti su
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
             })
         },
-        newPicAdded() {
+        newPicAdded(){
             this.newPicture = this.$refs.picInp.value.split("\\")[2]
         },
         deletePic(pic) {
@@ -157,12 +171,13 @@ export default {
                 return pic !== item       //ako vratimo true isti su
                 //kad se uslov ispuni filtrira sta je stisnuto iz liste
             })
-            this.newPicture = "logo.png"
         },
         AddNewPhoto(){
-            this.localPhotos.push(this.newPicture)
+            if (!this.localPhotos.includes(this.newPicture)){
+                    this.localPhotos.push(this.newPicture)    //zbog duplikata
+                }
         },
-        saveNewAdventure() {
+        changeadventure(){
             try { this.checkInputs(); } 
                 catch(error) {        
                     this.errMessage = error;
@@ -171,32 +186,20 @@ export default {
                 }
 
             this.data.photos = this.localPhotos
+            this.data.additionalServices = []
             let counter = 0
-            for (let s in this.localFishingEquipment){
+            for (let s in this.localServices){
                 counter++
-                this.data.fishingEquipment += this.localFishingEquipment[s]
-                if (counter < this.localFishingEquipment.length) this.data.fishingEquipment += ','
+                this.data.additionalServices += this.localServices[s]
+                if (counter < this.localServices.length) this.data.additionalServices += ','
             } 
-            axios.post("api/fishingInstructor/adventures/add-adventure", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.put("api/adventure-owner/change-adventure-data", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
-                    .catch(err => {
-                        if (err.response.status === 404){
-                            this.errMsg = "Client or owner with given email address is not found!";
-                            this.errorPoup = true;
-                        } 
-                        else if (err.response.status === 401) {
-                            this.errMsg = "You are not authorized!";
-                            this.errorPoup = true;
-                        }
-                        else if (err.response.status === 422) {
-                            this.errMsg = "Error! Wrong data!";
-                            this.errorPoup = true;
-                        } else {
-                            this.errMsg = "Error! Wrong data!";
-                            this.errorPoup = true;
-                        }
+                    .catch(function (error) {
+                        console.log(error);
+                        alert(error.name)
                     });
 
         },
@@ -208,7 +211,6 @@ export default {
             let numReg = /^[0-9]+$/;
             let streetReg = /^[a-zA-Z0-9 -.,]+$/;
             let cityReg = /^[a-zA-Z -]{2,50}$/;
-            let doubleReg = /(\d+)?\.(\d+)?/;
 
             if (!this.validate(this.data.name, nameReg))
                 throw "Make sure you entered a valid name. Name cannot contain digit.";
@@ -216,17 +218,17 @@ export default {
             if(!this.validate(this.data.city, cityReg))
                 throw "Make sure you entered a valid city name!";
             
-            if (!this.validate(this.data.country, numReg))
+            if (!this.validate(this.data.country, cityReg))
                 throw "Make sure you entered a valid country name.";
             
             if (!this.validate(this.data.street, streetReg))
                 throw "Make sure you entered a valid street name.";
             
-            if (!this.validate(this.data.cancellationConditions, numReg) || this.data.cancellationConditions <= 0)
-                throw "Make sure your entered a positive number.";
+            if (!this.validate(this.data.noRooms, numReg) || this.data.noRooms <= 0)
+                throw "Make sure your entered valid number of rooms.";
             
-            if ( this.data.biography.length == 0)
-                throw "biography must have at least one word.";
+            if (!this.validate(this.data.capacity, numReg) || this.data.capacity <= 0)
+                throw "Capacity must be greater than 0.";
 
             if (!this.validate(this.data.price, numReg) || this.data.price <= 0)
                 throw "Please enter a valid price.";
@@ -243,14 +245,29 @@ export default {
             if (this.localPhotos.length > 4)
                 throw "You cannot upload more than 4 photos.";
 
-            if (this.localFishingEquipment.length < 1)
-                throw "You need to add at least one equipment.";
+            if (this.localServices.length < 1)
+                throw "You need to add at least one local service.";
+
+            if (this.changedLocation && !(this.adventure.city !== this.data.city || this.adventure.street !== this.data.street)){
+                throw "Location on the map is changed, but you didn't change city/street in input fields.";
+            }
         }
         
-    }
+    },
+    mounted(){
+            this.data = Object.assign({}, this.adventure)
+            try {
+                this.localServices = this.adventure.additionalServices.split(',')
+                this.localPhotos = Object.assign([], this.adventure.photos)
+            }catch (err){
+                this.localServices = this.adventure.additionalServices //ako ne uspe split znaci da ima samo jedna
+                this.localPhotos = Object.assign([], this.adventure.photos)
+            }
+   }
+
 }
 </script>
-    
+
 <style scoped>
 
     b{
@@ -282,7 +299,7 @@ export default {
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 90%;
     }
 
     /* The Close Button */
@@ -305,16 +322,12 @@ export default {
     }
 
     #options-btns button {
-        background-color: #198754;
+        background-color: rgba(51, 92, 80, 0.8);
         color: white;
     }
 
     .rating {
         width: 60px;
-    }
-
-    .span-text {
-        color : #198754;
     }
 
     .inline-ratings {
@@ -330,23 +343,13 @@ export default {
         display: inline-block;
         margin: 20px 10px 0 0;
         padding: 6px 12px;
-        background: #198754;
+        background: rgba(51, 92, 80, 0.8);
         border-radius: 20px;
         font-size: 12px;
         letter-spacing: 1px;
         font-weight: bold;
         color: white;
         cursor: pointer;
-    }
-
-    .btn-added{
-        width: 100px; 
-        margin: 10px auto;
-        display: block;
-    }
-
-    label {
-        color : #198754;
     }
 
     .pillPic {
@@ -357,15 +360,15 @@ export default {
         cursor: pointer;
     }
 
-    #picGallery {
-        height: 80px;
+    .picGallery {
+        height: 90px;
         width: auto;
         border-radius: 5px;
     }
 
     #picGallery:hover {
         border-radius: 10px;
-        border: #198754 solid 3px;
+        border: rgba(51, 92, 80, 0.8) solid 3px;
     }
     
     #imgPreview:hover {
@@ -381,6 +384,14 @@ export default {
         height: 70px;
         width: auto;
         padding: 5px;
+    }
+
+    #mapContainer {
+        margin-top: 5%;
+    }
+
+    label {
+        font-size: 12px;
     }
 
 </style>

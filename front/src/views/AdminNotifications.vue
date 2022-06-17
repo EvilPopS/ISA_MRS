@@ -151,27 +151,41 @@ export default {
 
         allowRequest(){
             console.log("Allowing request...");
+            console.log( window.localStorage.getItem("token"));
+            console.log(this.requestToBeAllowed.requestType);
             this.confirmationPopUpVisible = false;
             // obrisi sendera i stavi isAnswered na true
             if (this.requestToBeAllowed.requestType === 'ACCOUNT DELETION'){
-                axios.delete('api/admin/deleteUser/' + this.requestToBeAllowed.senderId + '/allow', {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
+                console.log("usaoooooooooooooo");
+                axios.delete('api/admin/delete-user/allow', this.requestToBeAllowed, {headers: {'authorization': window.localStorage.getItem("token")}}).then((response) => {
                 this.requests = this.requests.filter(item => item != this.requestToBeAllowed);
                 this.succPopUpVisible = true;
-                this.succMessage = 'Request is successfully allowed.';
+                this.succMessage = 'Account deletion request is successfully allowed.';
                 this.requests.push();
             }).catch((e) => {
                 this.errMessage = e ;
                 this.errorPopUpVisible = true;
-            })
+            });
             } else if (this.requestToBeAllowed.requestType === "RENTAL SERVICE RATE"){
-
+                console.log("allow rental service rate");
             }
+            else if (this.requestToBeAllowed.requestType === 'ACCOUNT REGISTRATION'){
+                axios.post('api/admin/registration/allow',this.requestToBeAllowed, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
+                this.requests = this.requests.filter(item => item != this.requestToBeAllowed);
+                this.succPopUpVisible = true;
+                this.succMessage = 'Account registration request is successfully allowed.';
+                this.requests.push();
 
-            
+
+            }).catch((e) => {
+                this.errMessage = e;
+                this.errorPopUpVisible = true;
+            });
+            }
         },
         rejectRequest(){
             this.confirmationPopUpVisible = false;
-            axios.delete('api/admin/deleteUser/' + this.requestToBeRejected.senderId + '/reject', {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
+            axios.delete('api/admin/delete-user/reject',this.requestToBeRejected, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
                 this.requests = this.requests.filter(item => item != this.requestToBeRejected);
                 this.succPopUpVisible = true;
                 this.succMessage = 'Request is successfully rejected.';

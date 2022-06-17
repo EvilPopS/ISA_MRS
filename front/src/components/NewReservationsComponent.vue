@@ -6,7 +6,10 @@
                 <div class="row">
                     <div class="col-8">
                         <span>Calendar</span>
-                        <p>CALENDAR GOES HERE</p>
+                            <div>
+                                <CalendarComponent :reservations="this.reservations" :key="this.reservations"/>
+                            </div>
+                            
                     </div>
                     <div class="col-4">
                         <div id="optionsBar" class="card flex-card">
@@ -46,23 +49,42 @@
 </template>
 
 <script>
+
+// import '@fullcalendar/core/vdom'
+// import FullCalendar from '@fullcalendar/vue3'
+// import dayGridPlugin from '@fullcalendar/daygrid'
+// import interactionPlugin from '@fullcalendar/interaction'
+
+
+import CalendarComponent from '../components/CalendarComponent.vue'
 import Tab from '../components/Tab'
 import TabNav from '../components/TabNav'
 import AddActionRes from '../components/AddActionRes.vue'
 import AddRegularRes from '../components/AddRegularRes.vue'
 import AddUnvailablePeriod from '../components/AddUnvailablePeriod.vue'
+import axios from 'axios'
 
 export default {
     name: "NewReservationsComponent",
     components: {
-        Tab, TabNav, AddActionRes, AddRegularRes, AddUnvailablePeriod
+        Tab, TabNav, AddActionRes, AddRegularRes, AddUnvailablePeriod, CalendarComponent
     },
     props: {
         choosenRental: Object
     },
     data(){
         return {
-            selected: "Regular"
+            reservations : [],
+            selected: "Regular",
+    //         calendarOptions: {
+    //     plugins: [ dayGridPlugin, interactionPlugin ],
+    //     initialView: 'dayGridMonth',
+    //     events: []
+    //   },
+            
+            
+      
+
         }
     },
     methods: {
@@ -72,6 +94,17 @@ export default {
         setSelected(tab) {
             this.selected = tab;
         }
+    },
+
+    mounted(){
+        axios.get('api/rental/get-reservations-by-rental/' + this.choosenRental.id, {headers: {'authorization': window.localStorage.getItem("token") }})
+                    .then((response) => {
+                        this.reservations = response.data;
+                    }
+                ).catch((e) => {
+                    console.log(e);
+                });
+        
     }
 }
 </script>

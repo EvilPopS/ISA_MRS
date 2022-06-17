@@ -105,6 +105,7 @@ public class CottageOwnerController  {
         return new ResponseEntity<Set<CottageDTO>>(cottagesSet, HttpStatus.OK);
     }
 
+
     @GetMapping(value="/find-one-rental/{id}")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
