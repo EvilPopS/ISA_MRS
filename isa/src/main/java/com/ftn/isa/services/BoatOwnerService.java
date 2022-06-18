@@ -238,6 +238,18 @@ public class BoatOwnerService {
         return data;
     }
 
+    public boolean checkIfCurrentResInProgress(Client client, BoatOwner boatOwner, List<Reservation> reservations) {
+        for (Reservation res : reservations){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime())
+                    && !res.isCanceled() && res.isReserved() && res.getClient().getId().equals(client.getId()))
+            {
+                for (Boat a : boatOwner.getBoats())
+                    if (a.getId().equals(res.getId())) return true;
+            }
+        }
+        return false;
+    }
+
     public boolean checkIfBoatExists(BoatOwner boatOwner, Long boatId) {
         for (Boat c : boatOwner.getBoats()){
             if (c.getId().equals(boatId))

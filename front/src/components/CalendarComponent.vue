@@ -30,11 +30,17 @@ export default {
     created(){
 
         for(let i = 0; i < this.reservations.length; i++){
+            let col = "red"
+            if (this.reservations[i].reservationKind === "Action reservation")
+                col = "yellow"
+            else if (this.reservations[i].reservationKind === "Reservation")
+                col = "green"
+
             this.calendarOptions.events.push({
                 title : this.reservations[i].reservationKind,
                 start : new Date(this.reservations[i].startDate),
                 end : new Date(this.reservations[i].endDate),
-                color : "red"
+                color : col
             })
         }
 

@@ -239,5 +239,17 @@ public class CottageOwnerService {
 
         return data;
     }
+
+    public boolean checkIfCurrentResInProgress(Client client, CottageOwner cottageOwner, List<Reservation> reservations) {
+        for (Reservation res : reservations){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime())
+                    && !res.isCanceled() && res.isReserved() && res.getClient().getId().equals(client.getId()))
+            {
+                for (Cottage a : cottageOwner.getCottages())
+                    if (a.getId().equals(res.getId())) return true;
+            }
+        }
+        return false;
+    }
     
 }

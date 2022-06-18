@@ -352,7 +352,7 @@ public class CottageOwnerController  {
         if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!clientService.checkIfCurrentResInProgress(client))
+        if (!cottageOwnerService.checkIfCurrentResInProgress(client, cottageOwner, reservationService.getAllReservations()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Reservation newRes = null;

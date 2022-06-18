@@ -25,6 +25,7 @@
         @handle-submit       = "handleSubmit"
         @set-new-profile-pic = "setNewProfilePic"
         @succ-popup-close    = "succPopUpClose"
+        @delete-request-sent ="sendDeleteRequest"
     
     />
 </template>
@@ -54,6 +55,15 @@
                 type: '',
                 loyalty: '',
                 points: '',
+
+                currentProfilePic: '',
+                currentPassword: '',
+                currentName: '',
+                currentSurname: '',
+                currentCity: '',
+                currentCountry: '',
+                currentStreet: '',
+                currentPhoneNumber: '',
 
                 succPopUpVisible: false
             }
@@ -91,8 +101,6 @@
                     let data = response.data;
 
                     this.email = data.email;
-                    this.password = data.password;
-                    this.confirmPassword = data.password;
                     this.name = data.name;
                     this.surname = data.surname;
                     this.city = data.city;
@@ -112,7 +120,9 @@
                     this.currentStreet = data.street;
                     this.currentPhoneNumber =data.phoneNumber;
                     this.currentProfilePic =data.profilePicture;
-                })
+                }).catch(function (error) {
+                    alert(error.name)
+                });
         }
     }
 </script>

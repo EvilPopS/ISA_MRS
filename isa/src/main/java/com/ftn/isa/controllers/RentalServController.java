@@ -93,7 +93,7 @@ public class RentalServController {
     }
 
     @GetMapping(value="/get-reservations-by-rental/{id}")
-    @PreAuthorize("hasRole('INSTRUCTOR')") // za pocetak samo ovak oposle dodati sve lagnao ce raditi
+    @PreAuthorize("hasRole('COTTAGE_OWNER') || hasRole('INSTRUCTOR') || hasRole('BOAT_OWNER')") // za pocetak samo ovak oposle dodati sve lagnao ce raditi
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     public ResponseEntity<List<CalendarReservationDTO>> getReservationsByRental(@PathVariable Long id){
         List<Reservation> reservations = reservationService.getAllReservations();

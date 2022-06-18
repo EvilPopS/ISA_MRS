@@ -322,7 +322,7 @@ public class BoatOwnerController {
         if (boatOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Client client = clientService.findByEmail(regularResDTO.getClientEmail());
-        if (client == null && client.getNumOfPenalties() >= 3)
+        if (client == null || client.getNumOfPenalties() >= 3)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         if (!regularResDTO.arePropsValidAdding())
@@ -331,7 +331,7 @@ public class BoatOwnerController {
         if (!boatOwnerService.checkIfBoatExists(boatOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!clientService.checkIfCurrentResInProgress(client))
+        if (!boatOwnerService.checkIfCurrentResInProgress(client, boatOwner, reservationService.getAllReservations()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Reservation newRes = null;

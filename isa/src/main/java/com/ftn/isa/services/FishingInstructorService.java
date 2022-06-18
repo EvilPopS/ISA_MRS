@@ -3,13 +3,13 @@ package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.AdventureDTO;
 import com.ftn.isa.DTO.FishingInstructorDTO;
-import com.ftn.isa.model.Adventure;
-import com.ftn.isa.model.Cottage;
-import com.ftn.isa.model.CottageOwner;
-import com.ftn.isa.model.FishingInstructor;
+import com.ftn.isa.helpers.Validate;
+import com.ftn.isa.model.*;
 import com.ftn.isa.repository.FishingInstructorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FishingInstructorService {
@@ -23,6 +23,18 @@ public class FishingInstructorService {
         fishingInstructorData.hashPassword();
         fishingInstructor.updatePersonalInfo(fishingInstructorData);
         fishingInstructorRepo.save(fishingInstructor);
+    }
+
+    public boolean checkIfCurrentResInProgress(Client client, FishingInstructor fishingInstructor, List<Reservation> reservations) {
+        for (Reservation res : reservations){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime())
+                    && !res.isCanceled() && res.isReserved() && res.getClient().getId().equals(client.getId()))
+            {
+                for (Adventure a : fishingInstructor.getAdventures())
+                    if (a.getId().equals(res.getId())) return true;
+            }
+        }
+        return false;
     }
 
     public FishingInstructor getOwnerByAdventureId(Long advId) {
