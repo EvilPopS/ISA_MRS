@@ -251,5 +251,35 @@ public class CottageOwnerService {
         }
         return false;
     }
+
+    public boolean updateLoyaltyProgram(CottageOwner cottageOwner, List<LoyaltyProgram> programs, String newProgram) {
+        LoyaltyType type = LoyaltyType.REGULAR;
+        switch (newProgram) {
+            case "BRONZE":
+                type = LoyaltyType.BRONZE;
+                break;
+            case "SILVER":
+                type = LoyaltyType.SILVER;
+                break;
+            case "GOLD":
+                type = LoyaltyType.GOLD;
+                break;
+        }
+
+        for (LoyaltyProgram lp : programs) {
+            if (lp.getLoyaltyType() == type) {
+                int leftPoints = cottageOwner.getLoyaltyPoints() - lp.getPrice();
+                if (leftPoints >= 0)
+                    cottageOwner.setLoyaltyPoints(leftPoints);
+                else
+                    return false;
+
+                cottageOwner.setLoyaltyType(type);
+                cottageOwnerRepository.save(cottageOwner);
+                return true;
+            }
+        }
+        return false;
+    }
     
 }

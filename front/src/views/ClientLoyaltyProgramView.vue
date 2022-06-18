@@ -36,18 +36,20 @@
                 errMessage: "",
 
                 succPopUpVisible: false,
-                errPopUpVisible: false
+                errPopUpVisible: false,
+                searchRole: '',
+                roleURL: ''
             };
         },
         mounted() {
-            axios.get("api/client", {headers: {'authorization': window.localStorage.getItem("token") }})
+            axios.get("api/" + this.roleURL, {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     this.userProgram = response.data.loyaltyStatus;
                 });
         },
         methods: {
             buyLoyaltyProgram(loyaltyProgram) {
-                axios.put("api/client/buy-loyalty-program/" + loyaltyProgram, {}, {headers: {'authorization': window.localStorage.getItem("token") }})
+                axios.put("api/" + this.roleURL + "/buy-loyalty-program/" + loyaltyProgram, {}, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(() => {
                         this.userProgram = loyaltyProgram;
                         this.succPopUpVisible = true;
@@ -61,6 +63,18 @@
             closePopUp() {
                 this.succPopUpVisible = false;
                 this.errPopUpVisible = false;
+            }
+        },
+        mounted() {
+            this.searchRole = window.localStorage.getItem("userRole")
+            if (this.searchRole === "COTTAGE_OWNER"){
+                this.roleURL = "cottage-owner"
+            } else if (this.searchRole === "INSTRUCTOR"){
+                this.roleURL = "fishingInstructor"
+            } else if (this.searchRole === "BOAT_OWNER"){
+                this.roleURL = "boat-owner"
+            } else if (this.searchRole === "CLIENT"){
+                this.roleURL = "client"
             }
         }
     }
