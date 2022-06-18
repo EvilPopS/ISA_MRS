@@ -246,7 +246,7 @@ public class CottageOwnerService {
                     && !res.isCanceled() && res.isReserved() && res.getClient().getId().equals(client.getId()))
             {
                 for (Cottage a : cottageOwner.getCottages())
-                    if (a.getId().equals(res.getId())) return true;
+                    if (a.getId().equals(res.getRental().getId())) return true;
             }
         }
         return false;

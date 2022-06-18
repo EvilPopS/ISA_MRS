@@ -31,7 +31,7 @@ public class FishingInstructorService {
                     && !res.isCanceled() && res.isReserved() && res.getClient().getId().equals(client.getId()))
             {
                 for (Adventure a : fishingInstructor.getAdventures())
-                    if (a.getId().equals(res.getId())) return true;
+                    if (a.getId().equals(res.getRental().getId())) return true;
             }
         }
         return false;
