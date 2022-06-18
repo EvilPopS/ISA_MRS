@@ -34,11 +34,8 @@ public class ReservationService {
     public List<Reservation> findUpcomingReservationsByRentalId(Long id, List<Reservation> reservations) {
         List<Reservation> retVal = new ArrayList<>();
         for (Reservation res : reservations){
-            if (res.getRental().getId().equals(id) && !res.isCanceled()
-                    && res.getEndTime().isAfter(LocalDateTime.now())
-            ){
+            if (res.getRental().getId().equals(id) && !res.isCanceled())
                 retVal.add(res);
-            }
         }
 
         return retVal;

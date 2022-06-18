@@ -44,8 +44,8 @@ public class BoatOwnerController {
     @Autowired
     private SubscriptionService subscriptionService;
 
-    //@Autowired
-    //private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private RequestService requestService;
@@ -288,12 +288,12 @@ public class BoatOwnerController {
             }
         }
         boatOwnerService.save(boatOwner);
-        //notifySubscribers(boatOwner, actionResDTO);
+        notifySubscribers(boatOwner, actionResDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    /*@PreAuthorize("hasRole('BOAT_OWNER')")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
     private void notifySubscribers(BoatOwner boatOwner, ActionResDTO actionResDTO) {
         for (Subscription s : subscriptionService.getAllSubscriptions()){
             if (s.getOwner().getId().equals(boatOwner.getId()) && s.isActiveSubscription()){
@@ -308,7 +308,7 @@ public class BoatOwnerController {
                 }
             }
         }
-    }*/
+    }
 
     @PostMapping(value = "/add-regular-reservation")
     @PreAuthorize("hasRole('BOAT_OWNER')")
@@ -322,7 +322,7 @@ public class BoatOwnerController {
         if (boatOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Client client = clientService.findByEmail(regularResDTO.getClientEmail());
-        if (client == null && client.getNumOfPenalties() >= 3)
+        if (client == null || client.getNumOfPenalties() >= 3)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         if (!regularResDTO.arePropsValidAdding())
@@ -331,7 +331,7 @@ public class BoatOwnerController {
         if (!boatOwnerService.checkIfBoatExists(boatOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!clientService.checkIfCurrentResInProgress(client))
+        if (!boatOwnerService.checkIfCurrentResInProgress(client, boatOwner, reservationService.getAllReservations()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Reservation newRes = null;

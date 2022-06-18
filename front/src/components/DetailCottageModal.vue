@@ -67,13 +67,20 @@
                     </div>
                 </div>
                 <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
-                    <button type="button" class="btn btn-success" @click="addNewReservation()">Calendar <img id="btn-calendar" src="../assets/icons8-calendar.png"></button>
+                    <button type="button" class="btn btn-success" @click="addNewReservation()">Calendar <img class="btn-calendar" src="../assets/icons8-calendar.png"></button>
+                    <button type="button" class="btn btn-success" @click="showAllReviews()">Reviews <img class="btn-calendar" src="../assets/icons8-reviews-64.png"></button>
                     <button type="button" class="btn btn-success" @click="closeWindow">Cancel</button>
                 </div>
             </div>
             <div v-if="showAddNewRes">
             <NewReservationsComponent
                 @modal-closed = "showAddNewRes = false"
+                :choosenRental="cottage"
+            />
+            </div>
+            <div v-if="showReviews">
+            <ReviewsModal
+                @modal-closed = "showReviews = false"
                 :choosenRental="cottage"
             />
             </div>
@@ -86,11 +93,12 @@ import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import MapContainer from "./MapContainer.vue"
 import NewReservationsComponent from '../components/NewReservationsComponent.vue'
+import ReviewsModal from '../components/ReviewsModal.vue'
 
 export default {
     name: "DetailCottageModal",
     components: {
-        Carousel, Slide, Pagination, Navigation, MapContainer, NewReservationsComponent
+        Carousel, Slide, Pagination, Navigation, MapContainer, NewReservationsComponent, ReviewsModal
     },
     props: {
         cottage: Object
@@ -99,7 +107,7 @@ export default {
         return {
             additServ: [],
             showAddNewRes: false,
-
+            showReviews: false,
         }
     },
     methods: {
@@ -113,6 +121,9 @@ export default {
         },
         changedLocationFunc(){
             //do nothing
+        },
+        showAllReviews() {
+            this.showReviews = true
         },
         addNewReservation() {
             this.showAddNewRes = true
@@ -251,7 +262,7 @@ export default {
         background-color: rgb(6, 94, 40);
     }
 
-    #btn-calendar {
+    .btn-calendar {
         width: 30px;
         height: 30px;
     }
