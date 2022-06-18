@@ -8,8 +8,7 @@
                         <span>Calendar</span>
                             <div>
                                 <CalendarComponent :reservations="this.reservations" :key="this.reservations"/>
-                            </div>
-                            
+                            </div>  
                     </div>
                     <div class="col-4">
                         <div id="optionsBar" class="card flex-card">
@@ -81,10 +80,6 @@ export default {
     //     initialView: 'dayGridMonth',
     //     events: []
     //   },
-            
-            
-      
-
         }
     },
     methods: {
