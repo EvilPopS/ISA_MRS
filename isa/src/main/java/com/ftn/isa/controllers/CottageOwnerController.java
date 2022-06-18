@@ -44,8 +44,8 @@ public class CottageOwnerController  {
     @Autowired
     private SubscriptionService subscriptionService;
 
-    //@Autowired
-    //private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private LoyaltyProgramService loyaltyProgramService;
@@ -313,7 +313,7 @@ public class CottageOwnerController  {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    /*@PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
     private void notifySubscribers(CottageOwner cottageOwner, ActionResDTO actionResDTO) {
         for (Subscription s : subscriptionService.getAllSubscriptions()){
             if (s.getOwner().getId().equals(cottageOwner.getId()) && s.isActiveSubscription()){
@@ -329,7 +329,6 @@ public class CottageOwnerController  {
             }
         }
     }
-     */
 
     @PostMapping(value = "/add-regular-reservation")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
@@ -352,7 +351,7 @@ public class CottageOwnerController  {
         if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!clientService.checkIfCurrentResInProgress(client))
+        if (!cottageOwnerService.checkIfCurrentResInProgress(client, cottageOwner, reservationService.getAllReservations()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Reservation newRes = null;

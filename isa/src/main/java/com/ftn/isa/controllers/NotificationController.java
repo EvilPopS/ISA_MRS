@@ -3,6 +3,7 @@ package com.ftn.isa.controllers;
 import com.ftn.isa.DTO.ClientReportDTO;
 import com.ftn.isa.DTO.NewReportDTO;
 import com.ftn.isa.DTO.RentalReviewDTO;
+import com.ftn.isa.DTO.ReviewOwnerDTO;
 import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.model.Client;
 import com.ftn.isa.model.CottageOwner;
@@ -111,6 +112,22 @@ public class NotificationController {
             }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/get-reviews/{rentalId}")
+    @PreAuthorize("hasRole('COTTAGE_OWNER') || hasRole('INSTRUCTOR') || hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<ReviewOwnerDTO>> getReviewsForRental(@PathVariable Long rentalId, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        List<ReviewOwnerDTO> revs = new ArrayList<>();
+        for(Review rev : reviewService.getReviewsForRental(rentalId))
+            revs.add(new ReviewOwnerDTO(rev));
+
+        return new ResponseEntity<>(revs, HttpStatus.OK);
+
     }
 
     @PostMapping(value = "/new-report/{rentalId}")
