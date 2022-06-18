@@ -61,4 +61,34 @@ public class FishingInstructorService {
         return false;
     }
 
+    public boolean updateLoyaltyProgram(FishingInstructor fishingInstructor, List<LoyaltyProgram> programs, String newProgram) {
+        LoyaltyType type = LoyaltyType.REGULAR;
+        switch (newProgram) {
+            case "BRONZE":
+                type = LoyaltyType.BRONZE;
+                break;
+            case "SILVER":
+                type = LoyaltyType.SILVER;
+                break;
+            case "GOLD":
+                type = LoyaltyType.GOLD;
+                break;
+        }
+
+        for (LoyaltyProgram lp : programs) {
+            if (lp.getLoyaltyType() == type) {
+                int leftPoints = fishingInstructor.getLoyaltyPoints() - lp.getPrice();
+                if (leftPoints >= 0)
+                    fishingInstructor.setLoyaltyPoints(leftPoints);
+                else
+                    return false;
+
+                fishingInstructor.setLoyaltyType(type);
+                fishingInstructorRepo.save(fishingInstructor);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

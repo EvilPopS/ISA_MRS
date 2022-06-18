@@ -47,7 +47,7 @@ insert into admin (id, email, password, name, surname, address_id, phone_number,
 insert into boat_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                         is_active, photo_id, role_id, loyalty_type, loyalty_points)
     values (nextval('my_seq_gen_user'), 'boatowner1@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Bojan', 'Bojanic', 7, '06222332323', false, true, 1,
-        3, 0, 10);
+        3, 0, 101);
 
 insert into client (id, email, password, name, surname, address_id, phone_number, is_deleted, is_active,
                      photo_id, role_id, loyalty_type, loyalty_points, num_of_penalties)
@@ -57,12 +57,12 @@ insert into client (id, email, password, name, surname, address_id, phone_number
 insert into cottage_owner (id, email, password, name, surname, address_id, phone_number, is_deleted,
                            is_active, photo_id, role_id, loyalty_type, loyalty_points)
     values (nextval('my_seq_gen_user'), 'srdjan@gmail.com', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', 'Srdjan', 'Djuric', 1, '06222602323', false, true, 2,
-        2, 0, 10);
+        2, 0, 150);
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
                                 role_id, address_id, photo_id, loyalty_points)
     values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
-                'Instric', 4, 5, 1, 0),
+                'Instric', 4, 5, 1, 250),
            (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Instro2', 'sifra1223', '0619990009',
         'Instriiiic', 4, 3, 1, 0);
 

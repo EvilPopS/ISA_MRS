@@ -254,4 +254,34 @@ public class BoatOwnerService {
         return false;
     }
 
+    public boolean updateLoyaltyProgram(BoatOwner boatOwner, List<LoyaltyProgram> programs, String newProgram) {
+        LoyaltyType type = LoyaltyType.REGULAR;
+        switch (newProgram) {
+            case "BRONZE":
+                type = LoyaltyType.BRONZE;
+                break;
+            case "SILVER":
+                type = LoyaltyType.SILVER;
+                break;
+            case "GOLD":
+                type = LoyaltyType.GOLD;
+                break;
+        }
+
+        for (LoyaltyProgram lp : programs) {
+            if (lp.getLoyaltyType() == type) {
+                int leftPoints = boatOwner.getLoyaltyPoints() - lp.getPrice();
+                if (leftPoints >= 0)
+                    boatOwner.setLoyaltyPoints(leftPoints);
+                else
+                    return false;
+
+                boatOwner.setLoyaltyType(type);
+                boatOwnerRepository.save(boatOwner);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
