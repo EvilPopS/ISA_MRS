@@ -47,6 +47,9 @@ public class FishingInstructorController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private LoyaltyProgramService loyaltyProgramService;
+
 
     @GetMapping(value = "/{email}/searchAdventure")
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -357,6 +360,22 @@ public class FishingInstructorController {
                 }
             }
         }
+    }
+
+    @PutMapping(value="/buy-loyalty-program/{program}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> buyLoyaltyProgram(@PathVariable String program, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        if (
+                !fishingInstructorService.updateLoyaltyProgram(fishingInstructorService.findByEmail(email), loyaltyProgramService.getAllLoyaltyPrograms(), program)
+        )
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
