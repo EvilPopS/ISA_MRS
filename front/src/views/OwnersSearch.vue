@@ -72,6 +72,13 @@
         @succ-popup-close = "succPopUpClose"
         />
     </div>
+    <div v-if="showDetailsInstructor">
+        <AdventureDetail
+        :adventure = "detailRental"
+        @modal-closed = "showDetailsInstructor = false"
+        @succ-popup-close = "succPopUpClose"
+        />
+    </div>
     <ErrorPopUp v-show="errorPopUpVisible" 
         @close = closePopUp
         :mess = errMessage
@@ -87,12 +94,13 @@
     import DetailCottageModal from '../components/DetailCottageModal.vue'
     import DetailBoatModal from '../components/DetailBoatModal.vue'
     import SuccessPopUp from '../components/SuccessPopUp.vue'
+    import AdventureDetail from '../components/AdventureDetail.vue'
     import axios from 'axios';
 
     export default {
         name: "OwnersSearch",
         components: {
-            ErrorPopUp, DetailCottageModal, DetailBoatModal, SuccessPopUp
+            ErrorPopUp, DetailCottageModal, DetailBoatModal, SuccessPopUp, AdventureDetail
         },
         data() {
             return {
@@ -107,6 +115,7 @@
                 detailRental: {},
                 showDetailsCottage: false,
                 showDetailsBoat: false,
+                showDetailsInstructor: false,
                 errMessage : '',
                 errorPopUpVisible: false,
                 succPoupUp: false,
@@ -178,7 +187,8 @@
                         this.showDetailsCottage = true
                     else if (this.searchRole === "BOAT_OWNER")
                         this.showDetailsBoat = true
-                    //poslednje ce biti else if za instruktora
+                    else if (this.searchRole === "INSTRUCTOR")
+                        this.showDetailsInstructor = true
                     }).catch(err => {
                         if (err.response.status === 404){
                             this.errMsg = "Client or owner with given email address is not found!";
