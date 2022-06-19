@@ -2,6 +2,7 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.*;
 import com.ftn.isa.configs.ServerConfig;
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
@@ -13,10 +14,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 
 @RestController
@@ -378,5 +382,73 @@ public class FishingInstructorController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(value="/ownersSearch")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<OwnersSearchResDTO>> search(HttpServletRequest request, @RequestParam String minPrice,
+                                                           @RequestParam String maxPrice, @RequestParam String location,
+                                                           @RequestParam String minCapacity, @RequestParam String serviceName) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!Validate.validatePrice(minPrice) || !Validate.validatePrice(maxPrice)
+                || !Validate.validatePrice(minCapacity) || (!location.equals("") && !Validate.validateWords(location)))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<OwnersSearchResDTO> rentals = new ArrayList<>();
+        try {
+            rentals = fishingInstructorService.search(fishingInstructor, minPrice, maxPrice, location, minCapacity, serviceName);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(rentals, HttpStatus.OK );
+    }
+
+    @GetMapping(value = "/get-chart-data/{selectedGraph}/{selectedPeriod}/{selectedMonth}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<List<String>>> getChartData(@PathVariable String selectedGraph, @PathVariable String selectedPeriod, @PathVariable String selectedMonth, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<List<String>> data = fishingInstructorService.getChartData(fishingInstructor, selectedGraph, selectedPeriod, selectedMonth, loyaltyProgramService.getAllLoyaltyPrograms());
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/find-one-rental/{id}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<AdventureDTO> getOneWithId(@PathVariable Long id, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Set<Adventure> adventures = fishingInstructor.getAdventures();
+        AdventureDTO returnAdventure = null;
+        for (Adventure c : adventures) {
+            if (!c.isDeleted() && c.getId().equals(id)) returnAdventure = new AdventureDTO(c);
+        }
+
+        if (returnAdventure == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<AdventureDTO>(returnAdventure, HttpStatus.OK);
+    }
 
 }
