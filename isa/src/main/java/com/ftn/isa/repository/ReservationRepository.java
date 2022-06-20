@@ -16,8 +16,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query(nativeQuery = true, value = "select * from reservation")
     List<Reservation> getAllReservations();
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="0")})
     @Query(value = "select r from Reservation r where r.rental.id =?1")
     List<Reservation> getAllResForNewRes(Long id);
 

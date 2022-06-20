@@ -20,7 +20,7 @@ public class IsaApplicationTests {
 	@Autowired
 	private ReservationService reservationService;
 
-
+/*
 	@Test(expected = PessimisticLockingFailureException.class)
 	public void testPessimisticLockingScenario() throws Throwable {
 
@@ -47,6 +47,7 @@ public class IsaApplicationTests {
 				 * [pool-1-thread-2] o.h.engine.jdbc.spi.SqlExceptionHelper : ERROR: could not obtain lock on row in relation "product"
 				 * Prema Postgres dokumentaciji https://www.postgresql.org/docs/9.3/errcodes-appendix.html, kod 55P03 oznacava lock_not_available
 				 */
+		/*
 				reservationService.test();
 			}
 		});
@@ -60,5 +61,5 @@ public class IsaApplicationTests {
 		}
 		executor.shutdown();
 	}
-
+	*/
 }

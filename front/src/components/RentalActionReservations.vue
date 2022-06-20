@@ -100,7 +100,14 @@
                         if (err.response.status === 406) {
                             this.errMessage = "You have more than 2 penalties at this moment and therefore you cannot make reservations!";
                             this.errorPopUpVisible = true;
+                        } else if (err.response.status == 409){
+                            this.errMessage = "Conflict situation. Please try again later..";
+                            this.errorPopUpVisible = true;
+                        } else {
+                             this.errMessage = "Something went wrong... Please try again later!";
+                            this.errorPopUpVisible = true;
                         }
+
                     });
             },
             closePopUp() {

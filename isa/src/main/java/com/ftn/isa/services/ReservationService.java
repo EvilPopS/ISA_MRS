@@ -1,6 +1,7 @@
 package com.ftn.isa.services;
 
 import com.ftn.isa.DTO.ActionResDTO;
+import com.ftn.isa.model.RentalType;
 import com.ftn.isa.DTO.RegularResDTO;
 import com.ftn.isa.DTO.ReservationDTO;
 import com.ftn.isa.model.*;
@@ -21,9 +22,39 @@ public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    public void saveReservation(Reservation r) {
+    @Autowired
+    private CottageService cottageService;
+
+    @Autowired
+    private BoatService boatService;
+
+    @Autowired
+    private AdventureService adventureService;
+
+    @Transactional
+    public void saveReservation(Reservation r, RentalService rental) {
+        switch (rental.getRentalType()) {
+            case COTTAGE:
+                Cottage c = cottageService.findById(rental.getId());
+                c.setIsChanged(!c.isChanged());
+                cottageService.save(c);
+                break;
+            case BOAT:
+                Boat b = boatService.findById(rental.getId());
+                b.setIsChanged(!b.isChanged());
+                boatService.save(b);
+                break;
+            case ADVENTURE:
+                Adventure a = adventureService.findById(rental.getId());
+                a.setIsChanged(!a.isChanged());
+                adventureService.save(a);
+                break;
+        }
+
         reservationRepository.save(r);
     }
+
+    public Reservation save(Reservation res) { return reservationRepository.save(res);};
 
     public Reservation findById(Long id) {
         return reservationRepository.findById(id).orElse(null);
@@ -47,13 +78,14 @@ public class ReservationService {
         reservationRepository.save(res);
     }
 
+    @Transactional
     public void makeActionReservation(Long resId, Client client) throws Exception {
         Reservation res = findById(resId);
         if (res.isReserved())
             throw new Exception("Already reserved!");
         res.setReserved(true);
-        res.setClient(client);
-        saveReservation(res);
+        res.setClient(client);  //TO DO rental
+        saveReservation(res, res.getRental());
     }
 
     public Set<ReservationDTO> createResDTO(CottageOwner cottageOwner, List<Client> allClients) {
@@ -140,8 +172,26 @@ public class ReservationService {
         return reservations;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Reservation addNewActionRes(ActionResDTO actionResDTO) {
+    @Transactional
+    public Reservation addNewActionRes(ActionResDTO actionResDTO, String role) {
+
+        switch (role) {
+            case "COTTAGE_OWNER":
+                Cottage c = cottageService.findById(actionResDTO.getRentalId());
+                c.setIsChanged(!c.isChanged());
+                cottageService.save(c);
+                break;
+            case "BOAT_OWNER":
+                Boat b = boatService.findById(actionResDTO.getRentalId());
+                b.setIsChanged(!b.isChanged());
+                boatService.save(b);
+                break;
+            case "INSTRUCTOR":
+                Adventure a = adventureService.findById(actionResDTO.getRentalId());
+                a.setIsChanged(!a.isChanged());
+                adventureService.save(a);
+                break;
+        }
 
         for (Reservation res : reservationRepository.getAllResForNewRes(actionResDTO.getRentalId())){
             if (res.periodsAreOverlapping(actionResDTO.getStartTime(), actionResDTO.getEndTime()))
@@ -155,19 +205,26 @@ public class ReservationService {
         return res;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void test() {
-        List<Reservation> reservations = reservationRepository.getAllResForNewRes(5l);
-        /*try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-           System.out.println("Glupost");
-        }
-        */
-    }
+    @Transactional
+    public Reservation addNewRegularRes(RegularResDTO regularResDTO, Client client, boolean isUnvailable, String role) {
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Reservation addNewRegularRes(RegularResDTO regularResDTO, Client client, boolean isUnvailable) {
+        switch (role) {
+            case "COTTAGE_OWNER":
+                Cottage c = cottageService.findById(regularResDTO.getRentalId());
+                c.setIsChanged(!c.isChanged());
+                cottageService.save(c);
+                break;
+            case "BOAT_OWNER":
+                Boat b = boatService.findById(regularResDTO.getRentalId());
+                b.setIsChanged(!b.isChanged());
+                boatService.save(b);
+                break;
+            case "INSTRUCTOR":
+                Adventure a = adventureService.findById(regularResDTO.getRentalId());
+                a.setIsChanged(!a.isChanged());
+                adventureService.save(a);
+                break;
+        }
 
         for (Reservation res : reservationRepository.getAllResForNewRes(regularResDTO.getRentalId())){
             if (res.periodsAreOverlapping(regularResDTO.getStartTime(), regularResDTO.getEndTime()))

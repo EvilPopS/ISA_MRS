@@ -10,6 +10,7 @@ import org.hibernate.dialect.lock.PessimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -293,8 +294,8 @@ public class CottageOwnerController  {
 
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewActionRes(actionResDTO);
-        } catch (PessimisticEntityLockException e){
+            newRes = reservationService.addNewActionRes(actionResDTO, "COTTAGE_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
@@ -303,12 +304,13 @@ public class CottageOwnerController  {
 
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId().equals(actionResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        cottageOwnerService.save(cottageOwner);
-        //notifySubscribers(cottageOwner, actionResDTO);
+        //cottageOwnerService.save(cottageOwner);
+        reservationService.save(newRes);
+        notifySubscribers(cottageOwner, actionResDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -356,20 +358,22 @@ public class CottageOwnerController  {
 
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewRegularRes(regularResDTO, client, false);
-        } catch(PessimisticEntityLockException e) {
+            newRes = reservationService.addNewRegularRes(regularResDTO, client, false, "COTTAGE_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId().equals(regularResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        cottageOwnerService.save(cottageOwner);
+        //cottageOwnerService.save(cottageOwner);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -394,8 +398,8 @@ public class CottageOwnerController  {
 
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewRegularRes(regularResDTO, null, true);
-        } catch (PessimisticEntityLockException e){
+            newRes = reservationService.addNewRegularRes(regularResDTO, null, true, "COTTAGE_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
@@ -404,11 +408,12 @@ public class CottageOwnerController  {
 
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId().equals(regularResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        cottageOwnerService.save(cottageOwner);
+        //cottageOwnerService.save(cottageOwner);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
