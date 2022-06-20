@@ -12,6 +12,7 @@ import com.ftn.isa.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -127,14 +128,19 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        reservationService.saveReservation(
-                new Reservation(
-                    reservationData,
-                    rental.getPrice(),
-                    rental,
-                    client
-                )
-        );
+        try {
+            reservationService.saveReservation(
+                    new Reservation(
+                            reservationData,
+                            rental.getPrice(),
+                            rental,
+                            client
+                    ),
+                    rental
+            );
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
 
         clientService.increasePoints(client);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -154,7 +160,10 @@ public class ClientController {
 
         try {
             reservationService.makeActionReservation(resId, client);
-        } catch(Exception ignored) {
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        catch(Exception ignored) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

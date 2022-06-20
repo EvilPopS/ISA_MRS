@@ -61,6 +61,9 @@ public abstract class RentalService {
     @Column(columnDefinition = "integer DEFAULT 0", nullable = false)
     private Long version;
 
+    @Column(name = "is_changed",columnDefinition = "boolean DEFAULT false", nullable = false)
+    private boolean isChanged;
+
     public RentalService(String name, String description, Set<Photo> photos, int capacity, String rules, boolean isDeleted,
                          Address address, Double averageRate, int noRatings, RentalType rentalType, Double price) {
         this.name = name;
@@ -85,6 +88,14 @@ public abstract class RentalService {
             if (Validate.getTodaysDate().isBefore(r.getEndTime()) && !r.isUnavailable() && !r.isCanceled()) return true;
         }
         return false;
+    }
+
+    public boolean isChanged() {
+        return isChanged;
+    }
+
+    public void setIsChanged(boolean changed) {
+        isChanged = changed;
     }
 
     public String getName() {
@@ -195,7 +206,4 @@ public abstract class RentalService {
         return version;
     }
 
-    public void setVersion(Long version) {
-        this.version = version;
-    }
 }
