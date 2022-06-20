@@ -307,8 +307,8 @@ export default {
             if (!this.validate(this.data.price, numReg) || this.data.price <= 0)
                 throw "Please enter a valid price.";
 
-            if (this.data.description.length < 7)
-                throw "Description must have at least 8 characters";
+            if (this.data.description.length < 25)
+                throw "Description must have at least 26 characters";
             
             if (this.data.rules.length < 7)
                 throw "Rules must have at least 8 characters";
