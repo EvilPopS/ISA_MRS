@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -273,8 +274,8 @@ public class BoatOwnerController {
 
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewActionRes(actionResDTO);
-        } catch (PessimisticLockingFailureException e) {
+            newRes = reservationService.addNewActionRes(actionResDTO, "BOAT_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
@@ -283,11 +284,12 @@ public class BoatOwnerController {
 
         for (Boat c : boatOwner.getBoats()){
             if (c.getId().equals(actionResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        boatOwnerService.save(boatOwner);
+        //boatOwnerService.save(boatOwner);
+        reservationService.save(newRes);
         notifySubscribers(boatOwner, actionResDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -336,8 +338,8 @@ public class BoatOwnerController {
 
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewRegularRes(regularResDTO, client, false);
-        } catch (PessimisticLockingFailureException e){
+            newRes = reservationService.addNewRegularRes(regularResDTO, client, false, "BOAT_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
@@ -346,11 +348,12 @@ public class BoatOwnerController {
 
         for (Boat c : boatOwner.getBoats()){
             if (c.getId().equals(regularResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        boatOwnerService.save(boatOwner);
+        //boatOwnerService.save(boatOwner);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -375,8 +378,8 @@ public class BoatOwnerController {
 
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewRegularRes(regularResDTO, null, true);
-        } catch (PessimisticLockingFailureException e) {
+            newRes = reservationService.addNewRegularRes(regularResDTO, null, true, "BOAT_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         if (newRes == null)
@@ -384,11 +387,12 @@ public class BoatOwnerController {
 
         for (Boat c : boatOwner.getBoats()){
             if (c.getId().equals(regularResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        boatOwnerService.save(boatOwner);
+        //boatOwnerService.save(boatOwner);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

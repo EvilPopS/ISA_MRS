@@ -120,6 +120,10 @@
                     }).catch(err => {
                         if (err.response.status === 406)
                             this.errMessage = "You have more than 2 penalties at this moment and therefore you cannot make reservations!";
+                        else if (err.response.status == 409) {
+                                this.errMessage = "Conflict situation. Please try again later..";
+                                this.errorPopUpVisible = true;
+                        }
                         else 
                             this.errMessage = "The reservation period you entered is already taken or you are trying to make a reservation for the period you previously canceled!";
                         this.errorPopUpVisible = true;
