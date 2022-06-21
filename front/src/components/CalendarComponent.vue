@@ -10,25 +10,25 @@ import interactionPlugin from '@fullcalendar/interaction'
 
 export default {
     name : "CalendarComponent",
-    components : { FullCalendar
-
+    components : { 
+        FullCalendar
     },
     props : {
         reservations : Array,
     },
 
-    data (){return {
-        calendarOptions: {
-        plugins: [ dayGridPlugin, interactionPlugin ],
-        initialView: 'dayGridMonth',
-        events: []
-      },
-
-    }},
+    data () {
+        return {
+            calendarOptions: {
+                plugins: [ dayGridPlugin, interactionPlugin ],
+                initialView: 'dayGridMonth',
+                events: []
+            },
+        }
+    },
 
 
     created(){
-
         for(let i = 0; i < this.reservations.length; i++){
             let col = "red"
             if (this.reservations[i].reservationKind === "Action reservation")
@@ -36,8 +36,9 @@ export default {
             else if (this.reservations[i].reservationKind === "Reservation")
                 col = "green"
 
+            let resKind = this.reservations[i].reservationKind;
             this.calendarOptions.events.push({
-                title : this.reservations[i].reservationKind,
+                title : this.reservations[i].reservationKind === undefined ? "Reserved" : resKind,
                 start : new Date(this.reservations[i].startDate),
                 end : new Date(this.reservations[i].endDate),
                 color : col

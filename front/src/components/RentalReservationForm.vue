@@ -2,7 +2,11 @@
     <div>
         <div class="row">
             <div id="calendar-cont" class="col" style="background: rgba(136,180,156,0.3)">
-            </div>
+                <CalendarComponent id="calendar" 
+                    :reservations="rentalReservations" 
+                    :key="rentalReservations"
+                />
+            </div>  
         </div>
         <div class="row form-style">
             <div class="col-sm-1">
@@ -50,18 +54,21 @@
     import ErrorPopUp from "@/components/ErrorPopUp.vue";
     import SuccessPopUp from "@/components/SuccessPopUp.vue";
     import ConfirmationPopUp from "@/components/ConfirmationPopUp.vue";
+    import CalendarComponent from "@/components/CalendarComponent.vue";
 
     export default {
         name: "RentalResevationForm",
         components: {
             ErrorPopUp,
             SuccessPopUp,
-            ConfirmationPopUp
+            ConfirmationPopUp,
+            CalendarComponent
         },
         props: {
             rentalId: Number,
             rentalType: String,
-            rentalPrice: String
+            rentalPrice: String,
+            rentalReservations: Array
         },
         data() {
             return {
@@ -107,6 +114,8 @@
                 this.showConfPopUp = false;
             },
             makeReservation() {
+                this.showConfPopUp = false;
+                
                 let requestBody = {
                     startDate: formatDateStr(this.startDate),
                     endDate: formatDateStr(this.endDate),
@@ -160,8 +169,13 @@
 </script>
 
 <style scoped>
+    #calendar {
+        height: 100%;
+    }
+
     #calendar-cont {
         height: 83vh;
+        padding: 20px;
     }
 
     .form-style div {
