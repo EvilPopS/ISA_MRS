@@ -34,7 +34,7 @@ public class Reservation {
     @JoinColumn(name="client_id")
     private Client client;
 
-    @OneToOne
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="rental_id")
     private RentalService rental;
 

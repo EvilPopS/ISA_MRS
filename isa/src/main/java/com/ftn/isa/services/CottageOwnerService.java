@@ -6,6 +6,7 @@ import com.ftn.isa.DTO.OwnersSearchResDTO;
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.repository.CottageOwnerRepository;
+import com.ftn.isa.repository.CottageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,6 +25,9 @@ public class CottageOwnerService {
 
     @Autowired
     public CottageOwnerRepository cottageOwnerRepository;
+
+    @Autowired
+    public CottageRepository cottageRepository;
 
     public CottageOwner findByEmail(String email) {
         return cottageOwnerRepository.findByEmail(email);
@@ -46,6 +50,10 @@ public class CottageOwnerService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void save(CottageOwner cottageOwner, CottageDTO cottageDTO, Set<Photo> photos){
+        Cottage c = cottageRepository.getCottageById(cottageDTO.getId());
+        c.setIsChanged(!c.isChanged());
+        cottageRepository.save(c);
+
         for (Cottage cottage : cottageOwner.getCottages()){
             if (cottage.getId() == cottageDTO.getId()) {
                 cottage.setPhotos(photos);

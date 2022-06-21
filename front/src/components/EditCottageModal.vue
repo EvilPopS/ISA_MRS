@@ -198,8 +198,13 @@ export default {
                         this.localSuccPopUpVisible = true;
                     })
                     .catch(function (error) {
-                        console.log(error);
-                        alert(error.name)
+                        if (error.response.status == 409){
+                            this.errMessage = "Conflict situation. Please try again later..";
+                            this.errorPopUpVisible = true;
+                        } else {
+                            console.log(error);
+                            alert(error.name)
+                        }
                     });
 
         },
