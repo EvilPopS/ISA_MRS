@@ -83,7 +83,7 @@ export default {
                     })
                     .catch(err => {
                             if (err.response.status === 404){
-                                this.errMessage = "Owner or client with that email doesn't!";
+                                this.errMessage = "Something went wrong, client with that email doesn't exist or have too many penalties!";
                                 this.errorPopUpVisible = true;
                             } 
                             else if (err.response.status === 401) {
@@ -94,7 +94,7 @@ export default {
                                 this.errMessage = "Regular reservation cannot overlap with other reservations and client's current reservation must be in progress! Check all input data.";
                                 this.errorPopUpVisible = true;
                             } else if (err.response.status == 409){
-                                this.errMessage = "Conflict situation.";
+                                this.errMessage = "Conflict situation. Please try again later..";
                                 this.errorPopUpVisible = true;
                             } else {
                                 this.errMessage = "Uups! Something went wrong...";

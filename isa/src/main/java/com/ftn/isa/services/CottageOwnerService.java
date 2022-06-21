@@ -8,7 +8,9 @@ import com.ftn.isa.model.*;
 import com.ftn.isa.repository.CottageOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,6 +44,7 @@ public class CottageOwnerService {
         cottageOwnerRepository.save(cottageOwner);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void save(CottageOwner cottageOwner, CottageDTO cottageDTO, Set<Photo> photos){
         for (Cottage cottage : cottageOwner.getCottages()){
             if (cottage.getId() == cottageDTO.getId()) {
@@ -152,8 +155,8 @@ public class CottageOwnerService {
                     else counter += DAYS.between(start, res.getEndTime());
                 } else if ((!res.isCanceled() && !res.isUnavailable() && res.isReserved()) &&
                         (((res.getStartTime().isAfter(start) || res.getStartTime().equals(start)) && (res.getStartTime().isBefore(end)) && (res.getEndTime().isAfter(end) || res.getEndTime().equals(end))))) {
-                    if (DAYS.between(res.getStartTime(), end) == 0 && counter <= 0) counter += 1;
-                    else if (counter <= 0) counter += DAYS.between(res.getStartTime(), end);
+                    if (DAYS.between(res.getStartTime(), end) == 0) counter += 1;
+                    else counter += DAYS.between(res.getStartTime(), end);
                 }
             }
             if (counter < 0) counter = 0;
@@ -176,10 +179,8 @@ public class CottageOwnerService {
             List<String> innerList = new ArrayList<>();
             innerList.add(c.getName());
             for (Reservation res : c.getReservations()){
-                if (DAYS.between(start, res.getEndTime()) != 0)
+                if ((res.getStartTime().isAfter(start) || res.getStartTime().equals(start)) && res.getStartTime().isBefore(end))
                     counter += (DAYS.between(res.getStartTime(), res.getEndTime())) * (res.getPrice() + res.getPrice() * increaseRev/100);
-                else
-                    counter += (res.getPrice() + res.getPrice() * increaseRev/100);   //za revenue je uzeto da mesec/nedelja u kome pocinje za nju se doda revenue
             }
             if (counter < 0) counter = 0;
             innerList.add(String.valueOf(counter));
@@ -237,6 +238,48 @@ public class CottageOwnerService {
         }
 
         return data;
+    }
+
+    public boolean checkIfCurrentResInProgress(Client client, CottageOwner cottageOwner, List<Reservation> reservations) {
+        for (Reservation res : reservations){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime())
+                    && !res.isCanceled() && res.isReserved() && res.getClient().getId().equals(client.getId()))
+            {
+                for (Cottage a : cottageOwner.getCottages())
+                    if (a.getId().equals(res.getRental().getId())) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean updateLoyaltyProgram(CottageOwner cottageOwner, List<LoyaltyProgram> programs, String newProgram) {
+        LoyaltyType type = LoyaltyType.REGULAR;
+        switch (newProgram) {
+            case "BRONZE":
+                type = LoyaltyType.BRONZE;
+                break;
+            case "SILVER":
+                type = LoyaltyType.SILVER;
+                break;
+            case "GOLD":
+                type = LoyaltyType.GOLD;
+                break;
+        }
+
+        for (LoyaltyProgram lp : programs) {
+            if (lp.getLoyaltyType() == type) {
+                int leftPoints = cottageOwner.getLoyaltyPoints() - lp.getPrice();
+                if (leftPoints >= 0)
+                    cottageOwner.setLoyaltyPoints(leftPoints);
+                else
+                    return false;
+
+                cottageOwner.setLoyaltyType(type);
+                cottageOwnerRepository.save(cottageOwner);
+                return true;
+            }
+        }
+        return false;
     }
     
 }

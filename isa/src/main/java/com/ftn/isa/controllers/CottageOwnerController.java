@@ -10,6 +10,7 @@ import org.hibernate.dialect.lock.PessimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,8 +45,8 @@ public class CottageOwnerController  {
     @Autowired
     private SubscriptionService subscriptionService;
 
-    //@Autowired
-    //private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private LoyaltyProgramService loyaltyProgramService;
@@ -291,23 +292,30 @@ public class CottageOwnerController  {
         if (!cottageOwnerService.checkIfCottageExists(cottageOwner, actionResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewActionRes(actionResDTO, cottageOwner);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewActionRes(actionResDTO, "COTTAGE_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId().equals(actionResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        cottageOwnerService.save(cottageOwner);
-        //notifySubscribers(cottageOwner, actionResDTO);
+        //cottageOwnerService.save(cottageOwner);
+        reservationService.save(newRes);
+        notifySubscribers(cottageOwner, actionResDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    /*@PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
     private void notifySubscribers(CottageOwner cottageOwner, ActionResDTO actionResDTO) {
         for (Subscription s : subscriptionService.getAllSubscriptions()){
             if (s.getOwner().getId().equals(cottageOwner.getId()) && s.isActiveSubscription()){
@@ -323,7 +331,6 @@ public class CottageOwnerController  {
             }
         }
     }
-     */
 
     @PostMapping(value = "/add-regular-reservation")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
@@ -337,7 +344,7 @@ public class CottageOwnerController  {
         if (cottageOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Client client = clientService.findByEmail(regularResDTO.getClientEmail());
-        if (client == null)
+        if (client == null || client.getNumOfPenalties() >= 3)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         if (!regularResDTO.arePropsValidAdding())
@@ -346,24 +353,27 @@ public class CottageOwnerController  {
         if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!clientService.checkIfCurrentResInProgress(client))
+        if (!cottageOwnerService.checkIfCurrentResInProgress(client, cottageOwner, reservationService.getAllReservations()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, client, false);
-        } catch(PessimisticEntityLockException e) {
+            newRes = reservationService.addNewRegularRes(regularResDTO, client, false, "COTTAGE_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId().equals(regularResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        cottageOwnerService.save(cottageOwner);
+        //cottageOwnerService.save(cottageOwner);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -386,17 +396,24 @@ public class CottageOwnerController  {
         if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, cottageOwner, null, true);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewRegularRes(regularResDTO, null, true, "COTTAGE_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Cottage c : cottageOwner.getCottages()){
             if (c.getId().equals(regularResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        cottageOwnerService.save(cottageOwner);
+        //cottageOwnerService.save(cottageOwner);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -416,6 +433,22 @@ public class CottageOwnerController  {
         List<List<String>> data = cottageOwnerService.getChartData(cottageOwner, selectedGraph, selectedPeriod, selectedMonth, loyaltyProgramService.getAllLoyaltyPrograms());
 
         return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @PutMapping(value="/buy-loyalty-program/{program}")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> buyLoyaltyProgram(@PathVariable String program, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        if (
+                !cottageOwnerService.updateLoyaltyProgram(cottageOwnerService.findByEmail(email), loyaltyProgramService.getAllLoyaltyPrograms(), program)
+        )
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

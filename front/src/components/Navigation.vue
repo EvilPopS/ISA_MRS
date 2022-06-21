@@ -29,6 +29,7 @@
             <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
             <a @click="ownersSearch()" class="homeNav">Search</a>
             <a @click="ownersReport()" class="homeNav">Reports</a>
+            <a @click="clientLoyaltyProgramViewRedirect()" class="homeNav">Loyalty Program</a>
         </div>
 
         <div v-else-if="userRole === 'BOAT_OWNER'">
@@ -37,12 +38,16 @@
             <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
             <a @click="ownersSearch()" class="homeNav">Search</a>
             <a @click="ownersReport()" class="homeNav">Reports</a>
+            <a @click="clientLoyaltyProgramViewRedirect()" class="homeNav">Loyalty Program</a>
         </div>
 
         <div v-else-if="userRole === 'INSTRUCTOR'">
             <a @click="instructorProfilePageRedirect()" class="homeNav">Profile</a>
             <a @click="adventuresRedirect()" class="homeNav">Adventures</a>
             <a @click="allReservationsRedirect()" class="homeNav">Reservations</a>
+            <a @click="ownersSearch()" class="homeNav">Search</a>
+            <a @click="ownersReport()" class="homeNav">Reports</a>
+            <a @click="clientLoyaltyProgramViewRedirect()" class="homeNav">Loyalty Program</a>
         </div>
 
         <div v-if="userRole !== 'UNAUTH'">

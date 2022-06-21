@@ -2,6 +2,7 @@ package com.ftn.isa.controllers;
 
 import com.ftn.isa.DTO.*;
 import com.ftn.isa.configs.ServerConfig;
+import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
@@ -9,14 +10,18 @@ import org.hibernate.dialect.lock.PessimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 
 @RestController
@@ -46,6 +51,9 @@ public class FishingInstructorController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private LoyaltyProgramService loyaltyProgramService;
 
 
     @GetMapping(value = "/{email}/searchAdventure")
@@ -229,7 +237,7 @@ public class FishingInstructorController {
         if (fishingInstructor == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Client client = clientService.findByEmail(regularResDTO.getClientEmail());
-        if (client == null)
+        if (client == null || client.getNumOfPenalties() >= 3)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         if (!regularResDTO.arePropsValidAdding())
@@ -238,24 +246,26 @@ public class FishingInstructorController {
         if (!fishingInstructorService.checkIfAdventureExists(fishingInstructor, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!clientService.checkIfCurrentResInProgress(client))
+        if (!fishingInstructorService.checkIfCurrentResInProgress(client, fishingInstructor, reservationService.getAllReservations()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         Reservation newRes = null;
         try {
-            newRes = reservationService.addNewRegularRes(regularResDTO, fishingInstructor, client, false);
-        } catch(PessimisticEntityLockException e) {
+            newRes = reservationService.addNewRegularRes(regularResDTO, client, false, "INSTRUCTOR");
+        } catch(ObjectOptimisticLockingFailureException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Adventure a : fishingInstructor.getAdventures()){
             if (a.getId().equals(regularResDTO.getRentalId())){
-                a.getReservations().add(newRes);
+                newRes.setRental(a);
                 break;
             }
         }
-        fishingInstructorService.save(fishingInstructor);
+        //fishingInstructorService.save(fishingInstructor);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -278,17 +288,24 @@ public class FishingInstructorController {
         if (!fishingInstructorService.checkIfAdventureExists(fishingInstructor, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, fishingInstructor, null, true);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewRegularRes(regularResDTO, null, true, "INSTRUCTOR");
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Adventure a : fishingInstructor.getAdventures()){
             if (a.getId().equals(regularResDTO.getRentalId())){
-                a.getReservations().add(newRes);
+                newRes.setRental(a);
                 break;
             }
         }
-        fishingInstructorService.save(fishingInstructor);
+        //fishingInstructorService.save(fishingInstructor);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -314,23 +331,30 @@ public class FishingInstructorController {
         if (!fishingInstructorService.checkIfAdventureExists(fishingInstructor, actionResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewActionResAdventure(actionResDTO, fishingInstructor);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewActionRes(actionResDTO, "INSTRUCTOR");
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Adventure a : fishingInstructor.getAdventures()){
             if (a.getId().equals(actionResDTO.getRentalId())){
-                a.getReservations().add(newRes);
+                newRes.setRental(a);
                 break;
             }
         }
-        fishingInstructorService.save(fishingInstructor);
+        //fishingInstructorService.save(fishingInstructor);
+        reservationService.save(newRes);
         notifySubscribers(fishingInstructor, actionResDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     private void notifySubscribers(FishingInstructor fishingInstructor, ActionResDTO actionResDTO) {
         for (Subscription s : subscriptionService.getAllSubscriptions()){
             if (s.getOwner().getId().equals(fishingInstructor.getId()) && s.isActiveSubscription()){
@@ -347,5 +371,89 @@ public class FishingInstructorController {
         }
     }
 
+    @PutMapping(value="/buy-loyalty-program/{program}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> buyLoyaltyProgram(@PathVariable String program, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        if (
+                !fishingInstructorService.updateLoyaltyProgram(fishingInstructorService.findByEmail(email), loyaltyProgramService.getAllLoyaltyPrograms(), program)
+        )
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value="/ownersSearch")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<OwnersSearchResDTO>> search(HttpServletRequest request, @RequestParam String minPrice,
+                                                           @RequestParam String maxPrice, @RequestParam String location,
+                                                           @RequestParam String minCapacity, @RequestParam String serviceName) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!Validate.validatePrice(minPrice) || !Validate.validatePrice(maxPrice)
+                || !Validate.validatePrice(minCapacity) || (!location.equals("") && !Validate.validateWords(location)))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<OwnersSearchResDTO> rentals = new ArrayList<>();
+        try {
+            rentals = fishingInstructorService.search(fishingInstructor, minPrice, maxPrice, location, minCapacity, serviceName);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(rentals, HttpStatus.OK );
+    }
+
+    @GetMapping(value = "/get-chart-data/{selectedGraph}/{selectedPeriod}/{selectedMonth}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<List<List<String>>> getChartData(@PathVariable String selectedGraph, @PathVariable String selectedPeriod, @PathVariable String selectedMonth, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<List<String>> data = fishingInstructorService.getChartData(fishingInstructor, selectedGraph, selectedPeriod, selectedMonth, loyaltyProgramService.getAllLoyaltyPrograms());
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/find-one-rental/{id}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<AdventureDTO> getOneWithId(@PathVariable Long id, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Set<Adventure> adventures = fishingInstructor.getAdventures();
+        AdventureDTO returnAdventure = null;
+        for (Adventure c : adventures) {
+            if (!c.isDeleted() && c.getId().equals(id)) returnAdventure = new AdventureDTO(c);
+        }
+
+        if (returnAdventure == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<AdventureDTO>(returnAdventure, HttpStatus.OK);
+    }
 
 }

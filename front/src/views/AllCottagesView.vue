@@ -22,9 +22,9 @@
                             <div class="card-body">
                                 <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
                                 <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
-                                <p class="card-text" style="white-space: pre-line;"><b>Description:</b>{{cottage.description.length <= 25 ? cottage.description + '\n.' : cottage.description}}</p>
+                                <p class="card-text" style="white-space: pre-line;"><b>Description:</b>{{cottage.description}}</p>
                                 <p class="card-text"><b>Price:</b>{{cottage.price}} &euro;</p>
-                                <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
+                                <p class="card-text"><b>Rate:</b> {{cottage.averageRating > 0 ? cottage.averageRating : "Not yet rated"}}★</p>
                                 <span>
                                     <button class="btn btn-success card-btns" @click="showEditCottageModal(cottage)">Change</button>
                                     <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(cottage)">Delete</button>

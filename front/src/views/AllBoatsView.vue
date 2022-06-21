@@ -26,7 +26,7 @@
                                 <p class="card-text"><b>Engine power:</b>{{boat.enginePower}}ks</p>
                                 <p class="card-text"><b>Max speed:</b>{{boat.maxSpeed}}km/h</p>
                                 <p class="card-text"><b>Price:</b>{{boat.price}} &euro;</p>
-                                <p class="card-text"><b>Rate:</b> {{boat.averageRating}}★</p>
+                                <p class="card-text"><b>Rate:</b> {{boat.averageRating > 0 ? boat.averageRating : "Not yet rated"}}★</p>
                                 <span>
                                     <button class="btn btn-success card-btns" @click="showEditBoatModal(boat)">Change</button>
                                     <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(boat)">Delete</button>

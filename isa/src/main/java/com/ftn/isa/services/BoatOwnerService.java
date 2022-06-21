@@ -149,8 +149,8 @@ public class BoatOwnerService {
                     else counter += DAYS.between(start, res.getEndTime());
                 } else if ((!res.isCanceled() && !res.isUnavailable() && res.isReserved()) &&
                         (((res.getStartTime().isAfter(start) || res.getStartTime().equals(start)) && (res.getStartTime().isBefore(end)) && (res.getEndTime().isAfter(end) || res.getEndTime().equals(end))))) {
-                    if (DAYS.between(res.getStartTime(), end) == 0 && counter <= 0) counter += 1;
-                    else if (counter <= 0) counter += DAYS.between(res.getStartTime(), end);
+                    if (DAYS.between(res.getStartTime(), end) == 0) counter += 1;
+                    else counter += DAYS.between(res.getStartTime(), end);
                 }
             }
             if (counter < 0) counter = 0;
@@ -173,12 +173,8 @@ public class BoatOwnerService {
             List<String> innerList = new ArrayList<>();
             innerList.add(c.getName());
             for (Reservation res : c.getReservations()){
-                if ((!res.isCanceled() && !res.isUnavailable() && res.isReserved()) && (res.getStartTime().isAfter(start) && res.getStartTime().isBefore(end))){
-                    if (DAYS.between(start, res.getEndTime()) != 0)
-                        counter += (DAYS.between(res.getStartTime(), res.getEndTime())) * (res.getPrice() + res.getPrice() * increaseRev/100);
-                    else
-                        counter += (res.getPrice() + res.getPrice() * increaseRev/100);
-                }   //za revenue je uzeto da mesec/nedelja u kome pocinje za nju se doda revenue
+                if ((res.getStartTime().isAfter(start) || res.getStartTime().equals(start)) && res.getStartTime().isBefore(end))
+                    counter += (DAYS.between(res.getStartTime(), res.getEndTime())) * (res.getPrice() + res.getPrice() * increaseRev/100);
             }
             if (counter < 0) counter = 0;
             innerList.add(String.valueOf(counter));
@@ -238,10 +234,52 @@ public class BoatOwnerService {
         return data;
     }
 
+    public boolean checkIfCurrentResInProgress(Client client, BoatOwner boatOwner, List<Reservation> reservations) {
+        for (Reservation res : reservations){
+            if (Validate.getTodaysDate().isAfter(res.getStartTime()) && Validate.getTodaysDate().isBefore(res.getEndTime())
+                    && !res.isCanceled() && res.isReserved() && res.getClient().getId().equals(client.getId()))
+            {
+                for (Boat a : boatOwner.getBoats())
+                    if (a.getId().equals(res.getRental().getId())) return true;
+            }
+        }
+        return false;
+    }
+
     public boolean checkIfBoatExists(BoatOwner boatOwner, Long boatId) {
         for (Boat c : boatOwner.getBoats()){
             if (c.getId().equals(boatId))
                 return true;
+        }
+        return false;
+    }
+
+    public boolean updateLoyaltyProgram(BoatOwner boatOwner, List<LoyaltyProgram> programs, String newProgram) {
+        LoyaltyType type = LoyaltyType.REGULAR;
+        switch (newProgram) {
+            case "BRONZE":
+                type = LoyaltyType.BRONZE;
+                break;
+            case "SILVER":
+                type = LoyaltyType.SILVER;
+                break;
+            case "GOLD":
+                type = LoyaltyType.GOLD;
+                break;
+        }
+
+        for (LoyaltyProgram lp : programs) {
+            if (lp.getLoyaltyType() == type) {
+                int leftPoints = boatOwner.getLoyaltyPoints() - lp.getPrice();
+                if (leftPoints >= 0)
+                    boatOwner.setLoyaltyPoints(leftPoints);
+                else
+                    return false;
+
+                boatOwner.setLoyaltyType(type);
+                boatOwnerRepository.save(boatOwner);
+                return true;
+            }
         }
         return false;
     }

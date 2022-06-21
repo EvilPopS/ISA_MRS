@@ -7,8 +7,10 @@ import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -270,17 +272,24 @@ public class BoatOwnerController {
         if (!boatOwnerService.checkIfBoatExists(boatOwner, actionResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewActionRes(actionResDTO, boatOwner);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewActionRes(actionResDTO, "BOAT_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Boat c : boatOwner.getBoats()){
             if (c.getId().equals(actionResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        boatOwnerService.save(boatOwner);
+        //boatOwnerService.save(boatOwner);
+        reservationService.save(newRes);
         notifySubscribers(boatOwner, actionResDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -315,7 +324,7 @@ public class BoatOwnerController {
         if (boatOwner == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Client client = clientService.findByEmail(regularResDTO.getClientEmail());
-        if (client == null)
+        if (client == null || client.getNumOfPenalties() >= 3)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         if (!regularResDTO.arePropsValidAdding())
@@ -324,20 +333,27 @@ public class BoatOwnerController {
         if (!boatOwnerService.checkIfBoatExists(boatOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!clientService.checkIfCurrentResInProgress(client))
+        if (!boatOwnerService.checkIfCurrentResInProgress(client, boatOwner, reservationService.getAllReservations()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, boatOwner, client, false);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewRegularRes(regularResDTO, client, false, "BOAT_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Boat c : boatOwner.getBoats()){
             if (c.getId().equals(regularResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        boatOwnerService.save(boatOwner);
+        //boatOwnerService.save(boatOwner);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -360,17 +376,23 @@ public class BoatOwnerController {
         if (!boatOwnerService.checkIfBoatExists(boatOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Reservation newRes = reservationService.addNewRegularRes(regularResDTO, boatOwner, null, true);
+        Reservation newRes = null;
+        try {
+            newRes = reservationService.addNewRegularRes(regularResDTO, null, true, "BOAT_OWNER");
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         if (newRes == null)
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         for (Boat c : boatOwner.getBoats()){
             if (c.getId().equals(regularResDTO.getRentalId())){
-                c.getReservations().add(newRes);
+                newRes.setRental(c);
                 break;
             }
         }
-        boatOwnerService.save(boatOwner);
+        //boatOwnerService.save(boatOwner);
+        reservationService.save(newRes);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -407,6 +429,22 @@ public class BoatOwnerController {
 
         boatOwner.setActive(true);
         boatOwnerService.save(boatOwner);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value="/buy-loyalty-program/{program}")
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<HttpStatus> buyLoyaltyProgram(@PathVariable String program, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        if (
+                !boatOwnerService.updateLoyaltyProgram(boatOwnerService.findByEmail(email), loyaltyProgramService.getAllLoyaltyPrograms(), program)
+        )
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
