@@ -138,21 +138,16 @@ insert into report(id, is_answered, message, sent_time, has_showed_up, is_negati
            (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekliiiiiiiiiiiii', '05/06/2022 22:22', true, true , 4, 6);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
-values ('11/4/2022', '29/4/2022', false, true, 30, 1, 4, false, null, false),
-       ('1/5/2022', '11/5/2022', false, true, 30, 1, 4, false, null, false),
-       ('17/4/2022', '3/5/2022', false, true, 25, 2, 4, false, null, false),
-       ('21/4/2022', '2/5/2022', false, true, 25, 2, 4, false, null, false),
-       ('3/4/2022', '23/4/2022', false, true, 50, 3, 4, false, null, false),
+values ('11/8/2022', '29/8/2022', false, true, 30, 1, 4, false, null, false),
+       ('1/8/2022', '11/8/2022', false, true, 30, 1, 4, false, null, false),
        ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null, false),
-       ('21/4/2022', '2/5/2022', false, true, 50, 3, 4, false, null, false),
-       ('12/4/2022', '29/4/2022', false, true, 50, 4, 4, false, null, false),
        ('10/6/2022', '12/6/2022', false, true, 40, 4, 4, false, null, false),
        ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null, false),
        ('14/6/2022 11:00', '18/6/2022 11:00', false, true, 40, 6, 4, false, null, false),
-       ('24/6/2022 11:00', '28/6/2022 11:00', true, true, 70, 5, 4, false, 'spa,table tennis', false),
-       ('29/6/2022 11:00', '30/6/2022 11:00', false, true, 40, 5, 4, false, null, false),
+       ('24/6/2022 11:00', '28/6/2022 11:00', true, false, 70, 4, 4, false, 'spa,table tennis', false),
+       ('29/6/2022 11:00', '30/6/2022 11:00', true, true, 40, 4, 4, false, 'spa', false),
        ('14/6/2022 11:00', '15/6/2022 11:00', false, true, 150, 9, 4, false, null, false),
        ('04/7/2022 11:00', '11/7/2022 18:00', false, true, 50, 10, 4, false, null, false),
        ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null, false),
-       ('21/6/2022', '25/6/2022', false, true, 60, 4, 4, false, null, false)
+       ('21/6/2022', '22/6/2022', false, true, 60, 4, 4, false, null, false)
 

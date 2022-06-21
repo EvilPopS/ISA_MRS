@@ -42,6 +42,16 @@
             };
         },
         mounted() {
+            this.searchRole = window.localStorage.getItem("userRole")
+            if (this.searchRole === "COTTAGE_OWNER")
+                this.roleURL = "cottage-owner"
+            else if (this.searchRole === "INSTRUCTOR")
+                this.roleURL = "fishingInstructor"
+            else if (this.searchRole === "BOAT_OWNER")
+                this.roleURL = "boat-owner"
+            else if (this.searchRole === "CLIENT")
+                this.roleURL = "client"
+            
             axios.get("api/" + this.roleURL, {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     this.userProgram = response.data.loyaltyStatus;
@@ -63,18 +73,6 @@
             closePopUp() {
                 this.succPopUpVisible = false;
                 this.errPopUpVisible = false;
-            }
-        },
-        mounted() {
-            this.searchRole = window.localStorage.getItem("userRole")
-            if (this.searchRole === "COTTAGE_OWNER"){
-                this.roleURL = "cottage-owner"
-            } else if (this.searchRole === "INSTRUCTOR"){
-                this.roleURL = "fishingInstructor"
-            } else if (this.searchRole === "BOAT_OWNER"){
-                this.roleURL = "boat-owner"
-            } else if (this.searchRole === "CLIENT"){
-                this.roleURL = "client"
             }
         }
     }

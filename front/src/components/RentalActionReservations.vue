@@ -4,8 +4,8 @@
             Click on the action reservation card which you want to reserve for yourself.
         </div>
         <div class="row justify-content-center actions-cont">
-            <p v-show="this.reservations.length === 0" id="no-reses-label">There are no action reservations to be displayed!</p>
-            <div class="action-card-style" @click="confirmationForRes(reserv.id, reserv.price, reserv.startDate, reserv.endDate)" v-for="reserv in this.reservations" :key="reserv.id">
+            <p v-show="filteredActions.length === 0" id="no-reses-label">There are no action reservations to be displayed!</p>
+            <div class="action-card-style" @click="confirmationForRes(reserv.id, reserv.price, reserv.startDate, reserv.endDate)" v-for="reserv in filteredActions" :key="reserv.id">
                 <label>Reservation starts on:</label>
                 <p>{{formatDateStr(reserv.startDate)}}</p>
                 <label>Reservation ends on:</label>
@@ -43,7 +43,7 @@
 
 <script>
     import axios from 'axios';
-    import SuccessPopUp from "@/components/SuccessPopUp.vue";
+    import SuccessPopUp from "@/components/SuccessPopUp.vue";   
     import ConfirmationPopUp from "@/components/ConfirmationPopUp.vue";
     import ErrorPopUp from "@/components/ErrorPopUp.vue";
 
@@ -70,6 +70,11 @@
 
                 errorPopUpVisible: false,
                 errMessage: ""
+            }
+        },
+        computed: {
+            filteredActions: function() {
+                return this.reservations.filter(res => !res.reserved);
             }
         },
         methods: {

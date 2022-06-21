@@ -136,10 +136,11 @@
 
             </div>
 
-            <RentalReservationForm v-show="toShowReservationForm"
+            <RentalReservationForm v-if="toShowReservationForm"
                 :rentalId="rentalId"
                 :rentalType="rentalType"
                 :rentalPrice="price"
+                :rentalReservations="normalReservations.concat(actionReservations)"
                 @close="reopenRentalDetails"
             />
 
@@ -298,6 +299,8 @@
                 this.toShowRatingsAndReviews = true;
             },
             reopenRentalDetails() {
+                if (this.toShowReservationForm)
+                    this.$emit('reload');
                 this.toShowReservationForm = false;
                 this.toShowRentalActions = false;
                 this.toShowOwnerProfile = false;
@@ -331,6 +334,7 @@
         params.lat = adr.lat;
         params.images = rental.photos;
         params.actionReservations = rental.actionReservations;
+        params.normalReservations = rental.normalReservations;
     }
 
     function setUpDetailedCottageInfo(params, response) {

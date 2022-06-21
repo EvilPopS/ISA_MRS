@@ -90,8 +90,10 @@
 
     <RentalViewModal v-if="showRentalViewModal"
         @close = closePopUp
+        @reload=reloadRentalView
         :id = selectRentalId
         :type = selectRentalType
+        :key="reloadView"
     />
 
     <ErrorPopUp v-show="errorPopUpVisible" 
@@ -136,10 +138,15 @@
                 nameSortBtnClicked: false,
                 locationSortBtnClicked: false,
                 ratingSortBtnClicked: false,
-                priceSortBtnClicked: false
+                priceSortBtnClicked: false,
+
+                reloadView: false
             };
         },
         methods: {
+            reloadRentalView() {
+                this.reloadView = !this.reloadView; 
+            },
             closePopUp() {
                 this.errorPopUpVisible = false;
                 this.showRentalViewModal = false;
