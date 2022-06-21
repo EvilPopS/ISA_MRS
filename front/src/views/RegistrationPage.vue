@@ -174,18 +174,23 @@
                         profilePicture: this.profilePicture
                     }
                     axios.post("api/unauth/register/client", requestBody).then((response) => {
-                        //axios.get("api/unauth/send-confirmation-mail/" + this.email).then(response => {console.log("Uspeoooooooooooooooo")});
+                        axios.get("api/unauth/send-confirmation-mail/" + this.email).then(() => {console.log("Uspeoooooooooooooooo")});
                         this.succMessage = "Your account has been successfully registered, and confirmation email has been sent to " 
                                                 + this.email + 
                                             ". To activate your account please click link in the email message!"
                         this.succPopUpVisible = true;
                     }).catch(err => {
-                        if (err.response.status === 409){
+                        console.log(err.response);
+                        if (err.response.status === 403){
                             this.errMessage = "An account with the given email address already exists!";
                             this.errorPopUpVisible = true;
                         } 
                         else if (err.response.status === 422) {
                             this.errMessage = "Please make sure the data you entered are valid and the phone number is not used already.";
+                            this.errorPopUpVisible = true;
+                        }
+                        else {
+                            this.errMessage = "Woops. Something went wrong. Please try again later.";
                             this.errorPopUpVisible = true;
                         }
                     });
