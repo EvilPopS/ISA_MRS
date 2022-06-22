@@ -1,16 +1,21 @@
 package com.ftn.isa.model;
 
 
+import com.ftn.isa.helpers.Validate;
+
 import javax.persistence.*;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class RentalService {
     @Id
-    @SequenceGenerator(name = "mySeqGenRental", sequenceName = "mySeqRental", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenRental")
+    @SequenceGenerator(name = "my_seq_gen_rental", sequenceName = "my_seq_gen_rental", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq_gen_rental")
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -19,17 +24,15 @@ public abstract class RentalService {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "photo_id", referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private Set<Photo> photos;
-
 
     @Column(name = "capacity", nullable = false)
     private int capacity;
 
     @Column(name = "rules", nullable = false)
     private String rules;
-
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
@@ -38,19 +41,62 @@ public abstract class RentalService {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-
     @Column(name = "average_rate", nullable = false)
     private Double averageRate;
 
     @Column(name = "no_ratings", nullable = false)
     private int noRatings;
 
-
     @Column(name = "rental_type", nullable = false)
     private RentalType rentalType;
 
     @Column(name = "price", nullable = false)
     private Double price;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name = "rental_id", referencedColumnName = "id")
+    private List<Reservation> reservations;
+
+    @Version
+    @Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+    private Long version;
+
+    @Column(name = "is_changed",columnDefinition = "boolean DEFAULT false", nullable = false)
+    private boolean isChanged;
+
+    public RentalService(String name, String description, Set<Photo> photos, int capacity, String rules, boolean isDeleted,
+                         Address address, Double averageRate, int noRatings, RentalType rentalType, Double price) {
+        this.name = name;
+        this.description = description;
+        this.capacity = capacity;
+        this.rules = rules;
+        this.isDeleted = isDeleted;
+        this.address = address;
+        this.averageRate = averageRate == null ? 0 : averageRate;
+        this.noRatings = noRatings;
+        this.rentalType = rentalType;
+        this.price = price;
+        this.photos = photos;
+        this.reservations = new ArrayList<>();
+    }
+
+    public RentalService() {
+    }
+
+    public boolean hasUpcomingReservations() {
+        for (Reservation r : reservations){
+            if (Validate.getTodaysDate().isBefore(r.getEndTime()) && !r.isUnavailable() && !r.isCanceled()) return true;
+        }
+        return false;
+    }
+
+    public boolean isChanged() {
+        return isChanged;
+    }
+
+    public void setIsChanged(boolean changed) {
+        isChanged = changed;
+    }
 
     public String getName() {
         return name;
@@ -139,4 +185,25 @@ public abstract class RentalService {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Set<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Set<Photo> photos) {
+        this.photos = photos;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
 }

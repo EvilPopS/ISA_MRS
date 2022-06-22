@@ -1,8 +1,10 @@
 package com.ftn.isa.model;
 
-
+import com.ftn.isa.DTO.ReservingInfoDTO;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @Entity
 public class Reservation {
@@ -25,10 +27,58 @@ public class Reservation {
     @Column(name = "is_reserved", nullable = false)
     private boolean isReserved;
 
+    @Column(name = "is_canceled", nullable = false)
+    private boolean isCanceled;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "service_id", referencedColumnName = "id")
-    private RentalService service;
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="client_id")
+    private Client client;
+
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="rental_id")
+    private RentalService rental;
+
+    @Column(name = "is_unavailable", nullable = false)
+    private boolean isUnavailable;
+
+    @Column(name = "action_services")
+    private String actionServices;
+
+
+    public Reservation() {}
+
+    public Reservation(ReservingInfoDTO reservingData, Double price, RentalService rental, Client client) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        this.startTime = LocalDateTime.parse(reservingData.getStartDate(), format);
+        this.endTime = LocalDateTime.parse(reservingData.getEndDate(), format);
+        this.price = price;
+        this.isAction = false;
+        this.isReserved = true;
+        this.rental = rental;
+        this.client = client;
+        this.isUnavailable = false;
+        this.isCanceled = false;
+    }
+
+    public Reservation(LocalDateTime startTime, LocalDateTime endTime, boolean isAction,
+                       Double price, boolean isReserved, boolean isUnavailable, String actionServices) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isAction = isAction;
+        this.price = price;
+        this.isReserved = isReserved;
+        this.isUnavailable = isUnavailable;
+        this.actionServices = actionServices;
+        this.isCanceled = false;
+    }
+
+    public boolean periodsAreOverlapping(LocalDateTime startDate, LocalDateTime endDate) {
+        return startDate.isAfter(this.startTime) && startDate.isBefore(this.endTime) ||
+                endDate.isAfter(this.startTime) && endDate.isBefore(this.endTime) ||
+                this.startTime.isAfter(startDate) && this.startTime.isBefore(endDate) ||
+                this.endTime.isAfter(startDate) && this.endTime.isBefore(endDate) ||
+                startDate.isEqual(this.startTime) || endDate.isEqual(this.endTime);
+    }
 
     public LocalDateTime getStartTime() {
         return startTime;
@@ -70,14 +120,6 @@ public class Reservation {
         isReserved = reserved;
     }
 
-    public RentalService getService() {
-        return service;
-    }
-
-    public void setService(RentalService service) {
-        this.service = service;
-    }
-
     public Long getId() {
         return id;
     }
@@ -86,5 +128,43 @@ public class Reservation {
         this.id = id;
     }
 
+    public Client getClient() {
+        return client;
+    }
 
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public RentalService getRental() {
+        return rental;
+    }
+
+    public void setRental(RentalService rental) {
+        this.rental = rental;
+    }
+
+    public boolean isUnavailable() {
+        return isUnavailable;
+    }
+
+    public void setUnavailable(boolean unavailable) {
+        this.isUnavailable = unavailable;
+    }
+
+    public String getActionServices() {
+        return actionServices;
+    }
+
+    public void setActionServices(String actionServices) {
+        this.actionServices = actionServices;
+    }
+
+    public boolean isCanceled() {
+        return isCanceled;
+    }
+
+    public void setCanceled(boolean canceled) {
+        isCanceled = canceled;
+    }
 }

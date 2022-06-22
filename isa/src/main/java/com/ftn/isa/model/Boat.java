@@ -2,11 +2,10 @@ package com.ftn.isa.model;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
 
 @Entity
 public class Boat extends RentalService{
-
-
     @Column(name = "type", nullable = false)
     private String type;
 
@@ -28,13 +27,10 @@ public class Boat extends RentalService{
     @Column(name = "fishing_equipment", nullable = false)
     private String fishingEquipment;
 
-    @Column(name = "cancellation_conditions", nullable = false)
-    private Double cancellationConditions;
-
     public Boat() {
     }
 
-    public Boat(String type, String boatLength, String engineNumber, String enginePower, String maxSpeed, String navigationEquipment, String fishingEquipment, Double cancellationConditions) {
+    public Boat(String type, String boatLength, String engineNumber, String enginePower, String maxSpeed, String navigationEquipment, String fishingEquipment) {
         this.type = type;
         this.boatLength = boatLength;
         this.engineNumber = engineNumber;
@@ -42,7 +38,19 @@ public class Boat extends RentalService{
         this.maxSpeed = maxSpeed;
         this.navigationEquipment = navigationEquipment;
         this.fishingEquipment = fishingEquipment;
-        this.cancellationConditions = cancellationConditions;
+    }
+
+    public Boat(String name, String description, int capacity, String rules, boolean isDeleted, Address address, Double averageRate,
+                int noRatings, RentalType rentalType, Double price, String type, String boatLength,
+                String engineNumber, String enginePower, String maxSpeed, String navigationEquipment, String fishingEquipment) {
+        super(name, description, new HashSet<>(), capacity, rules, isDeleted, address, averageRate, noRatings, rentalType,price);
+        this.type = type;
+        this.boatLength = boatLength;
+        this.engineNumber = engineNumber;
+        this.enginePower = enginePower;
+        this.maxSpeed = maxSpeed;
+        this.navigationEquipment = navigationEquipment;
+        this.fishingEquipment = fishingEquipment;
     }
 
     public String getType() {
@@ -101,11 +109,4 @@ public class Boat extends RentalService{
         this.fishingEquipment = fishingEquipment;
     }
 
-    public Double getCancellationConditions() {
-        return cancellationConditions;
-    }
-
-    public void setCancellationConditions(Double cancellationConditions) {
-        this.cancellationConditions = cancellationConditions;
-    }
 }
