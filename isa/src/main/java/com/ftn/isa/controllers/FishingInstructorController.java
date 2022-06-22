@@ -246,14 +246,8 @@ public class FishingInstructorController {
         if (!fishingInstructorService.checkIfAdventureExists(fishingInstructor, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        List<Reservation> allReservation = new ArrayList<>();
-        for (Adventure b : fishingInstructor.getAdventures()){
-            if (b.getId().equals(regularResDTO.getRentalId())){
-                allReservation = b.getReservations();
-                break;
-            }
-        }
-        if (!fishingInstructorService.checkIfCurrentResInProgress(client, fishingInstructor, allReservation))
+
+        if (!fishingInstructorService.checkIfCurrentResInProgress(client, fishingInstructor, reservationService.getAllReservations()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         Reservation newRes = null;
         try {
