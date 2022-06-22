@@ -6,6 +6,7 @@ import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
@@ -143,9 +144,13 @@ public class BoatOwnerController {
         if (!boatDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        Set<Photo> photos = new HashSet<>();
-        photos = photoService.changeBoatPhotos(boatOwner, boatDTO.getId(), boatDTO.getPhotos());
-        boatOwnerService.save(boatOwner, boatDTO, photos);
+        try {
+            Set<Photo> photos = new HashSet<>();
+            photos = photoService.changeBoatPhotos(boatOwner, boatDTO.getId(), boatDTO.getPhotos());
+            boatOwnerService.save(boatOwner, boatDTO, photos);
+        } catch (OptimisticEntityLockException e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

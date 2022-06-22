@@ -77,17 +77,17 @@ insert into adventure (id, name, description, capacity, rules, is_deleted, addre
 insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                       rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
                       navigation_equipment, fishing_equipment, boat_owner_id)
-    values (nextval('my_seq_gen_rental'), 'The Black Pearl', 'Crni brodic, velik i lep.', 8, 'Nema skakanja sa brodica.', false, 6, 4.5, 1, 1, 150,
-                'Ribarski brodic', '20', '46345754', '500', '30', 'radar,lidar,gps',
+    values (nextval('my_seq_gen_rental'), 'The Black Pearl', 'Luksuzna jahta. Najjaci brod za krstarenje!', 8, 'Nema skakanja sa broda.', false, 6, 4.5, 1, 1, 150,
+                'Luksuzna jahta', '20', '46345754', '500', '30', 'radar,lidar,gps',
                 'stap,mreza,dupla mreza', 3);
 
 insert into cottage (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, additional_services, no_rooms,cottage_owner_id)
-    values (nextval('my_seq_gen_rental'), 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu.', 5, 'Nema lomljenja staklenih predmeta!',
+    values (nextval('my_seq_gen_rental'), 'Vikendica Drvence', 'Lepa mala drvena vikendica na brdu, dodjite!', 5, 'Nema lomljenja staklenih predmeta!',
                 false, 8, 0, 0, 0, 90, 'wifi,parking,internet,bazen', 3, 5),
-           (nextval('my_seq_gen_rental'), 'Fruskogorska zora', 'Najlepsa vikendica u okolini NS.', 5, 'Zabranjeno pusenje!',
+           (nextval('my_seq_gen_rental'), 'Fruskogorska zora', 'Najlepsa vikendica u okolini Novog Sada.', 5, 'Zabranjeno pusenje!',
             false, 9, 3.3, 2, 0, 100, 'wifi,klima,parking,rostilj', 4, 5),
-           (nextval('my_seq_gen_rental'), 'Centar NS', 'Najlepsi pogled na centar NS.', 5, 'Zabranjeno pusenje!',
+           (nextval('my_seq_gen_rental'), 'Centar NS', 'Najlepsi pogled na centar NS. Pogled na katedralu.', 5, 'Zabranjeno pusenje!',
             false, 10, 0, 0, 0, 60, 'wifi,klima,parking,rostilj', 4, 5);
 
 insert into loyalty_program (discount, increase, loyalty_type, price)
@@ -112,10 +112,10 @@ insert into request(id, is_answered, message, sent_time, request_type, sender_id
 insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                   rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
                   navigation_equipment, fishing_equipment, boat_owner_id)
-values (nextval('my_seq_gen_rental'), 'The White King', 'Ekstra brod, rezervisi odmah!', 6, 'Nema skakanja sa brodica.', false, 6, 4.1, 1, 1, 70,
+values (nextval('my_seq_gen_rental'), 'The White King', 'Ekstra brod, rezervisi odmah, luksuz na vodi!', 6, 'Nema lomljenja staklenih predmeta.', false, 6, 4.1, 1, 1, 70,
         'Ribarska jahta sa kabinom', '15', '46300754', '500', '20', 'radar,findfish,gps',
         'stap,mreza,mreza za ajkulu', 3),
-       (nextval('my_seq_gen_rental'), 'Little boat', 'Mali brodic za manje rute!', 3, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 30,
+       (nextval('my_seq_gen_rental'), 'Little boat', 'Mali brodic za manje rute! Odlican za pecanje!', 3, 'Nema skakanja sa brodica.', false, 6, 0, 0, 1, 30,
         'Ribarski brodic bez kabine', '5', '46350154', '200', '15', 'radar',
         'stap,mreza', 3);
 
@@ -144,10 +144,12 @@ values ('11/8/2022', '29/8/2022', false, true, 30, 1, 4, false, null, false),
        ('10/6/2022', '12/6/2022', false, true, 40, 4, 4, false, null, false),
        ('15/6/2022', '27/6/2022', false, true, 30, 2, 4, false, null, false),
        ('14/6/2022 11:00', '18/6/2022 11:00', false, true, 40, 6, 4, false, null, false),
-       ('24/6/2022 11:00', '28/6/2022 11:00', true, false, 70, 4, 4, false, 'spa,table tennis', false),
+       ('23/6/2022 11:00', '25/6/2022 11:00', false, true, 70, 5, 4, false, null, false),
+       ('22/6/2022 11:00', '28/6/2022 11:00', true, false, 70, 4, 4, false, 'spa,table tennis', false),
        ('29/6/2022 11:00', '30/6/2022 11:00', true, true, 40, 4, 4, false, 'spa', false),
        ('14/6/2022 11:00', '15/6/2022 11:00', false, true, 150, 9, 4, false, null, false),
-       ('04/7/2022 11:00', '11/7/2022 18:00', false, true, 50, 10, 4, false, null, false),
+       ('23/6/2022 11:00', '25/6/2022 18:00', false, true, 50, 10, 4, false, null, false),
+       ('10/7/2022 11:00', '14/7/2022 18:00', false, true, 50, 10, 4, false, null, false),
        ('18/6/2022', '21/6/2022', false, true, 40, 3, 4, false, null, false),
-       ('21/6/2022', '22/6/2022', false, true, 60, 4, 4, false, null, false)
+       ('21/4/2022', '22/4/2022', false, true, 60, 4, 4, false, null, false)
 

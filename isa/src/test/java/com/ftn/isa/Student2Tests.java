@@ -45,7 +45,8 @@ public class Student2Tests {
 			@Override
 			public void run() {
 				System.out.println("Startovan Thread 1");
-                Reservation newRes = new Reservation(LocalDateTime.now(), LocalDateTime.now().plusDays(3),
+				try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
+				Reservation newRes = new Reservation(LocalDateTime.now(), LocalDateTime.now().plusDays(3),
                         false, 150.0, true, false, "");
                 newRes.setCanceled(false);
                 newRes.setClient(clientService.findByEmail("client1@gmail.com"));
@@ -54,7 +55,6 @@ public class Student2Tests {
 
                 reservationService.saveReservation(newRes, cottageService.findById(4l));    //poveze se rezervacija sa cottage drvence
                 //spava 3 sekunde
-                try { Thread.sleep(3000); } catch (InterruptedException e) { e.printStackTrace(); }
             }
 		});
 		Future<?> future2 = executor.submit(new Runnable() {
