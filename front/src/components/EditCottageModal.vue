@@ -198,8 +198,21 @@ export default {
                         this.localSuccPopUpVisible = true;
                     })
                     .catch(function (error) {
-                        console.log(error);
-                        alert(error.name)
+                        if (error.response.status == 409){
+                            this.errMessage = "Conflict situation. Please try again later..";
+                            this.errorPopUpVisible = true;
+                        } else if (error.response.status == 401){
+                            this.errMessage = "You are not authorized..";
+                            this.errorPopUpVisible = true;
+                        } else if (error.response.status == 422){
+                            this.errMessage = "Wrong data..Check your inputs!";
+                            this.errorPopUpVisible = true;
+                        } 
+                        else {
+                            console.log(error);
+                            this.errMessage = "Something went wrong.. Please try again later..";
+                            this.errorPopUpVisible = true;
+                        }
                     });
 
         },

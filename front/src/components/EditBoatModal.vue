@@ -251,6 +251,10 @@ export default {
                             this.errMsg = "Client or owner with given email address is not found!";
                             this.errorPoup = true;
                         } 
+                        else if (error.response.status == 409){
+                            this.errMsg = "Conflict situation. Please try again later..";
+                            this.errorPoup = true;
+                        }
                         else if (err.response.status === 401) {
                             this.errMsg = "You are not authorized!";
                             this.errorPoup = true;

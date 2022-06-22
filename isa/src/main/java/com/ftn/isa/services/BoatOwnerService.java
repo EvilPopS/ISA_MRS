@@ -9,6 +9,8 @@ import com.ftn.isa.model.*;
 import com.ftn.isa.repository.BoatOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -56,6 +58,7 @@ public class BoatOwnerService {
         boatOwnerRepository.save(boatOwner);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void save(BoatOwner boatOwner, BoatDTO boatDTO, Set<Photo> photos){
         for (Boat boat : boatOwner.getBoats()){
             if (boat.getId() == boatDTO.getId()) {

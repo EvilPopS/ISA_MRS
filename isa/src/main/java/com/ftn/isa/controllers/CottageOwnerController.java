@@ -6,6 +6,7 @@ import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
 import com.ftn.isa.services.*;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.hibernate.dialect.lock.PessimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -186,10 +187,14 @@ public class CottageOwnerController  {
 
         if (!cottageDTO.arePropsValidAdding())
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        try {
+            Set<Photo> photos = new HashSet<>();
+            photos = photoService.changeCottagePhotos(cottageOwner, cottageDTO.getId(), cottageDTO.getPhotos());
+            cottageOwnerService.save(cottageOwner, cottageDTO, photos);
+        } catch (OptimisticEntityLockException e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
 
-        Set<Photo> photos = new HashSet<>();
-        photos = photoService.changeCottagePhotos(cottageOwner, cottageDTO.getId(), cottageDTO.getPhotos());
-        cottageOwnerService.save(cottageOwner, cottageDTO, photos);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -353,7 +358,14 @@ public class CottageOwnerController  {
         if (!cottageOwnerService.checkIfCottageExists(cottageOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        if (!cottageOwnerService.checkIfCurrentResInProgress(client, cottageOwner, reservationService.getAllReservations()))
+        List<Reservation> allReservation = new ArrayList<>();
+        for (Cottage b : cottageOwner.getCottages()){
+            if (b.getId().equals(regularResDTO.getRentalId())){
+                allReservation = b.getReservations();
+                break;
+            }
+        }
+        if (!cottageOwnerService.checkIfCurrentResInProgress(client, cottageOwner, allReservation))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Reservation newRes = null;
