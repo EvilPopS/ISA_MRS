@@ -63,6 +63,18 @@ public class PhotoService {
         return photos;
     }
 
+    public Set<Photo> changeAdventurePhotos(FishingInstructor fishingInstructor, Long id, Set<String> dtoPhotos) {
+        Set<Photo> photos = new HashSet<>();
+        for (Adventure a : fishingInstructor.getAdventures()){
+            if (a.getId() == id){
+                photos = this.addOrDeletePhoto(a, id, dtoPhotos);
+                break;
+            }
+        }
+
+        return photos;
+    }
+
     public Set<Photo> changeBoatPhotos(BoatOwner boatOwner, Long id, Set<String> dtoPhotos) {
         Set<Photo> photos = new HashSet<>();
         for (Boat c : boatOwner.getBoats()){

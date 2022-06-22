@@ -9,6 +9,6 @@ import java.util.List;
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
     @Query(nativeQuery = true, value = "select * from report")
-    public List<Report> getAllReports();
+    List<Report> getAllReports();
 
 }

@@ -30,7 +30,7 @@
         :title="rejectionTitle"
         :message="rejectionMessage"
         @modal-closed = "confirmationPopUpVisible = false"
-        @confirmed-event = "rejectRequest" 
+        @confirmed-event = "confirmedEvent" 
         />
         </div>
         <SuccessPopUp v-show="succPopUpVisible"
@@ -99,6 +99,13 @@ export default {
             setSelected(tab) {
                 this.selected = tab;
         },
+        confirmedEvent(){
+            if (this.selected === 'Rental reviews'){
+                this.rejectReview();
+            }else{
+                this.rejectRequest();
+            }
+        },
 
         closeErrorPopUP()  {
             this.errorPopUpVisible = true;
@@ -125,13 +132,12 @@ export default {
         confirmReviewRejectingDialog : function(review){
             this.reviewToBeRejected = review
             this.rejectionTitle = 'Are you sure?';
-            this.rejectionMessage = 'Request is going to be rejected.';
+            this.rejectionMessage = 'Review is going to be rejected.';
             this.confirmationPopUpVisible = true;
 
         },
 
         allowReview(){
-            console.log("Allowing revieeeeeeeeeeeew.....");
 
             axios.post('api/rental/gradeUpdate', this.reviewToBeAllowed, {headers: {'authorization': window.localStorage.getItem("token")}}).then((response) => {
                 
@@ -157,7 +163,7 @@ export default {
             // obrisi sendera i stavi isAnswered na true
             if (this.requestToBeAllowed.requestType === 'ACCOUNT DELETION'){
                 console.log("usaoooooooooooooo");
-                axios.delete('api/admin/delete-user/allow', this.requestToBeAllowed, {headers: {'authorization': window.localStorage.getItem("token")}}).then((response) => {
+                axios.post('api/admin/delete-user/allow', this.requestToBeAllowed, {headers: {'authorization': window.localStorage.getItem("token")}}).then((response) => {
                 this.requests = this.requests.filter(item => item != this.requestToBeAllowed);
                 this.succPopUpVisible = true;
                 this.succMessage = 'Account deletion request is successfully allowed.';
@@ -185,7 +191,7 @@ export default {
         },
         rejectRequest(){
             this.confirmationPopUpVisible = false;
-            axios.delete('api/admin/delete-user/reject',this.requestToBeRejected, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
+            axios.post('api/admin/delete-user/reject', this.requestToBeRejected, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
                 this.requests = this.requests.filter(item => item != this.requestToBeRejected);
                 this.succPopUpVisible = true;
                 this.succMessage = 'Request is successfully rejected.';
@@ -195,6 +201,24 @@ export default {
                 this.errorPopUpVisible = true;
 
             })
+            
+        },
+        rejectReview(){
+
+            axios.post('api/admin/reject-review',this.reviewToBeRejected, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
+                this.reviews = this.reviews.filter(item => item != this.reviewToBeRejected);
+                this.succPopUpVisible = true;
+                this.confirmationPopUpVisible = false;
+                this.succMessage = 'Review is successfully rejected.';
+                this.reviews.push();
+            }).catch((e) => {
+                this.errMessage = e;
+                this.errorPopUpVisible = true;
+
+            })
+
+            console.log('aaaaaaaaaa');
+            
             
         }
 

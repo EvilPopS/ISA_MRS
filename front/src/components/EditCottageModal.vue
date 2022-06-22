@@ -237,9 +237,6 @@ export default {
             if (!this.validate(this.data.street, streetReg))
                 throw "Make sure you entered a valid street name.";
             
-            if (!this.validate(this.data.noRooms, numReg) || this.data.noRooms <= 0)
-                throw "Make sure your entered valid number of rooms.";
-            
             if (!this.validate(this.data.capacity, numReg) || this.data.capacity <= 0)
                 throw "Capacity must be greater than 0.";
 

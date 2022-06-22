@@ -28,4 +28,17 @@ public class ReviewService {
         );
     }
 
+    public void save(Review review){reviewRepository.save(review);}
+
+    public Review getReviewById(Long id){return reviewRepository.getReviewById(id);}
+
+    public boolean rejectReview(Long id){
+        Review rejectedReview = getReviewById(id);
+        if (rejectedReview == null)
+            return false;
+        rejectedReview.setAnswered(true);
+        save(rejectedReview);
+        return true;
+    }
+
 }

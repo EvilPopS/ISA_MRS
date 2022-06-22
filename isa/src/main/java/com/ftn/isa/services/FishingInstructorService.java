@@ -2,6 +2,7 @@ package com.ftn.isa.services;
 
 
 import com.ftn.isa.DTO.AdventureDTO;
+import com.ftn.isa.DTO.CottageDTO;
 import com.ftn.isa.DTO.FishingInstructorDTO;
 import com.ftn.isa.DTO.OwnersSearchResDTO;
 import com.ftn.isa.helpers.Validate;
@@ -9,10 +10,13 @@ import com.ftn.isa.model.*;
 import com.ftn.isa.repository.FishingInstructorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -45,6 +49,31 @@ public class FishingInstructorService {
     public FishingInstructor getOwnerByAdventureId(Long advId) {
         return fishingInstructorRepo.getOwnerByAdventureId(advId);
     }
+
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void save(FishingInstructor fishingInstructor, AdventureDTO adventureDTO, Set<Photo> photos){
+        for (Adventure adventure : fishingInstructor.getAdventures()){
+            if (adventure.getId() == adventureDTO.getId()) {
+                adventure.setPhotos(photos);
+                adventure.getAddress().setPlaceName(adventureDTO.getCity());
+                adventure.getAddress().setCountry(adventureDTO.getCountry());
+                adventure.getAddress().setStreet(adventureDTO.getStreet());
+                adventure.getAddress().setLon(adventureDTO.getLon());
+                adventure.getAddress().setLat(adventureDTO.getLat());
+                adventure.setFishingEquipment(adventureDTO.getFishingEquipment());
+                adventure.setBiography(adventureDTO.getBiography());
+                adventure.setDescription(adventureDTO.getDescription());
+                adventure.setCapacity(adventureDTO.getCapacity());
+                adventure.setName(adventureDTO.getName());
+                adventure.setPrice(adventureDTO.getPrice());
+                adventure.setRules(adventureDTO.getRules());
+            }
+        }
+
+        fishingInstructorRepo.save(fishingInstructor);
+    }
+
     public void save(FishingInstructor fishingInstructor){ fishingInstructorRepo.save(fishingInstructor);};
 
     public void updateAdventure(FishingInstructor fishingInstructor, AdventureDTO adventureData) {
@@ -52,8 +81,18 @@ public class FishingInstructorService {
         fishingInstructorRepo.save(fishingInstructor);
     }
 
-    public void deleteAdventure(FishingInstructor fishingInstructor, Long id) {
-        fishingInstructor.findAdventureById(id).setDeleted(true);
+    public void deleteAdventure(FishingInstructor fishingInstructor, Long id) throws Exception {
+
+        for (Adventure c : fishingInstructor.getAdventures()){
+            if (c.getId() == id){
+                if (c.isDeleted())
+                    throw new Exception("Cottage with this id is already deleted");
+                else if (c.hasUpcomingReservations())
+                    throw new Exception("Cottage cannot be deleted due to upcoming reservations");
+                c.setDeleted(true);
+                break;
+            }
+        }
         fishingInstructorRepo.save(fishingInstructor);
 
     }

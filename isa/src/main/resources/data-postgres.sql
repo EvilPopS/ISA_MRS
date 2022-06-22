@@ -133,9 +133,9 @@ insert into subscription(owner_id, client_id, is_active_subscription)
             (3, 4, true),
             (6, 4, true);
 
-insert into report(id, is_answered, message, sent_time, has_showed_up, is_negative, client_id, owner_id)
-    values (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekli', '05/06/2022 11:11', true, true , 4, 6),
-           (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekliiiiiiiiiiiii', '05/06/2022 22:22', true, true , 4, 6);
+insert into report(id, is_answered, message, sent_time, client_is_sender, has_showed_up, is_negative, client_id, owner_id)
+    values (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekli', '05/06/2022 11:11', true, true, true , 4, 6),
+           (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekliiiiiiiiiiiii', '05/06/2022 22:22', true, true, true , 4, 6);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
 values ('11/8/2022', '29/8/2022', false, true, 30, 1, 4, false, null, false),

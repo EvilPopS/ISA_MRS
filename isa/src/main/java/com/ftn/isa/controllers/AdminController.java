@@ -76,6 +76,26 @@ public class AdminController {
 
     }
 
+    @PutMapping(consumes="application/json", value="/data-update")
+    @PreAuthorize("hasRole('ADMIN')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<AdminDTO> updatePersonalData(@RequestBody AdminDTO adminDTO, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        Admin boatOwner = adminService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!adminDTO.arePropsValid())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        adminService.save(adminDTO, boatOwner);
+        return new ResponseEntity<>(adminDTO, HttpStatus.OK);
+
+    }
+
     @GetMapping
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PreAuthorize("hasRole('ADMIN')")
@@ -167,11 +187,11 @@ public class AdminController {
     }
 
 
-    @DeleteMapping(value = "/delete-user/{response}")
+    @PostMapping(value = "/delete-user/{response}")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteUserFromRequest(HttpServletRequest request, @RequestBody RequestDTO requestDTO, @PathVariable String response){
-        // za sad samo ovako pa vidi posle kako ces
+
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
         List<Request> requestList = requestService.getAllRequests();
 
@@ -263,6 +283,15 @@ public class AdminController {
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping(value="/reject-review")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> rejectReview(@RequestBody ReviewDTO rejectedReview){
+
+        return reviewService.rejectReview(rejectedReview.getReviewId()) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        boolean a = ;
+//        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
