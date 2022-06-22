@@ -18,6 +18,7 @@ public class ReviewDTO {
     public Long senderId;
     public String senderProfilePhoto;
     public String senderName;
+    public Long reviewId;
 
 
 
@@ -25,6 +26,7 @@ public class ReviewDTO {
     }
 
     public ReviewDTO(Review review){
+        this.reviewId = review.getId();
         this.isAnswered = review.isAnswered();
         this.message = review.getMessage();
         this.sentTime = review.getSentTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
@@ -51,6 +53,22 @@ public class ReviewDTO {
         this.senderId = senderId;
         this.senderProfilePhoto = photo;
         this.senderName = senderName;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public Long getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(Long reviewId) {
+        this.reviewId = reviewId;
     }
 
     public String getSenderProfilePhoto() {

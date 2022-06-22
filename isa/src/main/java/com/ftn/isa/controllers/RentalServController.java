@@ -144,9 +144,7 @@ public class RentalServController {
         rentalServService.updateRentalGrade(gradedReview.getRentalServiceId(), rentalTypeString, gradedReview.getGrade());
 
         return new ResponseEntity<>(HttpStatus.OK);
-
-
-
     }
+
 
 }

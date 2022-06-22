@@ -40,7 +40,7 @@
         </div>
         <div v-if="showEdit">
             <EditAdventureModal
-            :cottage = "sendCottage"
+            :adventure = "sendCottage"
             @modal-closed = "showEdit = false"
             @succ-popup-close = "succPopUpClose"
             />

@@ -2,6 +2,7 @@ package com.ftn.isa.DTO;
 
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.Admin;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class AdminDTO {
 
@@ -67,6 +68,11 @@ public class AdminDTO {
         this.userType = userType;
         this.loyaltyStatus = loyaltyStatus;
         this.loyaltyPoints = loyaltyPoints;
+    }
+
+    public void hashPassword() {
+        if (!this.password.equals(""))
+            this.password = new BCryptPasswordEncoder().encode(this.password);
     }
 
 

@@ -212,12 +212,21 @@ public class AdventureDTO {
     }
 
     public boolean propsValid() {
-        return  Validate.validateSurName(this.name) &&
+        return  Validate.validateWords(this.name) &&
                 Validate.validateWords(this.city) &&
-                Validate.validateNumber(this.country) &&
+                Validate.validateWords(this.country) &&
                 Validate.validateStreet(this.street) &&
                 this.price > 0 && !this.biography.equals("") && this.capacity > 0 &&
                 this.photos.size() > 0 && this.noRatings == 0 && this.rating == 0
                 ;
+    }
+
+    public boolean arePropsValidAdding() {
+        return  Validate.validateSurName(this.name) &&
+                Validate.validateWords(this.city) &&
+                Validate.validateWords(this.country) &&
+                Validate.validateStreet(this.street) &&
+                this.price > 0 && !this.biography.equals("") && this.capacity > 0 &&
+                this.photos.size() > 0;
     }
 }

@@ -55,6 +55,9 @@ public class FishingInstructorController {
     @Autowired
     private LoyaltyProgramService loyaltyProgramService;
 
+    @Autowired
+    private PhotoService photoService;
+
 
     @GetMapping(value = "/{email}/searchAdventure")
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -140,7 +143,7 @@ public class FishingInstructorController {
     }
 
 
-    @DeleteMapping(value="/{email}/delete-adventure/{id}")
+    @DeleteMapping(value="delete-adventure/{id}")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     public ResponseEntity<HttpStatus> deleteAdventure(HttpServletRequest request, @PathVariable String id) throws Exception {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
@@ -151,9 +154,36 @@ public class FishingInstructorController {
         if (fishingInstructor == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        fishingInstructorService.deleteAdventure(fishingInstructor, Long.parseLong(id));
+
+        try {
+            fishingInstructorService.deleteAdventure(fishingInstructor, Long.parseLong(id));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
 
+    }
+
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PutMapping(consumes="application/json", value="/change-adventure-data")
+    public ResponseEntity<HttpStatus> updateCottageData(HttpServletRequest request, @RequestBody AdventureDTO adventureDTO) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(email);
+        if (fishingInstructor == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!adventureDTO.arePropsValidAdding())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        Set<Photo> photos = new HashSet<>();
+        photos = photoService.changeAdventurePhotos(fishingInstructor, adventureDTO.getId(), adventureDTO.getPhotos());
+        fishingInstructorService.save(fishingInstructor, adventureDTO, photos);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(consumes="application/json", value="/data-update")
