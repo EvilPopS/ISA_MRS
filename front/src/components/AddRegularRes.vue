@@ -36,16 +36,16 @@ export default {
         SuccessPopUp, ErrorPopUp
     },
     props: {
-        cottage: Object
+        rental: Object
     },
     data(){
         return {
             regularData: {
                 startTime: '',
                 endTime: '',
-                cottageId: this.cottage.id,
+                rentalId: this.rental.id,
                 clientEmail: '',
-                price: this.cottage.price
+                price: this.rental.price
             },
 
             todaysDate: '',
@@ -67,7 +67,7 @@ export default {
         },
         closeSuccPopUp() {
                 this.localSuccPopUpVisible = false
-                this.$router.go(); 
+                this.$emit('modal-closed');
         },
         addRegRes() {
             try { this.checkInputs(); } 
@@ -83,7 +83,7 @@ export default {
                     })
                     .catch(err => {
                             if (err.response.status === 404){
-                                this.errMessage = "Cottage owner or client with that email doesn't!";
+                                this.errMessage = "Something went wrong, client with that email doesn't exist or have too many penalties!";
                                 this.errorPopUpVisible = true;
                             } 
                             else if (err.response.status === 401) {
@@ -92,6 +92,9 @@ export default {
                             }
                             else if (err.response.status === 422) {
                                 this.errMessage = "Regular reservation cannot overlap with other reservations and client's current reservation must be in progress! Check all input data.";
+                                this.errorPopUpVisible = true;
+                            } else if (err.response.status == 409){
+                                this.errMessage = "Conflict situation. Please try again later..";
                                 this.errorPopUpVisible = true;
                             } else {
                                 this.errMessage = "Uups! Something went wrong...";
@@ -118,8 +121,7 @@ export default {
         } else if (this.searchRole === "INSTRUCTOR"){
             this.roleURL = "fishingInstructor"
         } else if (this.searchRole === "BOAT_OWNER") {
-            //za boat
-        } else {
+            this.roleURL = "boat-owner"
         }
     }
 }

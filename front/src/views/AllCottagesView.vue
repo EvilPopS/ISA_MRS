@@ -22,9 +22,9 @@
                             <div class="card-body">
                                 <h5 class="card-title" id="heading-cottage">{{cottage.name}}</h5>
                                 <p class="card-text"><b>Location:</b> {{cottage.city}}, {{cottage.street}}</p>
-                                <p class="card-text"><b>Description:</b>{{cottage.description.length < 15 ? cottage.description + "     " : cottage.description}}</p>
+                                <p class="card-text" style="white-space: pre-line;"><b>Description:</b>{{cottage.description}}</p>
                                 <p class="card-text"><b>Price:</b>{{cottage.price}} &euro;</p>
-                                <p class="card-text"><b>Rate:</b> {{cottage.averageRating}}★</p>
+                                <p class="card-text"><b>Rate:</b> {{cottage.averageRating > 0 ? cottage.averageRating : "Not yet rated"}}★</p>
                                 <span>
                                     <button class="btn btn-success card-btns" @click="showEditCottageModal(cottage)">Change</button>
                                     <button class="btn btn-danger card-btns" @click="showConfirmDeletionDialog(cottage)">Delete</button>
@@ -71,7 +71,7 @@
         <div v-else-if="showAddNewRes">
             <NewReservationsComponent
                 @modal-closed = "showAddNewRes = false"
-                :choosenCottage="calendarForCottage"
+                :calendarForRental="calendarForCottage"
             />
         </div>
         <ErrorPopUp v-show="errorPoup" 
@@ -241,17 +241,30 @@ export default {
        axios.get('api/cottage-owner/all-cottages', {headers: {'authorization': window.localStorage.getItem("token") }})
        .then((response) => {
            this.cottages = response.data
-        }).catch((error) => {
-            this.errMsg = "Error happened: " + error.name
-            this.errorPoup = true
-        })
+        }).catch(err => {
+            if (err.response.status === 404){
+                this.errMsg = "Client or owner with given email address is not found!";
+                this.errorPoup = true;
+            } 
+            else if (err.response.status === 401) {
+                this.errMsg = "You are not authorized!";
+                this.errorPoup = true;
+            }
+            else if (err.response.status === 422) {
+                this.errMsg = "Input data is wrong!";
+                this.errorPoup = true;
+            } else {
+                this.errMsg = "Uups! Something went wrong...";
+                this.errorPoup = true;
+            }
+        });
 
    },
    computed: {
         filtered: function(){
             return this.cottages.filter((res) => {
                 return ((res.name.toLowerCase()).match(this.searched.toLowerCase()) || (res.description.toLowerCase()).match(this.searched.toLowerCase())
-                || (res.averageRating.toString()).match(this.searched) || (res.city.toLowerCase()).match(this.searched.toLowerCase()))
+                || (res.averageRating.toString()).match(this.searched) || (res.price.toString()).match(this.searched) || (res.city.toLowerCase()).match(this.searched.toLowerCase()))
             });
         }
     }
@@ -264,13 +277,14 @@ export default {
         margin-top: 10px !important;
         height: 150px;
         width: auto;
+        max-width: 250px;
         display: block;
         margin: 0 auto;
         border-radius: 10%;
     }
 
     #cottage-img:hover{
-        width: 230px;
+        width: 270px;
         height: 170px;
         border-radius: 20px;
         background: linear-gradient(rgb(255, 253, 253), rgb(241, 239, 239));

@@ -43,7 +43,7 @@ public class UnauthUserController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         if (clientService.findByEmail(clientData.getEmail()) != null)
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         clientData.setPassword(new BCryptPasswordEncoder().encode(clientData.getPassword()));
         Client client = new Client(clientData);

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class RegularResDTO {
 
-    private Long cottageId;
+    private Long rentalId;
 
     private LocalDateTime startTime;
 
@@ -21,7 +21,7 @@ public class RegularResDTO {
     }
 
     public RegularResDTO(Long cottageId, LocalDateTime startTime, LocalDateTime endTime, String clientEmail, Double price) {
-        this.cottageId = cottageId;
+        this.rentalId = cottageId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.clientEmail = clientEmail;
@@ -38,8 +38,12 @@ public class RegularResDTO {
                 && startTime.isBefore(endTime);
     }
 
-    public Long getCottageId() {
-        return cottageId;
+    public Long getRentalId() {
+        return rentalId;
+    }
+
+    public void setRentalId(Long rentalId) {
+        this.rentalId = rentalId;
     }
 
     public Double getPrice() {
@@ -48,10 +52,6 @@ public class RegularResDTO {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public void setCottageId(Long cottageId) {
-        this.cottageId = cottageId;
     }
 
     public LocalDateTime getStartTime() {

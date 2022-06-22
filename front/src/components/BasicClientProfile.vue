@@ -17,7 +17,15 @@
                     <p>
                         <b>Address: </b>{{ data.country }}, {{ data.city }}
                     </p>
-                </div>
+                    <p><b>Price: </b>{{ reservation.price }} &euro;</p>
+                    <p><b>Action: </b>{{reservation.action ? 'Yes' : 'No'}}</p>
+                    <div class="start-data" v-if="showActionServ()">
+                        <h4>Action services:</h4>
+                            <div v-for="service in reservation.actionServices" :key="service" class="pill">
+                                <span >{{service}}</span>
+                            </div>
+                        </div>
+                    </div>
                 <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
                     <button type="button" class="btn btn-success" @click="closeWindow">Close</button>
                 </div>
@@ -35,7 +43,8 @@ export default {
 
     },
     props: {
-        clientEmail: String
+        clientEmail: String,
+        reservation: Object
     },
     data(){
         return {
@@ -50,15 +59,41 @@ export default {
                 try{
                     return require('../assets/' + picture);
                 } catch(e) {console.log(e)}
+        },
+        showActionServ() {
+            if (!this.reservation.action)            
+                return false
+
+            try {
+                this.reservation.actionServices = this.reservation.actionServices.split(',')
+            } catch (err){
+                this.reservation.actionServices = this.reservation.actionServices //ako ne uspe split znaci da ima samo jedna
+            }
+
+            return true
         }
     },
     mounted() {
         axios.get('api/client/basic-profile/' + this.clientEmail, {headers: {'authorization': window.localStorage.getItem("token") }}).then((response) => {
                 this.data = response.data
-            }).catch((error) => {
-                console.log('Error happened: ' + error.data)
-                alert("Error happened: " + error.data)
-            });
+            }).catch(err => {
+                    if (err.response.status === 404){
+                        this.errMsg = "Client or owner with given email address is not found!";
+                        this.errorPoup = true;
+                    } 
+                    else if (err.response.status === 401) {
+                        this.errMsg = "You are not authorized!";
+                        this.errorPoup = true;
+                    }
+                    else if (err.response.status === 422) {
+                        this.errMsg = "Error! Wrong data!";
+                        this.errorPoup = true;
+                    } else {
+                        this.errMsg = "Error! Wrong data!";
+                        this.errorPoup = true;
+                    }
+                });
+
     }
 }
 </script>
@@ -136,6 +171,27 @@ export default {
         align-content: center;
         text-align: center;
         margin-bottom: 3%;
+    }
+
+    .start-data {
+        margin-top: 5%;
+        margin-bottom: 5%;
+        border-radius: 15px;
+        background-color: rgb(146, 179, 146);
+        padding: 3%;
+    }
+
+    div .pill {
+        display: inline-block;
+        margin: 20px 10px 0 0;
+        padding: 6px 12px;
+        background: white;
+        border-radius: 20px;
+        font-size: 12px;
+        letter-spacing: 1px;
+        font-weight: bold;
+        color: black;
+        cursor: pointer;
     }
 
 </style>

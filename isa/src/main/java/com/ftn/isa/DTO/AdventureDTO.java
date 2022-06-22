@@ -20,6 +20,8 @@ public class AdventureDTO {
     private String city;
     private String street;
     private String country;
+    private String lon;
+    private String lat;
     private int capacity;
     private Double rating;
     private int noRatings;
@@ -41,13 +43,31 @@ public class AdventureDTO {
         this.capacity = adventure.getCapacity();
         this.noRatings = adventure.getNoRatings();
         for (Photo p : adventure.getPhotos()){this.photos.add(p.getPhotoPath());};
+        this.lon = adventure.getAddress().getLon();
+        this.lat = adventure.getAddress().getLat();
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
     }
 
     public AdventureDTO(){}
 
     public AdventureDTO(Long id,String name, String description, String rules, Double price, Double cancellationConditions,
                         String biography, String fishingEquipment, String city, String street, String country, int capacity,
-                        Double rating, int noRatings, Set<String> photos) {
+                        Double rating, int noRatings, Set<String> photos, String lon, String lat) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -63,6 +83,8 @@ public class AdventureDTO {
         this.rating = rating;
         this.noRatings = noRatings;
         this.photos = photos;
+        this.lon = lon;
+        this.lat = lat;
     }
 
     public Long getId() {
@@ -190,12 +212,21 @@ public class AdventureDTO {
     }
 
     public boolean propsValid() {
-        return  Validate.validateSurName(this.name) &&
+        return  Validate.validateWords(this.name) &&
                 Validate.validateWords(this.city) &&
-                Validate.validateNumber(this.country) &&
+                Validate.validateWords(this.country) &&
                 Validate.validateStreet(this.street) &&
                 this.price > 0 && !this.biography.equals("") && this.capacity > 0 &&
                 this.photos.size() > 0 && this.noRatings == 0 && this.rating == 0
                 ;
+    }
+
+    public boolean arePropsValidAdding() {
+        return  Validate.validateSurName(this.name) &&
+                Validate.validateWords(this.city) &&
+                Validate.validateWords(this.country) &&
+                Validate.validateStreet(this.street) &&
+                this.price > 0 && !this.biography.equals("") && this.capacity > 0 &&
+                this.photos.size() > 0;
     }
 }

@@ -5,6 +5,7 @@
                     <div class="row no-gutters">
                         <div class="col-md-4">
                             <img :src="setPicture(request)" style="height : 100px;" alt="...">
+                            <p>{{request.senderName}}</p>
                         </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -35,7 +36,7 @@ export default {
     methods : {
                     setPicture(request) {
                 try{
-                    return require('../assets/' + 'logo.png'); // ovde promeniti da ucita sliku koju stvarno treba da ucita
+                    return require('../assets/' + request.senderProfilePhoto); // ovde promeniti da ucita sliku koju stvarno treba da ucita
                 } catch(e) {}
         },
     }

@@ -1,30 +1,30 @@
 package com.ftn.isa.controllers;
 
 
-import com.ftn.isa.DTO.AdminDTO;
-import com.ftn.isa.DTO.RequestDTO;
-import com.ftn.isa.DTO.ReviewDTO;
+import com.ftn.isa.DTO.*;
 import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.model.*;
 import com.ftn.isa.security.auth.TokenUtils;
-import com.ftn.isa.services.AdminService;
-import com.ftn.isa.services.FishingInstructorService;
-import com.ftn.isa.services.RequestService;
-import com.ftn.isa.services.ReviewService;
+import com.ftn.isa.services.*;
+import org.apache.catalina.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value="api/admin")
+@RequestMapping(value = "api/admin")
 @CrossOrigin(origins = "http://localhost:8081")
 public class AdminController {
 
@@ -43,35 +43,72 @@ public class AdminController {
     @Autowired
     TokenUtils tokenUtils;
 
-    @PostMapping(value="/sendDeleteRequest/{email}/{userType}")
-    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @Autowired
+    CottageOwnerService cottageOwnerService;
+
+    @Autowired
+    ClientService clientService;
+
+    @Autowired
+    private BoatOwnerService boatOwnerService;
+
+    @Autowired
+    ReportService reportService;
+
+    @Autowired
+    EmailService emailService;
+
+    @Autowired
+    LoyaltyProgramService loyaltyProgramService;
+
+//    @PostMapping(value = "/sendDeleteRequest/{email}/{userType}")
+//    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<RequestDTO> addRequest(@RequestBody RequestDTO requestDTO, @PathVariable String email, @PathVariable String userType) {
+//        User user = null;
+//        switch (userType) {
+//            case "INSTRUCTOR":
+//                user = fishingInstructorService.findByEmail(email);
+//        }
+//
+//        Request request = new Request(requestDTO.getMessage(), requestDTO.isAnswered(), requestDTO.getSentTime(), requestDTO.getRequestType(), user);
+//
+//        requestService.save(request);
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//
+//
+//    }
+
+    @PutMapping(consumes = "application/json", value = "/data-update")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RequestDTO> addRequest(@RequestBody RequestDTO requestDTO, @PathVariable String email, @PathVariable String userType){
-        User user = null;
-        switch (userType){
-            case "INSTRUCTOR":
-                user = fishingInstructorService.findByEmail(email);
-        }
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    public ResponseEntity<AdminDTO> updatePersonalData(@RequestBody AdminDTO adminDTO, HttpServletRequest request) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        Request request = new Request(requestDTO.getMessage(), requestDTO.isAnswered(), requestDTO.getSentTime(), requestDTO.getRequestType(), user);
+        Admin boatOwner = adminService.findByEmail(email);
+        if (boatOwner == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        requestService.save(request);
+        if (!adminDTO.arePropsValid())
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        return new ResponseEntity<>(HttpStatus.OK);
-
-
+        adminService.save(adminDTO, boatOwner);
+        return new ResponseEntity<>(adminDTO, HttpStatus.OK);
 
     }
 
     @GetMapping
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AdminDTO> getByEmail(HttpServletRequest request){
+    public ResponseEntity<AdminDTO> getByEmail(HttpServletRequest request) {
         String email = tokenUtils.getEmailDirectlyFromHeader(request);
         if (email == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         Admin admin = adminService.findByEmail(email);
-        if (admin == null){
+        if (admin == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -81,53 +118,119 @@ public class AdminController {
     @GetMapping(value = "/requests")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<RequestDTO>> getAllRequests(){
+    public ResponseEntity<List<RequestDTO>> getAllRequests() {
         List<Request> requestList = requestService.getAllRequests();
         List<RequestDTO> requestDTOS = new ArrayList<>();
-        for (Request req : requestList){ requestDTOS.add(new RequestDTO(req));}
+        for (Request req : requestList) {
+            requestDTOS.add(new RequestDTO(req));
+        }
 
         return new ResponseEntity<>(requestDTOS, HttpStatus.OK);
 
     }
 
+    @GetMapping(value = "/reports")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ReportDTO>> getAllReports() {
+        List<Report> reportList = reportService.getAllReports();
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        for (Report rep : reportList) {
+            reportDTOS.add(new ReportDTO(rep));
+        }
+
+
+        return new ResponseEntity<>(reportDTOS, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/configure-loyalty-program")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<LoyaltyProgram>> configureLoyaltyProgram(HttpServletRequest request, @RequestBody List<LoyaltyProgram> loyaltyPrograms) {
+        loyaltyProgramService.updateLoyaltyProgram(loyaltyPrograms);
+        return new ResponseEntity<>(loyaltyProgramService.getCompleteLoyaltyProgram(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get-loyalty-program")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<LoyaltyProgram>> getLoyaltyProgram() {
+        return new ResponseEntity<>(loyaltyProgramService.getCompleteLoyaltyProgram(), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/answer-on-report/{reciever}")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> answerOnReport(HttpServletRequest request, @RequestBody AnswerDTO answerDTO, @PathVariable String reciever) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        if (email == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        try {
+            adminService.answerOnReport(reciever, answerDTO);
+        } catch (ObjectOptimisticLockingFailureException ignored) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping(value = "/reviews")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ReviewDTO>> getAllReviews(){
+    public ResponseEntity<List<ReviewDTO>> getAllReviews() {
         List<Review> reviewList = reviewService.getAllReviews();
         List<ReviewDTO> reviewDTOS = new ArrayList<>();
-        for (Review review : reviewList){reviewDTOS.add(new ReviewDTO(review));}
+        for (Review review : reviewList) {
+            reviewDTOS.add(new ReviewDTO(review));
+        }
 
         return new ResponseEntity<>(reviewDTOS, HttpStatus.OK);
     }
 
 
-    @DeleteMapping(value = "/deleteUser/{userId}/{response}")
+    @PostMapping(value = "/delete-user/{response}")
     @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<HttpStatus> deleteUserFromReques(@PathVariable String userId, @PathVariable String response){
-        // za sad samo ovako pa vidi posle kako ces
+    public ResponseEntity<HttpStatus> deleteUserFromRequest(HttpServletRequest request, @RequestBody RequestDTO requestDTO, @PathVariable String response) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
         List<Request> requestList = requestService.getAllRequests();
-        String userEmail="";
-        for (Request req : requestList){
-            if (req.getSender().getId() == Long.parseLong(userId)){
-                FishingInstructor fishingInstructor = fishingInstructorService.findByEmail(req.getSender().getEmail());
-                if (response.equals("allow")){
-                    fishingInstructor.setDeleted(true);
-                    fishingInstructorService.save(fishingInstructor);
-                }
-                req.setAnswered(true);
-                req.setSender(fishingInstructor);
-                requestService.save(req);
 
+        Request req = requestService.findOneById(requestDTO.getRequestId());
+        try {
+            if (adminService.delUserByReq(req, response))
                 return new ResponseEntity<>(HttpStatus.OK);
-            }
+        } catch (ObjectOptimisticLockingFailureException ignored) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PostMapping(value = "/registration/{response}")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> registrationAllowing(HttpServletRequest request, @RequestBody RequestDTO requestDTO, @PathVariable String response) {
+        String email = tokenUtils.getEmailDirectlyFromHeader(request);
+        List<Request> requestList = requestService.getAllRequests();
 
+        Request req = requestService.findOneById(requestDTO.getRequestId());
+
+        try {
+            if (adminService.registerAllow(req, response))
+                return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ObjectOptimisticLockingFailureException ignored) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping(value = "/reject-review")
+    @CrossOrigin(origins = ServerConfig.FRONTEND_ORIGIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> rejectReview(@RequestBody ReviewDTO rejectedReview) {
+        return reviewService.rejectReview(rejectedReview.getReviewId()) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
 
 }

@@ -54,7 +54,7 @@ export default {
         SuccessPopUp, ErrorPopUp
     },
     props: {
-        cottage: Object
+        rental: Object
     },
     data(){
         return {
@@ -63,7 +63,7 @@ export default {
                 startTime: '',
                 endTime: '',
                 actionServices: '',
-                cottageId: this.cottage.id
+                rentalId: this.rental.id
             },
 
             todaysDate: '',
@@ -101,7 +101,7 @@ export default {
         },
         closeSuccPopUp() {
                 this.localSuccPopUpVisible = false
-                this.$router.go(); 
+                this.$emit('modal-closed');
         },
         addAction() {
             try { this.checkInputs(); } 
@@ -112,11 +112,14 @@ export default {
             }
 
             let counter = 0
+            this.actionData.actionServices = ''
             for (let s in this.choosenList){
                 counter++
                 this.actionData.actionServices += this.choosenList[s]
                 if (counter < this.choosenList.length) this.actionData.actionServices += ','
             }
+            this.choosenList = []
+            counter = 0 //nesto je bilo problema pa reset za svaki slucaj
             
             axios.post("api/" + this.roleURL + "/add-action-reservation", this.actionData, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
@@ -124,7 +127,7 @@ export default {
                     })
                     .catch(err => {
                             if (err.response.status === 404){
-                                this.errMessage = "Cottage owner with that email doesn't!";
+                                this.errMessage = "Owner with that email doesn't!";
                                 this.errorPopUpVisible = true;
                             } 
                             else if (err.response.status === 401) {
@@ -133,6 +136,10 @@ export default {
                             }
                             else if (err.response.status === 422) {
                                 this.errMessage = "Action reservation cannot overlap with other reservations! Check all input data.";
+                                this.errorPopUpVisible = true;
+                            }
+                            else if (err.response.status == 409){
+                                this.errMessage = "Conflict situation. Please try again later..";
                                 this.errorPopUpVisible = true;
                             } else {
                                 this.errMessage = "Uups! Something went wrong...";
@@ -155,6 +162,7 @@ export default {
     mounted() {
         this.todaysDate = new Date().toISOString()
 
+        this.choosenList = []
         this.searchRole = window.localStorage.getItem("userRole")
         if (this.searchRole === "COTTAGE_OWNER"){
             this.roleURL = "cottage-owner"
@@ -164,8 +172,8 @@ export default {
             //staviti nesto za pecanje od opreme
             this.servicesList = ["MASSAGE", "BREAKFAST", "MINI-BAR", "SPA", "TABLE TENNIS", "KARAOKE"]
         } else if (this.searchRole === "BOAT_OWNER") {
-            //za boat
-        } else {
+            this.roleURL = "boat-owner"
+            this.servicesList = ["RADAR", "AUTOPILOT", "VDR", "GPS", "LURES", "FLY REELS"]
         }
     }
 }

@@ -3,6 +3,7 @@ package com.ftn.isa.model;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 //@Where(clause = "is_deleted = false")
@@ -12,6 +13,7 @@ public class Cottage extends RentalService{
 
     @Column(name = "no_rooms", nullable = false)
     private int noRooms;
+
 
     public Cottage(String name, String description, int capacity, String rules, boolean isDeleted, Address address, Double averageRate,
                          int noRatings, RentalType rentalType, Double price, String additionalServices, int noRooms) {

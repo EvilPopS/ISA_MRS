@@ -23,7 +23,7 @@
                                 <input type="text" id="cancellationConditions" class="form-control rating" v-model="data.cancellationConditions">
                             </div>
                         </span>
-                        <label class="label" for="fishingEquipment">Additional services(press alt + , to add):</label>
+                        <label class="label" for="fishingEquipment">Fishing Equipment(press alt + , to add):</label>
                         <input type="text" class="form-control" v-model="tempFishingEquipment" @keyup.alt="addFishingEqu">
                         <div v-for="fishingEqu in localFishingEquipment" :key="fishingEqu" class="pill">
                             <span  @click="deleteFishingEqu(fishingEqu)">{{fishingEqu}}</span>
@@ -40,6 +40,8 @@
                         <input type="text" id="street" class="form-control" v-model="data.street">
                         <label class="label" for="biography">Biography</label>
                         <input type="text" id="biography" class="form-control" v-model="data.biography">
+                        <label class="label" for="capacity">Capacity:</label>
+                        <input type="number" id="capacity" class="form-control" v-model="data.capacity">
                     </div>
                     <div class="col-4">
                         <div>
@@ -52,8 +54,21 @@
                         <div v-for="pic in this.localPhotos" :key="pic" class="pillPic">
                             <span  @click="deletePic(pic)"><img id="picGallery" :src="require('@/assets/' + pic)"/></span>
                         </div>
-                        <button type="button" class="btn btn-success btn-added" @click="AddNewPhoto">Add photo</button>
+                        <div>
+                            <button type="button" class="btn btn-success btn-added" @click="AddNewPhoto">Add photo</button>
+                        </div>
+                        <div id="mapContainer">
+                            <MapContainer
+                                :coordinates = "[19.83383399956332, 45.25697997579121]"
+                                :map-height = "200"
+                                :mapEditable="true"
+                                @changed-location = "changedLocationFunc"
+                            >
+                            </MapContainer>
+                        </div>  
+                        
                     </div>
+                    
                 </div>
             </div>
             <div class="vstack gap-2 col-md-5 mx-auto" id="options-btns">
@@ -76,12 +91,13 @@
 <script>
 import ErrorPopUp from "./ErrorPopUp.vue"
 import SuccessPopUp from "./SuccessPopUp.vue"
-import axios from 'axios';
+import MapContainer from "./MapContainer.vue"
+import axios from 'axios'
 
 export default {
     name: "AddAdventure",
     components: {
-        ErrorPopUp, SuccessPopUp
+        ErrorPopUp, SuccessPopUp, MapContainer
     },
     props: {
         showAddNewAdventure: Boolean,
@@ -110,10 +126,13 @@ export default {
                 city: '',
                 street: '',
                 country: '',
+                capacity: 0,
                 rating: 0,
                 noRatings: 0,
                 biography: '',
                 photos: [],
+                lon: '',
+                lat: ''
             }
         }
     },
@@ -175,13 +194,26 @@ export default {
                 this.data.fishingEquipment += this.localFishingEquipment[s]
                 if (counter < this.localFishingEquipment.length) this.data.fishingEquipment += ','
             } 
-            axios.post("api/fishingInstructor/" + window.sessionStorage.getItem("email") + "/adventures/addAdventure/", this.data)
+            axios.post("api/fishingInstructor/adventures/add-adventure", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
                     })
-                    .catch(function (error) {
-                        console.log(error);
-                        alert(error)
+                    .catch(err => {
+                        if (err.response.status === 404){
+                            this.errMsg = "Client or owner with given email address is not found!";
+                            this.errorPoup = true;
+                        } 
+                        else if (err.response.status === 401) {
+                            this.errMsg = "You are not authorized!";
+                            this.errorPoup = true;
+                        }
+                        else if (err.response.status === 422) {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        } else {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        }
                     });
 
         },
@@ -201,7 +233,7 @@ export default {
             if(!this.validate(this.data.city, cityReg))
                 throw "Make sure you entered a valid city name!";
             
-            if (!this.validate(this.data.country, numReg))
+            if (!this.validate(this.data.country, nameReg))
                 throw "Make sure you entered a valid country name.";
             
             if (!this.validate(this.data.street, streetReg))
@@ -212,12 +244,14 @@ export default {
             
             if ( this.data.biography.length == 0)
                 throw "biography must have at least one word.";
+            if (this.data.capacity <= 0)
+                throw "Capacity must be greater than 0."
 
             if (!this.validate(this.data.price, numReg) || this.data.price <= 0)
                 throw "Please enter a valid price.";
 
-            if (this.data.description.length < 7)
-                throw "Description must have at least 8 characters";
+            if (this.data.description.length < 25)
+                throw "Description must have at least 26 characters";
             
             if (this.data.rules.length < 7)
                 throw "Rules must have at least 8 characters";
@@ -366,6 +400,10 @@ export default {
         height: 70px;
         width: auto;
         padding: 5px;
+    }
+
+    #mapContainer {
+        margin-top: 5%;
     }
 
 </style>

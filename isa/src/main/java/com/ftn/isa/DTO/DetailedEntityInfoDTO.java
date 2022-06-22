@@ -1,9 +1,6 @@
 package com.ftn.isa.DTO;
 
-import com.ftn.isa.model.Address;
-import com.ftn.isa.model.Photo;
-import com.ftn.isa.model.RentalService;
-import com.ftn.isa.model.Reservation;
+import com.ftn.isa.model.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,14 +18,17 @@ public abstract class DetailedEntityInfoDTO {
     private final Double rate;
     private final Double price;
 
+    private final OwnerProfileViewDTO owner;
+
     private List<ReservationDisplayDTO> actionReservations;
 
     private List<ReservationDisplayDTO> normalReservations;
 
-    public DetailedEntityInfoDTO(RentalService rental) {
+    public DetailedEntityInfoDTO(RentalService rental, User usr) {
+        this.owner = new OwnerProfileViewDTO(usr);
+
         this.name = rental.getName();
         this.description = rental.getDescription();
-
         this.photos = new HashSet<>();
         for (Photo photo : rental.getPhotos())
             this.photos.add(photo.getPhotoPath());
@@ -42,8 +42,8 @@ public abstract class DetailedEntityInfoDTO {
         this.actionReservations = new ArrayList<>();
         this.normalReservations = new ArrayList<>();
         for (Reservation res : rental.getReservations())
-            if (res.getStartTime().isAfter(LocalDateTime.now())) {
-                if (res.isAction() && !res.isReserved())
+            if (res.getEndTime().isAfter(LocalDateTime.now())) {
+                if (res.isAction())
                     this.actionReservations.add(new ReservationDisplayDTO(res));
                 else
                     this.normalReservations.add(new ReservationDisplayDTO(res));
@@ -96,5 +96,9 @@ public abstract class DetailedEntityInfoDTO {
 
     public void setNormalReservations(List<ReservationDisplayDTO> normalReservations) {
         this.normalReservations = normalReservations;
+    }
+
+    public OwnerProfileViewDTO getOwner() {
+        return owner;
     }
 }

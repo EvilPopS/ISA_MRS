@@ -1,10 +1,19 @@
 <template>
     <div class="popup-overlay" @click="emitClose()">
         <div class="container popup" @click.stop>
-            <div class="row modal-style" v-show="!this.toShowReservationForm && !this.toShowRentalActions">
+            <div class="row modal-style" v-show="!this.toShowReservationForm && 
+                                                    !this.toShowRentalActions && 
+                                                    !this.toShowOwnerProfile && 
+                                                    !this.toShowRatingsAndReviews">
                 <div class="row btns-cont" v-if="isClient">
                     <div class="col justify-content-center">
                         <button class="btn-style" @click="showReservationForm">Reservation calendar</button>
+                    </div>
+                    <div class="col justify-content-center">
+                        <button class="btn-style rent-ratings" @click="showRatingsAndReviews">Ratings &amp; reviews</button>
+                    </div>
+                    <div class="col justify-content-center">
+                        <button class="btn-style rent-owner-btn" @click="showOwnerProfile">Owner Profile</button>
                     </div>
                     <div class="col justify-content-center">
                         <button class="btn-style" @click="showActionResevations">Rental actions</button>
@@ -25,11 +34,11 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-7">
                                 <label>Name:</label>
                                 <input type="text" v-model="name" disabled>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label>Price:</label>
                                 <input type="text" v-model="price" disabled>
                             </div>
@@ -67,7 +76,8 @@
                             </div>
 
                         </div>
-                        <div v-if="showDetailedAdventure">
+
+                        <div v-else-if="showDetailedAdventure">
                             <label>Rules:</label>
                             <textarea class="text-area-style" v-model="rules" disabled></textarea>
                             <label>Instructor biography:</label>
@@ -75,13 +85,40 @@
                             <label>Fishing equipment:</label>
                             <input type="text" v-model="fishingEquipment" disabled>
                         </div>
-                        <div v-if="showDetailedBoat">
 
+                        <div v-else-if="showDetailedBoat">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label>Engine number:</label>
+                                    <input type="text" v-model="engineNumber" disabled>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label>Max speed:</label>
+                                    <input type="text" v-model="maxSpeed" disabled>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label>Engine power:</label>
+                                    <input type="text" v-model="enginePower" disabled>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <label>Fishing equipment:</label>
+                                    <input type="text" v-model="fishingEquipment" disabled>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label>Length:</label>
+                                    <input type="text" v-model="boatLength" disabled>
+                                </div>
+                            </div>
+                            <label>Navigation equipment:</label>
+                            <input type="text" v-model="navigationEquipment" disabled>
                         </div>
 
                         <label>Location on map:</label>
                         <MapContainer
-                            :mapHeight="'200'"
+                            :key="[lon, lat]"
+                            :mapHeight="'300'"
                             :coordinates="[lon, lat]"
                             :mapEditable="false"
                         />
@@ -99,9 +136,11 @@
 
             </div>
 
-            <RentalReservationForm v-show="toShowReservationForm"
+            <RentalReservationForm v-if="toShowReservationForm"
                 :rentalId="rentalId"
                 :rentalType="rentalType"
+                :rentalPrice="price"
+                :rentalReservations="normalReservations.concat(actionReservations)"
                 @close="reopenRentalDetails"
             />
 
@@ -110,6 +149,18 @@
                 :reservations="actionReservations"
                 @close="reopenRentalDetails"
                 @update-action-reservations="updateActionReservs"
+            />
+
+            <RentalOwnerProfileView v-if="toShowOwnerProfile"
+                :ownerInfo="ownerInfo"
+                :rentalType="rentalType"
+                @close="reopenRentalDetails"
+            />
+
+            <RentalReviewingModal v-if="toShowRatingsAndReviews"
+                :rentalId="rentalId"
+                :rentalType="rentalType"
+                @close="reopenRentalDetails"
             />
         </div>
     </div>
@@ -120,22 +171,28 @@
     import MapContainer from "@/components/MapContainer.vue";
     import RentalReservationForm from "@/components/RentalReservationForm.vue";
     import RentalActionReservations from "@/components/RentalActionReservations.vue";
+    import RentalOwnerProfileView from "@/components/RentalOwnerProfileView.vue";
+    import RentalReviewingModal from "@/components/RentalReviewingModal.vue";
 
     export default {
         name: "RentalViewModal",
         components: {
             MapContainer,
             RentalReservationForm,
-            RentalActionReservations
+            RentalActionReservations,
+            RentalOwnerProfileView,
+            RentalReviewingModal
         },
         props: {
             id: Number,
-            type: String
+            type: String,
         },
         data() {
             return {
                 rentalId: this.id,
                 rentalType: this.type,
+
+                ownerInfo: {},
 
                 normalReservations: [],
                 actionReservations: [],
@@ -145,8 +202,8 @@
                 rate: "",
                 address: "",
                 images: [],
-                lon: "",
-                lat: "",
+                lon: 0,
+                lat: 0,
 
                 // svi rentali
                 rules: "",
@@ -178,10 +235,12 @@
                 showDetailedBoat: false,
                 showDetailedAdventure: false,
                 toShowReservationForm: false,
-                toShowRentalActions: false
+                toShowRentalActions: false,
+                toShowOwnerProfile: false,
+                toShowRatingsAndReviews: false
             }
         },
-        created() {
+        mounted() {
             if (this.isClient) {
                 switch(this.type){
                     case "Cottage":
@@ -195,6 +254,9 @@
                     case "Boat":
                         axios.get("api/rental/boat/details/" + this.id, {headers: {'authorization': window.localStorage.getItem("token") }})
                             .then((response) => {
+                                this.showDetailedBoat = true;
+                                setUpDefaultRentalInfo(this, response);
+                                setUpDetailedBoatInfo(this, response);
                             });
                         break;
                     case "Adventure":
@@ -230,15 +292,22 @@
             showActionResevations() {
                 this.toShowRentalActions = true;
             },
+            showOwnerProfile() {
+                this.toShowOwnerProfile = true;
+            },
+            showRatingsAndReviews() {
+                this.toShowRatingsAndReviews = true;
+            },
             reopenRentalDetails() {
+                if (this.toShowReservationForm)
+                    this.$emit('reload');
                 this.toShowReservationForm = false;
                 this.toShowRentalActions = false;
+                this.toShowOwnerProfile = false;
+                this.toShowRatingsAndReviews = false;
             },
             updateActionReservs(resId) {
-                console.log(this.actionReservations);
-                let a = this.actionReservations.splice(this.actionReservations.findIndex(res => res.id === resId), 1);
-                console.log(a);
-                console.log(this.actionReservations);
+                this.actionReservations.splice(this.actionReservations.findIndex(res => res.id === resId), 1);
             }
         }
     }
@@ -253,6 +322,8 @@
 
         let rental = response.data;
         
+        params.ownerInfo = rental.owner;
+
         params.name = rental.name;
         params.description = rental.description;
         params.price = rental.price + " €/day";
@@ -263,6 +334,7 @@
         params.lat = adr.lat;
         params.images = rental.photos;
         params.actionReservations = rental.actionReservations;
+        params.normalReservations = rental.normalReservations;
     }
 
     function setUpDetailedCottageInfo(params, response) {
@@ -276,12 +348,17 @@
     }
 
     function setUpDetailedBoatInfo(params, response) {
-        // let cottage = response.data;
-        
-        // params.rules = cottage.rules;
-        // params.capacity = cottage.capacity + " 웃";
+        let boat = response.data;
 
-        // TODO - not implemented yet
+        params.rules = boat.rules;
+        params.capacity = boat.capacity + " 웃";
+        params.fishingEquipment = boat.fishingEquipment.replaceAll(",", ", ");
+        params.boatType = boat.boatType;
+        params.boatLength = boat.boatLength + " m";
+        params.engineNumber = boat.engineNumber;
+        params.enginePower = boat.enginePower + " kW";
+        params.maxSpeed = boat.maxSpeed + " km/h";
+        params.navigationEquipment = boat.navigationEquipment.replaceAll(",", ", ");
     }
 
     function setUpDetailedAdventureInfo(params, response) {
@@ -358,6 +435,14 @@
         margin: 5px 0px;
         height: 40px;
         width: 190px;
+    }
+
+    .rent-owner-btn {
+        background: rgb(18, 161, 18);
+    }
+
+    .rent-ratings {
+        background: rgb(161, 128, 18);
     }
 
     #info-holder {

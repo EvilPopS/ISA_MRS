@@ -54,6 +54,16 @@
                 type: '',
                 loyalty: '',
                 points: '',
+                showSearch: window.localStorage.getItem("userRole") === "ADMIN",
+
+                currentProfilePic: '',
+                currentPassword: '',
+                currentName: '',
+                currentSurname: '',
+                currentCity: '',
+                currentCountry: '',
+                currentStreet: '',
+                currentPhoneNumber: '',
 
                 succPopUpVisible: false
             }
@@ -71,7 +81,7 @@
                     phoneNumber: data.phoneNumber,
                     profilePicture: data.profilePicture
                 }
-                axios.put("api/fishingInstructor/data-update", requestBody)
+                axios.put("api/admin/data-update", requestBody)
                     .then(() => {
                         this.succPopUpVisible = true;
                     });

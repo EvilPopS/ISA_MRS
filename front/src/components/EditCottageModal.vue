@@ -38,8 +38,6 @@
                         <input type="text" id="city" class="form-control" v-model="data.city">
                         <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" v-model="data.street">
-                        <span>Rating</span>
-                        <hr class="solid">
                         <span>
                             <div class="inline-inputs">
                                 <label class="label" for="rating">Rating:</label>
@@ -50,6 +48,10 @@
                                 <input type="text" id="num-ratings" class="form-control rating" v-model="data.noRatings" disabled>
                             </div>
                         </span>
+                        <div>
+                            <label class="label" for="capacity">Capacity:</label>
+                            <input type="text" id="capacity" class="form-control" v-model="data.capacity">
+                        </div>
                     </div>
                     <div class="col-4">
                         <div>
@@ -196,8 +198,21 @@ export default {
                         this.localSuccPopUpVisible = true;
                     })
                     .catch(function (error) {
-                        console.log(error);
-                        alert(error.name)
+                        if (error.response.status == 409){
+                            this.errMessage = "Conflict situation. Please try again later..";
+                            this.errorPopUpVisible = true;
+                        } else if (error.response.status == 401){
+                            this.errMessage = "You are not authorized..";
+                            this.errorPopUpVisible = true;
+                        } else if (error.response.status == 422){
+                            this.errMessage = "Wrong data..Check your inputs!";
+                            this.errorPopUpVisible = true;
+                        } 
+                        else {
+                            console.log(error);
+                            this.errMessage = "Something went wrong.. Please try again later..";
+                            this.errorPopUpVisible = true;
+                        }
                     });
 
         },
@@ -222,17 +237,14 @@ export default {
             if (!this.validate(this.data.street, streetReg))
                 throw "Make sure you entered a valid street name.";
             
-            if (!this.validate(this.data.noRooms, numReg) || this.data.noRooms <= 0)
-                throw "Make sure your entered valid number of rooms.";
-            
             if (!this.validate(this.data.capacity, numReg) || this.data.capacity <= 0)
                 throw "Capacity must be greater than 0.";
 
             if (!this.validate(this.data.price, numReg) || this.data.price <= 0)
                 throw "Please enter a valid price.";
 
-            if (this.data.description.length < 7)
-                throw "Description must have at least 8 characters";
+            if (this.data.description.length < 25)
+                throw "Description must have at least 26 characters";
             
             if (this.data.rules.length < 7)
                 throw "Rules must have at least 8 characters";
@@ -386,6 +398,10 @@ export default {
 
     #mapContainer {
         margin-top: 5%;
+    }
+
+    label {
+        font-size: 12px;
     }
 
 </style>

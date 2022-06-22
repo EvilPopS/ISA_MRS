@@ -5,6 +5,7 @@
                     <div class="row no-gutters">
                         <div class="col-md-4">
                             <img :src="setPicture(review)" style="height : 100px;" alt="...">
+                            <p>{{review.senderName}}</p>
                         </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -35,7 +36,7 @@ export default {
     methods : {
                     setPicture(review) {
                 try{
-                    return require('../assets/' + 'logo.png'); // ovde promeniti da ucita sliku koju stvarno treba da ucita
+                    return require('../assets/' + review.senderProfilePhoto); // ovde promeniti da ucita sliku koju stvarno treba da ucita
                 } catch(e) {}
         },
     }

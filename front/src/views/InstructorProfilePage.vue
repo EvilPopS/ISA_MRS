@@ -25,6 +25,7 @@
         @handle-submit       = "handleSubmit"
         @set-new-profile-pic = "setNewProfilePic"
         @succ-popup-close    = "succPopUpClose"
+        @delete-request-sent ="sendDeleteRequest"
     
     />
 </template>
@@ -55,6 +56,15 @@
                 loyalty: '',
                 points: '',
 
+                currentProfilePic: '',
+                currentPassword: '',
+                currentName: '',
+                currentSurname: '',
+                currentCity: '',
+                currentCountry: '',
+                currentStreet: '',
+                currentPhoneNumber: '',
+
                 succPopUpVisible: false
             }
         },
@@ -71,9 +81,11 @@
                     phoneNumber: data.phoneNumber,
                     profilePicture: data.profilePicture
                 }
-                axios.put("api/fishingInstructor/data-update", requestBody)
+                axios.put("api/fishingInstructor/data-update", requestBody,  {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(() => {
                         this.succPopUpVisible = true;
+                    }).catch(function (error){
+                        alert(error.name);
                     });
             },
             setNewProfilePic(newPic) {
@@ -84,13 +96,11 @@
             }
         },
         created() {
-            axios.get("api/fishingInstructor/" + window.sessionStorage.getItem("email"))
+            axios.get("api/fishingInstructor/", {headers: {'authorization': window.localStorage.getItem("token") }})
                 .then((response) => {
                     let data = response.data;
 
                     this.email = data.email;
-                    this.password = data.password;
-                    this.confirmPassword = data.password;
                     this.name = data.name;
                     this.surname = data.surname;
                     this.city = data.city;
@@ -110,7 +120,9 @@
                     this.currentStreet = data.street;
                     this.currentPhoneNumber =data.phoneNumber;
                     this.currentProfilePic =data.profilePicture;
-                })
+                }).catch(function (error) {
+                    alert(error.name)
+                });
         }
     }
 </script>

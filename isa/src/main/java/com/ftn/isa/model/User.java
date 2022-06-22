@@ -56,6 +56,12 @@ public abstract class User implements UserDetails {
     @Column(name = "loyalty_points")
     private int loyaltyPoints;
 
+    @Version
+    @Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+    private Long version;
+
+    @Column(name = "is_changed",columnDefinition = "boolean DEFAULT false", nullable = false)
+    private boolean isChanged;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -90,6 +96,17 @@ public abstract class User implements UserDetails {
         return this.email;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
+    public boolean isChanged() {
+        return isChanged;
+    }
+
+    public void setChanged(boolean changed) {
+        isChanged = changed;
+    }
     public String getEmail() {
         return email;
     }

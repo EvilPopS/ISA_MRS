@@ -198,10 +198,22 @@ export default {
             axios.post("api/cottage-owner/add-cottage", this.data, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then((response) => {
                         this.localSuccPopUpVisible = true;
-                    })
-                    .catch(function (error) {
-                        this.errMessage = "Error happened: " + error.data
-                        this.errorPopUpVisible = true
+                    }).catch(err => {
+                        if (err.response.status === 404){
+                            this.errMsg = "Client or owner with given email address is not found!";
+                            this.errorPoup = true;
+                        } 
+                        else if (err.response.status === 401) {
+                            this.errMsg = "You are not authorized!";
+                            this.errorPoup = true;
+                        }
+                        else if (err.response.status === 422) {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        } else {
+                            this.errMsg = "Error! Wrong data!";
+                            this.errorPoup = true;
+                        }
                     });
 
         },
@@ -236,8 +248,8 @@ export default {
             if (!this.validate(this.data.price, numReg) || this.data.price <= 0)
                 throw "Please enter a valid price.";
 
-            if (this.data.description.length < 7)
-                throw "Description must have at least 8 characters";
+            if (this.data.description.length < 25)
+                throw "Description must have at least 26 characters";
             
             if (this.data.rules.length < 7)
                 throw "Rules must have at least 8 characters";
@@ -386,6 +398,10 @@ export default {
 
     #mapContainer {
         margin-top: 5%;
+    }
+
+    label {
+        font-size: 12px;
     }
 
 </style>

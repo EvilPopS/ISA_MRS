@@ -33,4 +33,20 @@ public class UserService {
         }
         return null;
     }
+
+    public User getUserByIdAndRole(Long id, String type) {
+        switch (type) {
+            case "CLIENT":
+                return clientRepository.getOne(id);
+            case "ADMIN":
+                return adminRepository.getOne(id);
+            case "COTTAGE_OWNER":
+                return cottageOwnerRepository.getOne(id);
+            case "BOAT_OWNER":
+                return boatOwnerRepository.getOne(id);
+            case "INSTRUCTOR":
+                return instructorRepository.getOne(id);
+        }
+        return null;
+    }
 }

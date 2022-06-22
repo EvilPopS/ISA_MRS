@@ -26,6 +26,7 @@
             @handle-submit       = "handleSubmit"
             @set-new-profile-pic = "setNewProfilePic"
             @succ-popup-close    = "succPopUpClose"
+            @delete-request-sent ="sendDeleteRequest"
             />
         </div>
     <div v-else>
@@ -59,6 +60,15 @@
                 points: '',
                 showSearch: window.localStorage.getItem("userRole") === "COTTAGE_OWNER",
 
+                currentProfilePic: '',
+                currentPassword: '',
+                currentName: '',
+                currentSurname: '',
+                currentCity: '',
+                currentCountry: '',
+                currentStreet: '',
+                currentPhoneNumber: '',
+
                 succPopUpVisible: false
             }
         },
@@ -82,6 +92,14 @@
                         alert(error.name)
                     });
             },
+            sendDeleteRequest(requestBody) {
+                axios.post('/api/user/COTTAGE_OWNER/sendDeleteRequest', requestBody, {headers: {'authorization': window.localStorage.getItem("token")}})
+                    .then(() => {
+                        this.succPopUpVisible = true;
+                    }).catch(function (error) {
+                        alert(error.name)
+                    });;
+            },
             setNewProfilePic(newPic) {
                 this.profilePicture = newPic; 
             },
@@ -95,8 +113,6 @@
                     let data = response.data;
 
                     this.email = data.email;
-                    this.password = data.password;
-                    this.confirmPassword = data.password;
                     this.name = data.name;
                     this.surname = data.surname;
                     this.city = data.city;
