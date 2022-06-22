@@ -1,9 +1,9 @@
 # ISA_MRS
 
-Developers:
-  Strahinja Popovic SW51/2019 
-  Stefan Stankovic SW59/2019 
-  Srdjan Djuric SW63/2019 
+Developeri:  
+Strahinja Popovic SW51/2019  
+Stefan Stankovic SW59/2019  
+Srdjan Djuric SW63/2019  
   
   
 Porektanje aplikacije: 
