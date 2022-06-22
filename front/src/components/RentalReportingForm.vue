@@ -41,6 +41,8 @@
         },
         methods: {
             sendReport() {
+                if (this.reportMess === "")
+                    return;
                 axios.post("api/notification/new-report/" + this.rentalId + "?rentalType=" + this.rentalType,
                             {report: this.reportMess},
                             {headers: {'authorization': window.localStorage.getItem("token") }}
@@ -72,8 +74,9 @@
     #report-form-cont {
         width: 60vw;
         height: 64vh;
+        min-height: 500px;
         background: white;
-        margin-top: 9%;
+        margin-top: 9vh;
         border-radius: 30px;
         padding: 10px;
         background: linear-gradient(rgb(182, 179, 179), rgb(245, 241, 241), rgb(182, 179, 179));

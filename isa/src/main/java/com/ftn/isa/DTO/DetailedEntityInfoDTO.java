@@ -42,8 +42,8 @@ public abstract class DetailedEntityInfoDTO {
         this.actionReservations = new ArrayList<>();
         this.normalReservations = new ArrayList<>();
         for (Reservation res : rental.getReservations())
-            if (res.getStartTime().isAfter(LocalDateTime.now())) {
-                if (res.isAction() && !res.isReserved())
+            if (res.getEndTime().isAfter(LocalDateTime.now())) {
+                if (res.isAction())
                     this.actionReservations.add(new ReservationDisplayDTO(res));
                 else
                     this.normalReservations.add(new ReservationDisplayDTO(res));

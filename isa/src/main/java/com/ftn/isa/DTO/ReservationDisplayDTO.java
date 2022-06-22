@@ -16,6 +16,7 @@ public class ReservationDisplayDTO {
     private LocalDateTime endDate;
     private double price;
     private String additionalServices;
+    private boolean isReserved;
 
     public ReservationDisplayDTO(Reservation res, RentalService rental) {
         this.id = res.getId();
@@ -48,6 +49,15 @@ public class ReservationDisplayDTO {
         this.price = res.getPrice();
         this.additionalServices = res.getActionServices();
         this.rentalType = null;
+        this.isReserved = res.isReserved();
+    }
+
+    public boolean isReserved() {
+        return isReserved;
+    }
+
+    public void setReserved(boolean reserved) {
+        isReserved = reserved;
     }
 
     public Long getId() {

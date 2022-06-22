@@ -88,11 +88,17 @@
                 succMessage: "You review has been successfully submitted to admin for approval!",
 
                 errorPopUpVisible: false,
-                errMessage: "Make sure you have at least one completed reservation before attempting to send a review of this rental!"
+                errMessage: ""
             };
         },
         methods: {
             sendReview() {
+                if (this.rating <= 0) {
+                    this.errMessage = "Make sure you've chosen rating of value grater than 0!";
+                    this.errorPopUpVisible = true;
+                    return;
+                }
+
                 let reqBody = {
                     review: this.review,
                     rating: this.rating
@@ -106,7 +112,8 @@
                     })
                     .catch((error) => {
                         if (error.response.status === "400")
-                                errorPopUpVisible = true;
+                                this.errMessage = "Make sure you have at least one completed reservation before attempting to send a review of this rental!";
+                                this.errorPopUpVisible = true;
                     });
             },
             closeSuccPopUp() {

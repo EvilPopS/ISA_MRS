@@ -11,6 +11,8 @@
 
         <div id="res-container" class="row justify-content-center">
             <div id="cards-cont" class="row justify-content-center">
+                <p id="nothing-to-show-txt" v-if="this.reservations.length === 0">Looks like there is nothing to show here</p>
+                
                 <div v-for="reserv in this.reservations" :key="reserv.id" class="card-style row" @click="openEntityView(reserv.rentalId, reserv.rentalType)">
                     <div class="col">
                         <img :src="setRentalPic(reserv.rentalPic)" class="rent-image">
@@ -209,6 +211,16 @@
         background: linear-gradient(rgba(47, 105, 40, 0.05), 
                                     rgba(8, 37, 9, 0.2), 
                                     rgba(47, 105, 40, 0.05));
+    }
+
+    #nothing-to-show-txt {
+        margin-top: 15px;
+        font-family: Georgia, serif;
+        font-size: 25px;
+        letter-spacing: -0.4px;
+        word-spacing: 0px;
+        color: #000000;
+        font-weight: 700;
     }
 
     #res-container {

@@ -1,5 +1,6 @@
 <template>
     <div id="subs-cont">
+        <p id="nothing-to-show-txt" v-if="this.subscriptions.length === 0">You are not subscribed to anybody.</p>
 
         <div class="card-style d-flex align-items-center" v-for="sub in this.subscriptions" :key="sub.ownerId">
             <div class="col-2">
@@ -99,6 +100,16 @@
         height: 100px;
         width: 100px;
         left: 0;
+    }
+
+    #nothing-to-show-txt {
+        margin-top: 15px;
+        font-family: Georgia, serif;
+        font-size: 25px;
+        letter-spacing: -0.4px;
+        word-spacing: 0px;
+        color: #000000;
+        font-weight: 700;
     }
     
     .text-style p {
