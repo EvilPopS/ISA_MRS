@@ -45,8 +45,7 @@ public class AdminDTO {
     }
 
     public boolean arePropsValid() {
-        return Validate.validatePassword(this.password) &&
-                Validate.validateSurName(this.name) &&
+        return Validate.validateSurName(this.name) &&
                 Validate.validateSurName(this.surname) &&
                 Validate.validateWords(this.city) &&
                 Validate.validateWords(this.country) &&
