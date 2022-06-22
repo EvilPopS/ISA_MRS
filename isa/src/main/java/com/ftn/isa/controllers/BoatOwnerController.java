@@ -338,14 +338,8 @@ public class BoatOwnerController {
         if (!boatOwnerService.checkIfBoatExists(boatOwner, regularResDTO.getRentalId()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        List<Reservation> allReservation = new ArrayList<>();
-        for (Boat b : boatOwner.getBoats()){
-            if (b.getId().equals(regularResDTO.getRentalId())){
-                allReservation = b.getReservations();
-                break;
-            }
-        }
-        if (!boatOwnerService.checkIfCurrentResInProgress(client, boatOwner, allReservation))
+
+        if (!boatOwnerService.checkIfCurrentResInProgress(client, boatOwner, reservationService.getAllReservations()))
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         Reservation newRes = null;
