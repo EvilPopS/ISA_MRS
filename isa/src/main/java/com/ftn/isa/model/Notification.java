@@ -23,6 +23,13 @@ public abstract class Notification {
     @Column(name = "sent_time", nullable = false)
     private LocalDateTime sentTime;
 
+    @Version
+    @Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+    private Long version;
+
+    @Column(name = "is_changed",columnDefinition = "boolean DEFAULT false", nullable = false)
+    private boolean isChanged;
+
     public Notification(String message, boolean isAnswered, String localDateTime){
         this.message = message;
         this.isAnswered = isAnswered;
@@ -44,6 +51,18 @@ public abstract class Notification {
 
     public Notification() {
 
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public boolean isChanged() {
+        return isChanged;
+    }
+
+    public void setChanged(boolean changed) {
+        isChanged = changed;
     }
 
     public Long getId() {

@@ -11,6 +11,7 @@ import com.ftn.isa.repository.CottageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class ClientService {
         return clientRepo.findByEmail(email);
     }
 
+    @Transactional
     public void updatePersonalInfo(ClientProfileDTO clientData, Client client) {
         client.setChanged(!client.isChanged());
         saveOrUpdateClient(client);
@@ -43,6 +45,7 @@ public class ClientService {
         saveOrUpdateClient(client);
     }
 
+    @Transactional
     public void resetPenalties() {
         for (Client client : getAllClients())
             if (client.getNumOfPenalties() != 0) {
