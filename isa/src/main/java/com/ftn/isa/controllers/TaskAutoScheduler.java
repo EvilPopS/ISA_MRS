@@ -12,10 +12,6 @@ public class TaskAutoScheduler {
 
     @Scheduled(cron="0 0 0 1 * *")
     public void resetClientPenalties() {
-        for (Client client : clientService.getAllClients())
-            if (client.getNumOfPenalties() != 0) {
-                client.setNumOfPenalties(0);
-                clientService.saveOrUpdateClient(client);
-            }
+        clientService.resetPenalties();
     }
 }

@@ -5,61 +5,86 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import com.ftn.isa.DTO.ClientProfileDTO;
+import com.ftn.isa.model.Client;
+import com.ftn.isa.services.ClientService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.PessimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.ftn.isa.services.ReservationService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class IsaApplicationTests {
-
 	@Autowired
 	private ReservationService reservationService;
+	@Autowired
+	private ClientService clientService;
 
-/*
-	@Test(expected = PessimisticLockingFailureException.class)
-	public void testPessimisticLockingScenario() throws Throwable {
 
+
+//	@Test(expected = ObjectOptimisticLockingFailureException.class)
+//	public void testPessimisticLockingScenario() throws Throwable {
+//
+//		ExecutorService executor = Executors.newFixedThreadPool(2);
+//		executor.submit(new Runnable() {
+//			@Override
+//			public void run() {
+//				try { Thread.sleep(150); } catch (InterruptedException ignored) { }// otprilike 150 milisekundi posle prvog threada krece da se izvrsava drugi
+//				//service1
+//			}
+//		});
+//		Future<?> future2 = executor.submit(new Runnable() {
+//			@Override
+//			public void run() {
+//				//service2
+//			}
+//		});
+//
+//		try {
+//			future2.get(); // podize ExecutionException za bilo koji izuzetak iz drugog child threada
+//		} catch (ExecutionException e) {
+//			System.out.println("Exception from thread " + e.getCause().getClass()); // u pitanju je bas PessimisticLockingFailureException
+//			throw e.getCause();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		executor.shutdown();
+//	}
+
+	@Test(expected = ObjectOptimisticLockingFailureException.class)
+	public void student1OptimisticLockingFailTest() throws Throwable {
 		ExecutorService executor = Executors.newFixedThreadPool(2);
 		executor.submit(new Runnable() {
-
 			@Override
 			public void run() {
-				System.out.println("Startovan Thread 1");
-				reservationService.test(); // izvrsavanje transakcione metode traje oko 200 milisekundi
-
+				try { Thread.sleep(150); }
+				catch (InterruptedException ignored) { }
+				clientService.resetPenalties();
 			}
 		});
 		Future<?> future2 = executor.submit(new Runnable() {
-
 			@Override
 			public void run() {
-				System.out.println("Startovan Thread 2");
-				try { Thread.sleep(150); } catch (InterruptedException e) { }// otprilike 150 milisekundi posle prvog threada krece da se izvrsava drugi
-				/*
-				 * Drugi thread pokusava da izvrsi transakcionu metodu findOneById dok se prvo izvrsavanje iz prvog threada jos nije zavrsilo.
-				 * Metoda je oznacena sa NO_WAIT, sto znaci da drugi thread nece cekati da prvi thread zavrsi sa izvrsavanjem metode vec ce odmah dobiti PessimisticLockingFailureException uz poruke u logu:
-				 * [pool-1-thread-2] o.h.engine.jdbc.spi.SqlExceptionHelper : SQL Error: 0, SQLState: 55P03
-				 * [pool-1-thread-2] o.h.engine.jdbc.spi.SqlExceptionHelper : ERROR: could not obtain lock on row in relation "product"
-				 * Prema Postgres dokumentaciji https://www.postgresql.org/docs/9.3/errcodes-appendix.html, kod 55P03 oznacava lock_not_available
-				 */
-		/*
-				reservationService.test();
+				Client c = clientService.findByEmail("client1@gmail.com");
+				ClientProfileDTO dto = new ClientProfileDTO(c);
+				dto.setName("New name");
+				clientService.updatePersonalInfo(dto, c);
 			}
 		});
+
 		try {
-			future2.get(); // podize ExecutionException za bilo koji izuzetak iz drugog child threada
+			future2.get();
 		} catch (ExecutionException e) {
-			System.out.println("Exception from thread " + e.getCause().getClass()); // u pitanju je bas PessimisticLockingFailureException
+			System.out.println("Exception from thread " + e.getCause().getClass());
 			throw e.getCause();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		executor.shutdown();
 	}
-	*/
 }

@@ -35,9 +35,25 @@ public class ClientService {
     }
 
     public void updatePersonalInfo(ClientProfileDTO clientData, Client client) {
+        client.setChanged(!client.isChanged());
+        saveOrUpdateClient(client);
+
         clientData.hashPassword();
         client.updatePersonalInfo(clientData);
         saveOrUpdateClient(client);
+    }
+
+    public void resetPenalties() {
+        for (Client client : getAllClients())
+            if (client.getNumOfPenalties() != 0) {
+                try {
+                    client.setChanged(!client.isChanged());
+                    saveOrUpdateClient(client);
+
+                    client.setNumOfPenalties(0);
+                    saveOrUpdateClient(client);
+                } catch (Exception ignored) {}
+            }
     }
 
     public List<Client> getAllClients(){
