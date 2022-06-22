@@ -88,6 +88,14 @@
                         alert(error.name);
                     });
             },
+            sendDeleteRequest(requestBody) {
+                axios.post('/api/user/INSTRUCTOR/sendDeleteRequest', requestBody, {headers: {'authorization': window.localStorage.getItem("token")}})
+                    .then(() => {
+                        this.succPopUpVisible = true;
+                    }).catch(function (error) {
+                        alert(error.name)
+                    });;
+            },
             setNewProfilePic(newPic) {
                 this.profilePicture = newPic; 
             },

@@ -138,7 +138,7 @@ insert into report(id, is_answered, message, sent_time, has_showed_up, is_negati
            (nextval('my_seq_gen_notification'), false, 'Sve je proslo kako treba', '05/06/2022 22:22', true, false , 4, 6, true);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
-values ('11/8/2022', '29/8/2022', false, true, 30, 1, 4, false, null, false),
+values ('11/6/2022', '15/6/2022', false, true, 30, 1, 4, false, null, false),
        ('1/8/2022', '11/8/2022', false, true, 30, 1, 4, false, null, false),
        ('1/6/2022', '12/6/2022', false, true, 50, 3, 4, false, null, false),
        ('10/6/2022', '12/6/2022', false, true, 40, 4, 4, false, null, false),

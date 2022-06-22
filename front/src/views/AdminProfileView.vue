@@ -81,9 +81,11 @@
                     phoneNumber: data.phoneNumber,
                     profilePicture: data.profilePicture
                 }
-                axios.put("api/admin/data-update", requestBody)
+                axios.put("api/admin/data-update", requestBody, {headers: {'authorization': window.localStorage.getItem("token") }})
                     .then(() => {
                         this.succPopUpVisible = true;
+                    }).catch(function (error) {
+                        alert(error.name)
                     });
             },
             setNewProfilePic(newPic) {

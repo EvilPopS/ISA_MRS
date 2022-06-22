@@ -4,6 +4,7 @@ package com.ftn.isa.model;
 import com.ftn.isa.DTO.AdventureDTO;
 import com.ftn.isa.DTO.FishingInstructorDTO;
 import com.ftn.isa.DTO.OwnerRegDTO;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -26,7 +27,7 @@ public class FishingInstructor extends User{
         this.setAddress(new Address(data.getCountry(), data.getCity(), data.getAddress()));
         this.setPhoneNumber(data.getPhoneNumber());
         this.setProfilePicture(new Photo(data.getProfilePicture()));
-        this.setPassword(data.getPassword());
+        this.setPassword(new BCryptPasswordEncoder().encode(data.getPassword()));
         this.setDeleted(false);
         this.setActive(false);
         this.setRole(new Role("ROLE_INSTRUCTOR"));

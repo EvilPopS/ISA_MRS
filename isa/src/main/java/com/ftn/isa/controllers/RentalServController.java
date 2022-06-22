@@ -4,11 +4,7 @@ import com.ftn.isa.DTO.*;
 import com.ftn.isa.configs.ServerConfig;
 import com.ftn.isa.helpers.Validate;
 import com.ftn.isa.model.*;
-import com.ftn.isa.services.BoatOwnerService;
-import com.ftn.isa.services.CottageOwnerService;
-import com.ftn.isa.services.FishingInstructorService;
-import com.ftn.isa.services.RentalServService;
-import com.ftn.isa.services.ReservationService;
+import com.ftn.isa.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +29,8 @@ public class RentalServController {
     private FishingInstructorService instructorService;
     @Autowired
     private BoatOwnerService boatOwnerService;
-
+    @Autowired
+    private ReviewService reviewService;
 
     @Autowired
     private ReservationService reservationService;
@@ -140,8 +137,10 @@ public class RentalServController {
         rentalTypeString = rentalTypeString.substring(0, 1).toUpperCase() + rentalTypeString.substring(1).toLowerCase();
 
 
-
         rentalServService.updateRentalGrade(gradedReview.getRentalServiceId(), rentalTypeString, gradedReview.getGrade());
+        Review foundReview = reviewService.getReviewById(gradedReview.getReviewId());
+        foundReview.setAnswered(true);
+        reviewService.save(foundReview);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

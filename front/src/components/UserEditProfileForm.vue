@@ -57,7 +57,7 @@
                     <div class="submit">                    
                         <button id="sub-btn" @click="emitSubmit()">Update personal data</button>
                     </div>
-                    <button id="del-btn" class="btn btn-danger" @click="deleteClicked()">Delete my account</button>      
+                    <button v-show="userType !== 'ADMIN'" id="del-btn" class="btn btn-danger" @click="deleteClicked()">Delete my account</button>      
                 </div>
 
                 <div id="right-col" class="col">

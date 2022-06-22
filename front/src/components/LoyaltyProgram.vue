@@ -259,7 +259,7 @@
     .info-caption {
         padding: 0 0.5vw;
         font-family: Charcoal, sans-serif;
-        font-size: 20px;
+        font-size: 15px;
         letter-spacing: 2.6px;
         word-spacing: 2px;
         color: #000000;
@@ -271,7 +271,7 @@
     .cost-caption {
         padding: 8vh 1vw;
         font-family: Charcoal, sans-serif;
-        font-size: 20px;
+        font-size: 15px;
         letter-spacing: 2.6px;
         word-spacing: 2px;
         color: #000000;

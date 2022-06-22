@@ -102,7 +102,7 @@ public class NotificationController {
         Client client = clientService.findByEmail(email);
         for (Reservation res : client.getReservations())
             if (!res.isCanceled() && res.getRental().getId().equals(rentalId)
-                    && res.getEndTime().isAfter(LocalDateTime.now())) {
+                    && res.getEndTime().isBefore(LocalDateTime.now())) {
                 reviewService.makeNewReview(
                         reviewDTO,
                         client,
