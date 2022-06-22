@@ -66,7 +66,7 @@
                         <input disabled type="text" class= "form-control" v-model="type">
                     </div>
 
-                    <div v-show="userType !== 'admin'">
+                    <div v-show="userType !== 'ADMIN'">
                         <div class="inline-inputs">
                             <label>Loyalty program status: </label>
                             <input disabled type="text" class= "form-control" v-model="loyalty">

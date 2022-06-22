@@ -61,17 +61,17 @@ insert into cottage_owner (id, email, password, name, surname, address_id, phone
 
 insert into fishing_instructor(id, email, is_active, is_deleted, loyalty_type, name, password, phone_number, surname,
                                 role_id, address_id, photo_id, loyalty_points)
-    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'Instro', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
-                'Instric', 4, 5, 1, 250),
-           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Instro2', 'sifra1223', '0619990009',
-        'Instriiiic', 4, 3, 1, 0);
+    values (nextval('my_seq_gen_user'), 'instructor@gmail.com', true, false, 0, 'David', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0613222126',
+                'Davidovic', 4, 5, 1, 250),
+           (nextval('my_seq_gen_user'), 'instructor2@gmail.com', true, false, 0, 'Nikola', '$2a$10$34m5dosyTARXnOiqIEdM8uXyosZYQtDy75QBPPS7S91Iirn5ORQ8O', '0619990009',
+        'Nikolic', 4, 3, 1, 0);
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                             rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
-    values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
-                false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5, 6),
-            (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
-                false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 6);
+    values (nextval('my_seq_gen_rental'), 'Hod kroz kanjon', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Grupa mora da prati vodica i da slusa sve njegove komande.',
+                false, 4, 0, 0, 2, 30, '10 godina iskustva u radu.', 'torbe,odeca,satori', 10.5, 6),
+            (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Ucenje pecanja kroz igre.', 15, 'Nema skakanja u vodu sa brodica.',
+                false, 5, 0, 0, 2, 25, '10 godina iskustva u radu.', 'mreza,stap', 20.0, 6);
 
 
 insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
@@ -99,15 +99,15 @@ values (0, 0, 0, 0),
 
 insert into adventure (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                        rental_type, price, biography, fishing_equipment, cancellation_conditions, instructor_id)
-    values (nextval('my_seq_gen_rental'), 'Najjakija Avantura', 'Ide se na svakakva mesta, lepo skroz.', 10, 'Mora budete dobri, da se postujete i tako to.',
-                false, 4, 0, 0, 2, 30, 'Skroz sam jak lik, ko avantura.', 'Pecaljka i tjt.', 10.5, 6),
-            (nextval('my_seq_gen_rental'), 'Pecaj pecaj pecaj', 'Peca se ceo dan sta da kazem.', 15, 'Kako ja kazem tako se radi.',
-                false, 5, 0, 0, 2, 25, 'Biografija, ne znam sta da napisem.', 'Sve je obezbedjeno.', 20.0, 6);
+    values (nextval('my_seq_gen_rental'), 'Avantura ronjenja u Egejskom moru', 'Roni se u Egejskom moru.', 10, 'Ne smete se odvajati od instruktora.',
+                false, 4, 0, 0, 2, 30, '10 godina iskustva u radu.', 'odelo za ronjenje,boca sa kiseonikom,peraja.', 10.5, 6),
+            (nextval('my_seq_gen_rental'), 'Napredno pecanje', 'Pecanje velikih riba. Samo za one koji imaju bar 10 godina iskustva.', 15, 'Slusati instruktora.',
+                false, 5, 0, 0, 2, 25, '10 godina iskustva u radu.', 'stap za pecanje,mreza', 20.0, 6);
 
 insert into request(id, is_answered, message, sent_time, request_type, sender_id)
-    values (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 111111111', '02/05/2022 23:44', 1, 4),
-       (nextval('my_seq_gen_notification'), false, 'zeleo bih da mi se profil obrise iz razloga 222222222', '02/05/2022 13:14', 1, 7),
-           (nextval('my_seq_gen_notification'), false, 'zelim da se registrujem jer mi se peca', '01/06/2022 13:14', 0, 7);
+    values (nextval('my_seq_gen_notification'), false, 'Zeleo bih da mi se profil obrise iz razloga sto ne zelim da koristim aplikaciju.', '02/05/2022 23:44', 1, 4),
+       (nextval('my_seq_gen_notification'), false, 'Zeleo bih da mi se profil obrise iz razloga sto ne koristim aplikaciju vise.', '02/05/2022 13:14', 1, 7),
+           (nextval('my_seq_gen_notification'), false, 'Zelim da se registrujem jer mi se peca', '01/06/2022 13:14', 0, 7);
 
 insert into boat (id, name, description, capacity, rules, is_deleted, address_id, average_rate, no_ratings,
                   rental_type, price, type, boat_length, engine_number, engine_power, max_speed,
@@ -134,8 +134,8 @@ insert into subscription(owner_id, client_id, is_active_subscription)
             (6, 4, true);
 
 insert into report(id, is_answered, message, sent_time, has_showed_up, is_negative, client_id, owner_id, client_is_sender)
-    values (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekli', '05/06/2022 11:11', true, true , 4, 6, true),
-           (nextval('my_seq_gen_notification'), false, 'Ovo nije bila najjakija avantura kao sto ste rekliiiiiiiiiiiii', '05/06/2022 22:22', true, true , 4, 6, true);
+    values (nextval('my_seq_gen_notification'), false, 'Ne svidja mi se odnos instruktora prema grupi', '05/06/2022 11:11', true, true , 4, 6, true),
+           (nextval('my_seq_gen_notification'), false, 'Sve je proslo kako treba', '05/06/2022 22:22', true, false , 4, 6, true);
 
 insert into reservation (start_time, end_time, is_action, is_reserved, price, rental_id, client_id, is_unavailable, action_services, is_canceled)
 values ('11/8/2022', '29/8/2022', false, true, 30, 1, 4, false, null, false),
