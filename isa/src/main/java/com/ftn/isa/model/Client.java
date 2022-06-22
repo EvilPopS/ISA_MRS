@@ -23,6 +23,7 @@ public class Client extends User {
     @Column(name = "num_of_penalties")
     private int numOfPenalties;
 
+
     public Client() {
     }
 
@@ -56,6 +57,7 @@ public class Client extends User {
         this.getProfilePicture().setPhotoPath(data.getProfilePicture());
         this.setPhoneNumber(data.getPhoneNumber());
     }
+
 
     public void incLoyaltyPoints(int points) {
         this.setLoyaltyPoints(this.getLoyaltyPoints() + points);
